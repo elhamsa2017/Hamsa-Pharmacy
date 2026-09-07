@@ -579,7 +579,25 @@ const Cart = {
         }
       );
 
+// -----------------------------------------------------
+// CHECKOUT BUTTON
+// -----------------------------------------------------
 
+document
+  .getElementById('cart-checkout-button')
+  ?.addEventListener(
+    'click',
+    () => {
+
+      if (!this.cart || this.cart.length === 0) {
+        alert('السلة فارغة');
+        return;
+      }
+
+      window.location.href = 'checkout.html';
+
+    }
+  );
     // -----------------------------------------------------
     // CART INTERNAL BUTTONS
     // -----------------------------------------------------
