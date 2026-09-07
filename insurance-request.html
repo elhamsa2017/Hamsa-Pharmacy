@@ -1,19 +1,21 @@
-
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
 
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+>
 
   <title>طلب التأمين | صيدليات الهمسة</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="./js/supabase-config.js"></script>
 
   <style>
@@ -422,6 +424,184 @@
 
 
     /* ==============================
+       FILE PREVIEW
+       ============================== */
+
+    .file-preview-container {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 12px;
+
+      margin-top: 15px;
+
+      justify-content: center;
+    }
+
+
+    .file-preview {
+
+      position: relative;
+
+      width: 150px;
+
+      background: white;
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 14px;
+
+      padding: 8px;
+
+      box-shadow:
+        0 4px 12px
+        rgba(124, 45, 18, 0.08);
+    }
+
+
+    .file-preview img {
+
+      width: 100%;
+
+      height: 110px;
+
+      object-fit: cover;
+
+      border-radius: 9px;
+
+      display: block;
+    }
+
+
+    .file-preview.pdf-preview {
+
+      height: 110px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 38px;
+
+      background:
+        var(--orange-light);
+
+      border-radius: 9px;
+    }
+
+
+    .file-preview-name {
+
+      display: block;
+
+      font-size: 10px;
+
+      color: var(--muted);
+
+      margin-top: 7px;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
+
+
+    .remove-file {
+
+      position: absolute;
+
+      top: 5px;
+
+      left: 5px;
+
+      width: 27px;
+
+      height: 27px;
+
+      border: none;
+
+      border-radius: 50%;
+
+      background:
+        var(--danger);
+
+      color: white;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      z-index: 2;
+
+      line-height: 1;
+    }
+
+
+    .remove-file:hover {
+
+      transform:
+        scale(1.08);
+    }
+
+
+    .add-more-button {
+
+      display: inline-block;
+
+      margin-top: 10px;
+
+      padding: 9px 14px;
+
+      border:
+        1px solid
+        var(--orange);
+
+      border-radius: 10px;
+
+      background: white;
+
+      color:
+        var(--orange-dark);
+
+      font-family: inherit;
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+
+    .add-more-button:hover {
+
+      background:
+        var(--orange-light);
+
+      transform:
+        translateY(-1px);
+    }
+
+
+    /* ==============================
        OPTIONS
        ============================== */
 
@@ -711,505 +891,518 @@
           8px 10px;
       }
 
+
+      .file-preview {
+
+        width: 135px;
+      }
+
     }
 
   </style>
 
 </head>
 
-
 <body>
-
 
   <!-- HEADER -->
 
   <header>
 
-    <div class="header-inner">
+```
+<div class="header-inner">
 
-      <div class="brand">
+  <div class="brand">
 
-        <div class="brand-icon">
-          🏥
-        </div>
+    <div class="brand-icon">
+      🏥
+    </div>
 
-        <div>
+    <div>
 
-          <h1>
-            صيدليات الهمسة
-          </h1>
+      <h1>
+        صيدليات الهمسة
+      </h1>
 
-          <span>
-            خدمات التأمين الطبي
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <a
-        href="insurance.html"
-        class="back-button"
-      >
-        ← شركات التأمين
-      </a>
+      <span>
+        خدمات التأمين الطبي
+      </span>
 
     </div>
 
+  </div>
+
+
+  <a
+    href="insurance.html"
+    class="back-button"
+  >
+    ← شركات التأمين
+  </a>
+
+</div>
+```
+
   </header>
-
-
 
   <!-- PAGE -->
 
   <main class="page">
 
+```
+<div class="page-title">
 
-    <div class="page-title">
+  <div class="icon">
+    🛡️
+  </div>
 
-      <div class="icon">
-        🛡️
-      </div>
+  <h2>
+    طلب علاج تأميني
+  </h2>
 
-      <h2>
-        طلب علاج تأميني
-      </h2>
+  <p>
+    من فضلك أدخل بياناتك وارفع المستندات المطلوبة
+    لإرسال طلب العلاج إلى صيدليات الهمسة.
+  </p>
 
-      <p>
-        من فضلك أدخل بياناتك وارفع المستندات المطلوبة
-        لإرسال طلب العلاج إلى صيدليات الهمسة.
-      </p>
-
-    </div>
-
-
-
-    <div class="form-card">
+</div>
 
 
-      <!-- COMPANY -->
 
-      <div
-        id="company-box"
-        class="company-box"
+<div class="form-card">
+
+
+  <!-- COMPANY -->
+
+  <div
+    id="company-box"
+    class="company-box"
+  >
+
+    <small>
+      شركة التأمين
+    </small>
+
+    <strong id="company-name">
+      جاري تحميل الشركة...
+    </strong>
+
+  </div>
+
+
+
+  <!-- MESSAGE -->
+
+  <div
+    id="message"
+    class="message"
+  ></div>
+
+
+
+  <!-- FORM -->
+
+  <form id="insurance-form">
+
+
+    <!-- CARD NUMBER -->
+
+    <div class="form-group">
+
+      <label for="card-number">
+        رقم الكارنية
+        <span class="required">*</span>
+      </label>
+
+      <input
+        id="card-number"
+        name="card_number"
+        type="text"
+        required
+        autocomplete="off"
+        placeholder="أدخل رقم الكارنية"
       >
 
-        <small>
-          شركة التأمين
-        </small>
+    </div>
 
-        <strong id="company-name">
-          جاري تحميل الشركة...
-        </strong>
 
-      </div>
 
+    <!-- CUSTOMER NAME -->
 
+    <div class="form-group">
 
-      <!-- MESSAGE -->
+      <label for="customer-name">
+        الاسم
+        <span class="required">*</span>
+      </label>
 
-      <div
-        id="message"
-        class="message"
-      ></div>
-
-
-
-      <!-- FORM -->
-
-      <form id="insurance-form">
-
-
-        <!-- CARD NUMBER -->
-
-        <div class="form-group">
-
-          <label for="card-number">
-            رقم الكارنية
-            <span class="required">*</span>
-          </label>
-
-          <input
-            id="card-number"
-            name="card_number"
-            type="text"
-            required
-            autocomplete="off"
-            placeholder="أدخل رقم الكارنية"
-          >
-
-        </div>
-
-
-
-        <!-- CUSTOMER NAME -->
-
-        <div class="form-group">
-
-          <label for="customer-name">
-            الاسم
-            <span class="required">*</span>
-          </label>
-
-          <input
-            id="customer-name"
-            name="customer_name"
-            type="text"
-            required
-            autocomplete="name"
-            placeholder="اكتب الاسم بالكامل"
-          >
-
-        </div>
-
-
-
-        <!-- PHONE -->
-
-        <div class="form-group">
-
-          <label for="phone">
-            رقم الموبايل
-            <span class="required">*</span>
-          </label>
-
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            required
-            autocomplete="tel"
-            placeholder="مثال: 01xxxxxxxxx"
-          >
-
-        </div>
-
-
-
-        <!-- CARD FRONT -->
-
-        <div class="form-group">
-
-          <label>
-            صورة الكارنية - وش
-            <span class="required">*</span>
-          </label>
-
-          <div class="upload-box">
-
-            <div class="upload-icon">
-              🪪
-            </div>
-
-            <p>
-              ارفع صورة واضحة للوجه الأمامي للكارنية
-            </p>
-
-            <input
-              id="card-front"
-              type="file"
-              accept="image/*"
-              required
-            >
-
-            <span
-              id="card-front-name"
-              class="file-name"
-            ></span>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- NATIONAL ID FRONT -->
-
-        <div class="form-group">
-
-          <label>
-            صورة البطاقة - وش
-            <span class="required">*</span>
-          </label>
-
-          <div class="upload-box">
-
-            <div class="upload-icon">
-              🪪
-            </div>
-
-            <p>
-              ارفع صورة واضحة للوجه الأمامي للبطاقة
-            </p>
-
-            <input
-              id="national-id-front"
-              type="file"
-              accept="image/*"
-              required
-            >
-
-            <span
-              id="national-id-front-name"
-              class="file-name"
-            ></span>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- NATIONAL ID BACK -->
-
-        <div class="form-group">
-
-          <label>
-            صورة البطاقة - ظهر
-            <span class="required">*</span>
-          </label>
-
-          <div class="upload-box">
-
-            <div class="upload-icon">
-              🪪
-            </div>
-
-            <p>
-              ارفع صورة واضحة للوجه الخلفي للبطاقة
-            </p>
-
-            <input
-              id="national-id-back"
-              type="file"
-              accept="image/*"
-              required
-            >
-
-            <span
-              id="national-id-back-name"
-              class="file-name"
-            ></span>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- TREATMENT -->
-
-        <div class="form-group">
-
-          <label>
-            نوع العلاج
-            <span class="required">*</span>
-          </label>
-
-
-          <div class="options">
-
-
-            <div class="option">
-
-              <input
-                id="treatment-monthly"
-                type="radio"
-                name="treatment_type"
-                value="monthly"
-                required
-              >
-
-              <label for="treatment-monthly">
-
-                <span class="option-title">
-                  علاج شهري
-                </span>
-
-                <span class="option-description">
-                  بموافقة مسبقة
-                </span>
-
-              </label>
-
-            </div>
-
-
-
-            <div class="option">
-
-              <input
-                id="treatment-daily"
-                type="radio"
-                name="treatment_type"
-                value="daily"
-              >
-
-              <label for="treatment-daily">
-
-                <span class="option-title">
-                  علاج يومي
-                </span>
-
-                <span class="option-description">
-                  يحتاج موافقة
-                </span>
-
-              </label>
-
-            </div>
-
-
-          </div>
-
-        </div>
-
-
-
-        <!-- PRESCRIPTION -->
-
-        <div
-          id="prescription-section"
-          class="form-group"
-        >
-
-          <label>
-            صورة النموذج أو الروشتة
-            <span class="required">*</span>
-          </label>
-
-          <div class="upload-box">
-
-            <div class="upload-icon">
-              📄
-            </div>
-
-            <p>
-              مطلوبة في حالة العلاج اليومي
-            </p>
-
-            <input
-              id="prescription"
-              type="file"
-              accept="image/*,.pdf"
-            >
-
-            <span
-              id="prescription-name"
-              class="file-name"
-            ></span>
-
-          </div>
-
-        </div>
-
-
-
-        <!-- DELIVERY -->
-
-        <div class="form-group">
-
-          <label>
-            طريقة الاستلام
-            <span class="required">*</span>
-          </label>
-
-
-          <div class="options">
-
-
-            <div class="option">
-
-              <input
-                id="delivery"
-                type="radio"
-                name="delivery_method"
-                value="delivery"
-                required
-              >
-
-              <label for="delivery">
-
-                <span class="option-title">
-                  🚚 توصيل
-                </span>
-
-                <span class="option-description">
-                  توصيل الطلب
-                </span>
-
-              </label>
-
-            </div>
-
-
-
-            <div class="option">
-
-              <input
-                id="pickup"
-                type="radio"
-                name="delivery_method"
-                value="pickup"
-              >
-
-              <label for="pickup">
-
-                <span class="option-title">
-                  🏥 استلام من الصيدلية
-                </span>
-
-                <span class="option-description">
-                  استلام الطلب من الفرع
-                </span>
-
-              </label>
-
-            </div>
-
-
-          </div>
-
-        </div>
-
-
-
-        <!-- SUBMIT -->
-
-        <button
-          id="submit-button"
-          type="submit"
-          class="submit-button"
-        >
-          إرسال طلب التأمين
-        </button>
-
-
-      </form>
-
+      <input
+        id="customer-name"
+        name="customer_name"
+        type="text"
+        required
+        autocomplete="name"
+        placeholder="اكتب الاسم بالكامل"
+      >
 
     </div>
 
+
+
+    <!-- PHONE -->
+
+    <div class="form-group">
+
+      <label for="phone">
+        رقم الموبايل
+        <span class="required">*</span>
+      </label>
+
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        required
+        autocomplete="tel"
+        placeholder="مثال: 01xxxxxxxxx"
+      >
+
+    </div>
+
+
+
+    <!-- CARD FRONT -->
+
+    <div class="form-group">
+
+      <label>
+        صورة الكارنية - وش
+        <span class="required">*</span>
+      </label>
+
+      <div class="upload-box">
+
+        <div class="upload-icon">
+          🪪
+        </div>
+
+        <p>
+          ارفع صورة واضحة للوجه الأمامي للكارنية
+        </p>
+
+        <input
+          id="card-front"
+          type="file"
+          accept="image/*"
+          required
+        >
+
+        <span
+          id="card-front-name"
+          class="file-name"
+        ></span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- NATIONAL ID FRONT -->
+
+    <div class="form-group">
+
+      <label>
+        صورة البطاقة - وش
+        <span class="required">*</span>
+      </label>
+
+      <div class="upload-box">
+
+        <div class="upload-icon">
+          🪪
+        </div>
+
+        <p>
+          ارفع صورة واضحة للوجه الأمامي للبطاقة
+        </p>
+
+        <input
+          id="national-id-front"
+          type="file"
+          accept="image/*"
+          required
+        >
+
+        <span
+          id="national-id-front-name"
+          class="file-name"
+        ></span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- NATIONAL ID BACK -->
+
+    <div class="form-group">
+
+      <label>
+        صورة البطاقة - ظهر
+        <span class="required">*</span>
+      </label>
+
+      <div class="upload-box">
+
+        <div class="upload-icon">
+          🪪
+        </div>
+
+        <p>
+          ارفع صورة واضحة للوجه الخلفي للبطاقة
+        </p>
+
+        <input
+          id="national-id-back"
+          type="file"
+          accept="image/*"
+          required
+        >
+
+        <span
+          id="national-id-back-name"
+          class="file-name"
+        ></span>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- TREATMENT -->
+
+    <div class="form-group">
+
+      <label>
+        نوع العلاج
+        <span class="required">*</span>
+      </label>
+
+
+      <div class="options">
+
+
+        <div class="option">
+
+          <input
+            id="treatment-monthly"
+            type="radio"
+            name="treatment_type"
+            value="monthly"
+            required
+          >
+
+          <label for="treatment-monthly">
+
+            <span class="option-title">
+              علاج شهري
+            </span>
+
+            <span class="option-description">
+              بموافقة مسبقة
+            </span>
+
+          </label>
+
+        </div>
+
+
+
+        <div class="option">
+
+          <input
+            id="treatment-daily"
+            type="radio"
+            name="treatment_type"
+            value="daily"
+          >
+
+          <label for="treatment-daily">
+
+            <span class="option-title">
+              علاج يومي
+            </span>
+
+            <span class="option-description">
+              يحتاج موافقة
+            </span>
+
+          </label>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+
+    <!-- PRESCRIPTION -->
+
+    <div
+      id="prescription-section"
+      class="form-group"
+    >
+
+      <label>
+        صور النموذج أو الروشتة
+        <span class="required">*</span>
+      </label>
+
+      <div class="upload-box">
+
+        <div class="upload-icon">
+          📄
+        </div>
+
+        <p>
+          مطلوبة في حالة العلاج اليومي
+          <br>
+          يمكنك رفع أكثر من صورة للروشتة أو النموذج
+        </p>
+
+        <input
+          id="prescription"
+          type="file"
+          accept="image/*,.pdf"
+          multiple
+        >
+
+        <button
+          type="button"
+          id="add-prescription-button"
+          class="add-more-button"
+        >
+          ➕ إضافة صور أخرى
+        </button>
+
+        <div
+          id="prescription-preview"
+          class="file-preview-container"
+        ></div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- DELIVERY -->
+
+    <div class="form-group">
+
+      <label>
+        طريقة الاستلام
+        <span class="required">*</span>
+      </label>
+
+
+      <div class="options">
+
+
+        <div class="option">
+
+          <input
+            id="delivery"
+            type="radio"
+            name="delivery_method"
+            value="delivery"
+            required
+          >
+
+          <label for="delivery">
+
+            <span class="option-title">
+              🚚 توصيل
+            </span>
+
+            <span class="option-description">
+              توصيل الطلب
+            </span>
+
+          </label>
+
+        </div>
+
+
+
+        <div class="option">
+
+          <input
+            id="pickup"
+            type="radio"
+            name="delivery_method"
+            value="pickup"
+          >
+
+          <label for="pickup">
+
+            <span class="option-title">
+              🏥 استلام من الصيدلية
+            </span>
+
+            <span class="option-description">
+              استلام الطلب من الفرع
+            </span>
+
+          </label>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+
+    <!-- SUBMIT -->
+
+    <button
+      id="submit-button"
+      type="submit"
+      class="submit-button"
+    >
+      إرسال طلب التأمين
+    </button>
+
+
+  </form>
+
+
+</div>
+```
 
   </main>
 
-
-
   <footer>
 
-    ©
-    <span id="current-year"></span>
+```
+©
+<span id="current-year"></span>
 
-    <strong>
-      صيدليات الهمسة
-    </strong>
+<strong>
+  صيدليات الهمسة
+</strong>
 
-    — جميع الحقوق محفوظة
+— جميع الحقوق محفوظة
+```
 
   </footer>
-
-
 
   <!-- JAVASCRIPT -->
 
@@ -1304,7 +1497,7 @@
 
       showFileNames() {
 
-        const fields = [
+        const singleFields = [
 
           [
             'card-front',
@@ -1319,17 +1512,12 @@
           [
             'national-id-back',
             'national-id-back-name'
-          ],
-
-          [
-            'prescription',
-            'prescription-name'
           ]
 
         ];
 
 
-        fields.forEach(
+        singleFields.forEach(
           ([inputId, nameId]) => {
 
             const input =
@@ -1337,36 +1525,474 @@
                 inputId
               );
 
-            const name =
-              document.getElementById(
-                nameId
-              );
-
 
             input?.addEventListener(
               'change',
               () => {
 
-                if (
-                  input.files &&
-                  input.files[0]
-                ) {
-
-                  name.textContent =
-                    '✓ ' +
-                    input.files[0].name;
-
-                } else {
-
-                  name.textContent = '';
-
-                }
+                this.showSingleFilePreview(
+                  input,
+                  nameId
+                );
 
               }
             );
 
           }
         );
+
+
+        const prescription =
+          document.getElementById(
+            'prescription'
+          );
+
+
+        prescription?.addEventListener(
+          'change',
+          () => {
+
+            this.handlePrescriptionFiles();
+
+          }
+        );
+
+
+        const addButton =
+          document.getElementById(
+            'add-prescription-button'
+          );
+
+
+        addButton?.addEventListener(
+          'click',
+          () => {
+
+            prescription?.click();
+
+          }
+        );
+
+      },
+
+
+      showSingleFilePreview(
+        input,
+        nameId
+      ) {
+
+        const name =
+          document.getElementById(
+            nameId
+          );
+
+
+        if (
+          !input.files ||
+          !input.files[0]
+        ) {
+
+          if (name) {
+            name.textContent = '';
+          }
+
+          return;
+
+        }
+
+
+        const file =
+          input.files[0];
+
+
+        if (
+          !file.type.startsWith(
+            'image/'
+          )
+        ) {
+
+          if (name) {
+
+            name.textContent =
+              '✓ ' +
+              file.name;
+
+          }
+
+          return;
+
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          (event) => {
+
+
+            let preview =
+              document.getElementById(
+                input.id +
+                '-preview'
+              );
+
+
+            if (!preview) {
+
+              preview =
+                document.createElement(
+                  'div'
+                );
+
+              preview.id =
+                input.id +
+                '-preview';
+
+              preview.className =
+                'file-preview-container';
+
+              name.parentNode.appendChild(
+                preview
+              );
+
+            }
+
+
+            preview.innerHTML = '';
+
+
+            const item =
+              document.createElement(
+                'div'
+              );
+
+
+            item.className =
+              'file-preview';
+
+
+            const removeButton =
+              document.createElement(
+                'button'
+              );
+
+
+            removeButton.type =
+              'button';
+
+            removeButton.className =
+              'remove-file';
+
+            removeButton.title =
+              'حذف الصورة';
+
+            removeButton.textContent =
+              '×';
+
+
+            removeButton.addEventListener(
+              'click',
+              () => {
+
+                input.value = '';
+
+                name.textContent = '';
+
+                preview.innerHTML = '';
+
+              }
+            );
+
+
+            item.appendChild(
+              removeButton
+            );
+
+
+            const image =
+              document.createElement(
+                'img'
+              );
+
+
+            image.src =
+              event.target.result;
+
+            image.alt =
+              'معاينة الصورة';
+
+
+            item.appendChild(
+              image
+            );
+
+
+            const fileName =
+              document.createElement(
+                'span'
+              );
+
+
+            fileName.className =
+              'file-preview-name';
+
+            fileName.textContent =
+              file.name;
+
+
+            item.appendChild(
+              fileName
+            );
+
+
+            preview.appendChild(
+              item
+            );
+
+
+            if (name) {
+
+              name.textContent =
+                '✓ تم اختيار الصورة';
+
+            }
+
+          };
+
+
+        reader.readAsDataURL(
+          file
+        );
+
+      },
+
+
+      handlePrescriptionFiles() {
+
+        const input =
+          document.getElementById(
+            'prescription'
+          );
+
+
+        const preview =
+          document.getElementById(
+            'prescription-preview'
+          );
+
+
+        if (
+          !input ||
+          !preview
+        ) {
+
+          return;
+
+        }
+
+
+        const files =
+          Array.from(
+            input.files || []
+          );
+
+
+        preview.innerHTML = '';
+
+
+        files.forEach(
+          (file, index) => {
+
+
+            const item =
+              document.createElement(
+                'div'
+              );
+
+
+            item.className =
+              'file-preview';
+
+
+            const removeButton =
+              document.createElement(
+                'button'
+              );
+
+
+            removeButton.type =
+              'button';
+
+            removeButton.className =
+              'remove-file';
+
+            removeButton.textContent =
+              '×';
+
+            removeButton.title =
+              'حذف الملف';
+
+
+            removeButton.addEventListener(
+              'click',
+              () => {
+
+                this.removePrescriptionFile(
+                  index
+                );
+
+              }
+            );
+
+
+            item.appendChild(
+              removeButton
+            );
+
+
+            if (
+              file.type.startsWith(
+                'image/'
+              )
+            ) {
+
+
+              const image =
+                document.createElement(
+                  'img'
+                );
+
+
+              image.alt =
+                'معاينة صورة الروشتة';
+
+
+              const reader =
+                new FileReader();
+
+
+              reader.onload =
+                (event) => {
+
+                  image.src =
+                    event.target.result;
+
+                };
+
+
+              reader.readAsDataURL(
+                file
+              );
+
+
+              item.appendChild(
+                image
+              );
+
+
+            } else {
+
+
+              const pdf =
+                document.createElement(
+                  'div'
+                );
+
+
+              pdf.className =
+                'file-preview pdf-preview';
+
+
+              pdf.textContent =
+                '📄';
+
+
+              item.appendChild(
+                pdf
+              );
+
+            }
+
+
+            const fileName =
+              document.createElement(
+                'span'
+              );
+
+
+            fileName.className =
+              'file-preview-name';
+
+
+            fileName.textContent =
+              file.name;
+
+
+            item.appendChild(
+              fileName
+            );
+
+
+            preview.appendChild(
+              item
+            );
+
+          }
+        );
+
+
+      },
+
+
+      removePrescriptionFile(
+        index
+      ) {
+
+        const input =
+          document.getElementById(
+            'prescription'
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        const files =
+          Array.from(
+            input.files || []
+          );
+
+
+        files.splice(
+          index,
+          1
+        );
+
+
+        const dataTransfer =
+          new DataTransfer();
+
+
+        files.forEach(
+          file => {
+
+            dataTransfer.items.add(
+              file
+            );
+
+          }
+        );
+
+
+        input.files =
+          dataTransfer.files;
+
+
+        this.handlePrescriptionFiles();
 
       },
 
@@ -1490,27 +2116,44 @@
           selected.value === 'daily'
         ) {
 
+
           section.classList.add(
             'show'
           );
 
+
           prescription.required =
             true;
 
+
         } else {
+
 
           section.classList.remove(
             'show'
           );
 
+
           prescription.required =
             false;
 
-          prescription.value = '';
 
-          document.getElementById(
-            'prescription-name'
-          ).textContent = '';
+          prescription.value =
+            '';
+
+
+          const preview =
+            document.getElementById(
+              'prescription-preview'
+            );
+
+
+          if (preview) {
+
+            preview.innerHTML =
+              '';
+
+          }
 
         }
 
@@ -1554,6 +2197,7 @@
 
         if (!file) {
 
+
           if (required) {
 
             return {
@@ -1563,6 +2207,7 @@
             };
 
           }
+
 
           return {
             valid: true
@@ -1769,10 +2414,16 @@
           ).files[0];
 
 
-        const prescription =
+        const prescriptionInput =
           document.getElementById(
             'prescription'
-          ).files[0];
+          );
+
+
+        const prescriptionFiles =
+          Array.from(
+            prescriptionInput?.files || []
+          );
 
 
         if (
@@ -1843,25 +2494,76 @@
         }
 
 
+        /* ==============================
+           DAILY PRESCRIPTION VALIDATION
+           ============================== */
+
         if (
           treatment === 'daily'
         ) {
 
 
-          const result =
-            this.validateFile(
-              prescription,
-              true
-            );
-
-
           if (
-            !result.valid
+            prescriptionFiles.length === 0
           ) {
 
             this.showMessage(
-              'صورة النموذج أو الروشتة: ' +
-              result.message,
+              'من فضلك ارفع صورة واحدة على الأقل للروشتة أو النموذج.',
+              'error'
+            );
+
+            return;
+
+          }
+
+
+          for (
+            let i = 0;
+            i < prescriptionFiles.length;
+            i++
+          ) {
+
+
+            const result =
+              this.validateFile(
+                prescriptionFiles[i],
+                true
+              );
+
+
+            if (
+              !result.valid
+            ) {
+
+              this.showMessage(
+                'الروشتة / النموذج رقم ' +
+                (i + 1) +
+                ': ' +
+                result.message,
+                'error'
+              );
+
+              return;
+
+            }
+
+          }
+
+
+          /*
+           * قاعدة البيانات الحالية تحتوي على
+           * prescription_url واحد فقط.
+           *
+           * لذلك لن نسمح بالإرسال بأكثر من صورة
+           * قبل إضافة prescription_urls في قاعدة البيانات.
+           */
+
+          if (
+            prescriptionFiles.length > 1
+          ) {
+
+            this.showMessage(
+              'تم اختيار أكثر من صورة للروشتة بنجاح، لكن حفظ أكثر من صورة يحتاج أولاً لإضافة حقل الصور المتعددة في قاعدة البيانات. لا ترسل الطلب الآن.',
               'error'
             );
 
@@ -1916,12 +2618,12 @@
 
           if (
             treatment === 'daily' &&
-            prescription
+            prescriptionFiles.length === 1
           ) {
 
             prescriptionPath =
               await this.uploadFile(
-                prescription,
+                prescriptionFiles[0],
                 'prescription'
               );
 
@@ -1984,6 +2686,64 @@
           this.togglePrescription();
 
 
+          document
+            .getElementById(
+              'card-front-name'
+            )
+            .textContent = '';
+
+
+          document
+            .getElementById(
+              'national-id-front-name'
+            )
+            .textContent = '';
+
+
+          document
+            .getElementById(
+              'national-id-back-name'
+            )
+            .textContent = '';
+
+
+          [
+            'card-front-preview',
+            'national-id-front-preview',
+            'national-id-back-preview'
+          ].forEach(
+            id => {
+
+              const preview =
+                document.getElementById(id);
+
+              if (preview) {
+
+                preview.innerHTML =
+                  '';
+
+              }
+
+            }
+          );
+
+
+          const prescriptionPreview =
+            document.getElementById(
+              'prescription-preview'
+            );
+
+
+          if (
+            prescriptionPreview
+          ) {
+
+            prescriptionPreview.innerHTML =
+              '';
+
+          }
+
+
           this.showMessage(
             'تم إرسال طلب التأمين بنجاح. سيتم مراجعة الطلب والتواصل معك عند الحاجة.',
             'success'
@@ -2034,8 +2794,6 @@
 
   </script>
 
-
 </body>
 
 </html>
-
