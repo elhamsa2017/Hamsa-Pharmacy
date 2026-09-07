@@ -11,6 +11,12 @@
     content="إتمام طلبك من صيدليات الهمسة"
   >
 
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
+
   <style>
     * {
       box-sizing: border-box;
@@ -33,7 +39,7 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
     }
 
     .checkout-header h1 {
@@ -57,7 +63,7 @@
       background: #fff;
       border-radius: 16px;
       padding: 22px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .06);
     }
 
     .checkout-card h2 {
@@ -101,6 +107,67 @@
       resize: vertical;
     }
 
+    /* =========================
+       LOCATION
+       ========================= */
+
+    .location-section {
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .location-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .location-button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 13px;
+      background: #0f766e;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: .2s ease;
+    }
+
+    .location-button:hover {
+      opacity: .92;
+    }
+
+    .location-button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #delivery-map {
+      width: 100%;
+      height: 320px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      background: #eef2f3;
+    }
+
+    .location-info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f5f7f8;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       ORDER ITEMS
+       ========================= */
+
     .order-item {
       display: flex;
       align-items: center;
@@ -129,11 +196,13 @@
 
     .order-item-info {
       flex: 1;
+      min-width: 0;
     }
 
     .order-item-info h3 {
       margin: 0 0 5px;
       font-size: 15px;
+      line-height: 1.5;
     }
 
     .order-item-info p {
@@ -147,6 +216,10 @@
       white-space: nowrap;
     }
 
+    /* =========================
+       SUMMARY
+       ========================= */
+
     .summary {
       margin-top: 20px;
     }
@@ -154,6 +227,8 @@
     .summary-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 15px;
       padding: 9px 0;
     }
 
@@ -164,6 +239,10 @@
       font-size: 20px;
       color: #155e75;
     }
+
+    /* =========================
+       BUTTONS
+       ========================= */
 
     .submit-button {
       width: 100%;
@@ -176,6 +255,7 @@
       font-size: 17px;
       font-weight: bold;
       cursor: pointer;
+      transition: .2s ease;
     }
 
     .submit-button:hover {
@@ -195,6 +275,10 @@
       font-weight: bold;
     }
 
+    /* =========================
+       EMPTY
+       ========================= */
+
     .empty-cart {
       text-align: center;
       padding: 40px 20px;
@@ -205,12 +289,18 @@
       margin-bottom: 15px;
     }
 
+    /* =========================
+       MESSAGE
+       ========================= */
+
     .message {
       display: none;
       margin-top: 15px;
       padding: 12px;
       border-radius: 10px;
       text-align: center;
+      white-space: pre-line;
+      line-height: 1.7;
     }
 
     .message.success {
@@ -225,6 +315,10 @@
       color: #a52222;
     }
 
+    /* =========================
+       MOBILE
+       ========================= */
+
     @media (max-width: 750px) {
       .checkout-grid {
         grid-template-columns: 1fr;
@@ -237,6 +331,18 @@
 
       .checkout-card {
         padding: 17px;
+      }
+
+      #delivery-map {
+        height: 280px;
+      }
+
+      .order-item {
+        align-items: flex-start;
+      }
+
+      .order-item-total {
+        font-size: 14px;
       }
     }
   </style>
@@ -259,7 +365,10 @@
 
       <div class="checkout-grid">
 
-        <!-- بيانات العميل -->
+        <!-- =========================
+             CUSTOMER DATA
+             ========================= -->
+
         <section class="checkout-card">
 
           <h2>بيانات العميل</h2>
@@ -307,6 +416,39 @@
               ></textarea>
             </div>
 
+            <!-- =========================
+                 LOCATION
+                 ========================= -->
+
+            <div class="location-section">
+
+              <label class="location-label">
+                📍 موقع التوصيل
+              </label>
+
+              <button
+                type="button"
+                id="get-location-button"
+                class="location-button"
+              >
+                📍 تحديد موقعي الحالي
+              </button>
+
+              <div id="delivery-map"></div>
+
+              <div
+                id="location-info"
+                class="location-info"
+              >
+                لم يتم تحديد موقعك بعد.
+              </div>
+
+            </div>
+
+            <!-- =========================
+                 PAYMENT
+                 ========================= -->
+
             <div class="form-group">
               <label for="payment-method">
                 طريقة الدفع *
@@ -330,7 +472,12 @@
               </select>
             </div>
 
+            <!-- =========================
+                 NOTES
+                 ========================= -->
+
             <div class="form-group">
+
               <label for="order-notes">
                 ملاحظات إضافية
               </label>
@@ -339,12 +486,21 @@
                 id="order-notes"
                 placeholder="أي ملاحظات خاصة بالطلب..."
               ></textarea>
+
             </div>
+
+            <!-- =========================
+                 MESSAGE
+                 ========================= -->
 
             <div
               id="checkout-message"
               class="message"
             ></div>
+
+            <!-- =========================
+                 SUBMIT
+                 ========================= -->
 
             <button
               type="submit"
@@ -358,8 +514,10 @@
 
         </section>
 
+        <!-- =========================
+             ORDER SUMMARY
+             ========================= -->
 
-        <!-- ملخص الطلب -->
         <section class="checkout-card">
 
           <h2>ملخص الطلب</h2>
@@ -369,24 +527,39 @@
           <div class="summary">
 
             <div class="summary-row">
-              <span>إجمالي المنتجات</span>
+
+              <span>
+                إجمالي المنتجات
+              </span>
+
               <strong id="order-subtotal">
                 0.00 ج.م
               </strong>
+
             </div>
 
             <div class="summary-row">
-              <span>التوصيل</span>
+
+              <span>
+                التوصيل
+              </span>
+
               <strong id="order-delivery">
                 0.00 ج.م
               </strong>
+
             </div>
 
             <div class="summary-row total">
-              <span>الإجمالي النهائي</span>
+
+              <span>
+                الإجمالي النهائي
+              </span>
+
               <strong id="order-total">
                 0.00 ج.م
               </strong>
+
             </div>
 
           </div>
@@ -400,18 +573,43 @@
   </main>
 
 
-  <!-- Supabase -->
+  <!-- =========================
+       SUPABASE
+       ========================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Supabase Config -->
   <script src="js/supabase-config.js"></script>
 
 
-  <script>
+  <!-- =========================
+       LEAFLET JS
+       ========================= -->
 
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  ></script>
+
+
+  <!-- =========================
+       CHECKOUT
+       ========================= -->
+
+  <script>
     const Checkout = {
 
       cart: [],
+
+      map: null,
+
+      customerMarker: null,
+
+      customerLocation: null,
+
+
+      // =====================================================
+      // INIT
+      // =====================================================
 
       init() {
 
@@ -423,8 +621,16 @@
 
         this.bindEvents();
 
+        this.initMap();
+
+        console.log('✅ Checkout ready');
+
       },
 
+
+      // =====================================================
+      // LOAD CART
+      // =====================================================
 
       loadCart() {
 
@@ -434,7 +640,9 @@
             localStorage.getItem('hamsa_cart');
 
           const parsed =
-            saved ? JSON.parse(saved) : [];
+            saved
+              ? JSON.parse(saved)
+              : [];
 
           this.cart =
             Array.isArray(parsed)
@@ -444,7 +652,7 @@
         } catch (error) {
 
           console.error(
-            'Cart loading error:',
+            '❌ Cart loading error:',
             error
           );
 
@@ -455,6 +663,10 @@
       },
 
 
+      // =====================================================
+      // RENDER
+      // =====================================================
+
       render() {
 
         const container =
@@ -462,9 +674,15 @@
             'order-items'
           );
 
+        const submitButton =
+          document.getElementById(
+            'submit-order'
+          );
+
         if (!container) return;
 
 
+        // Empty cart
         if (!this.cart.length) {
 
           container.innerHTML = `
@@ -491,9 +709,14 @@
 
           `;
 
-          document.getElementById(
-            'submit-order'
-          ).disabled = true;
+          this.updateSummary(
+            0,
+            0
+          );
+
+          if (submitButton) {
+            submitButton.disabled = true;
+          }
 
           return;
 
@@ -501,69 +724,71 @@
 
 
         container.innerHTML =
-          this.cart.map(item => {
+          this.cart.map(
+            item => {
 
-            const price =
-              Number(item.price) || 0;
+              const price =
+                Number(item.price) || 0;
 
-            const quantity =
-              Number(item.quantity) || 0;
+              const quantity =
+                Number(item.quantity) || 0;
 
-            const total =
-              price * quantity;
+              const total =
+                price * quantity;
 
-            const image =
-              item.image || '';
+              const image =
+                item.image || '';
 
 
-            return `
+              return `
 
-              <div class="order-item">
+                <div class="order-item">
 
-                <div class="order-item-image">
+                  <div class="order-item-image">
 
-                  ${
-                    image
+                    ${
+                      image
 
-                      ? `
-                        <img
-                          src="${this.escape(image)}"
-                          alt="${this.escape(item.name)}"
-                        >
-                      `
+                        ? `
+                          <img
+                            src="${this.escape(image)}"
+                            alt="${this.escape(item.name)}"
+                          >
+                        `
 
-                      : `
-                        <span>💊</span>
-                      `
-                  }
+                        : `
+                          <span>💊</span>
+                        `
+                    }
+
+                  </div>
+
+                  <div class="order-item-info">
+
+                    <h3>
+                      ${this.escape(item.name)}
+                    </h3>
+
+                    <p>
+                      الكمية: ${quantity}
+                    </p>
+
+                    <p>
+                      السعر: ${price.toFixed(2)} ج.م
+                    </p>
+
+                  </div>
+
+                  <div class="order-item-total">
+                    ${total.toFixed(2)} ج.م
+                  </div>
 
                 </div>
 
-                <div class="order-item-info">
+              `;
 
-                  <h3>
-                    ${this.escape(item.name)}
-                  </h3>
-
-                  <p>
-                    الكمية: ${quantity}
-                  </p>
-
-                  <p>
-                    السعر: ${price.toFixed(2)} ج.م
-                  </p>
-
-                </div>
-
-                <div class="order-item-total">
-                  ${total.toFixed(2)} ج.م
-                </div>
-
-              </div>
-
-            `;
-
-          }).join('');
+            }
+          ).join('');
 
 
         const subtotal =
@@ -571,34 +796,85 @@
 
         const deliveryFee = 0;
 
-        const total =
-          subtotal + deliveryFee;
+        this.updateSummary(
+          subtotal,
+          deliveryFee
+        );
 
-
-        document.getElementById(
-          'order-subtotal'
-        ).textContent =
-          `${subtotal.toFixed(2)} ج.م`;
-
-
-        document.getElementById(
-          'order-delivery'
-        ).textContent =
-          `${deliveryFee.toFixed(2)} ج.م`;
-
-
-        document.getElementById(
-          'order-total'
-        ).textContent =
-          `${total.toFixed(2)} ج.م`;
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
 
       },
 
 
+      // =====================================================
+      // SUMMARY
+      // =====================================================
+
+      updateSummary(
+        subtotal,
+        deliveryFee
+      ) {
+
+        const subtotalElement =
+          document.getElementById(
+            'order-subtotal'
+          );
+
+        const deliveryElement =
+          document.getElementById(
+            'order-delivery'
+          );
+
+        const totalElement =
+          document.getElementById(
+            'order-total'
+          );
+
+
+        const total =
+          Number(subtotal) +
+          Number(deliveryFee);
+
+
+        if (subtotalElement) {
+
+          subtotalElement.textContent =
+            `${Number(subtotal).toFixed(2)} ج.م`;
+
+        }
+
+
+        if (deliveryElement) {
+
+          deliveryElement.textContent =
+            `${Number(deliveryFee).toFixed(2)} ج.م`;
+
+        }
+
+
+        if (totalElement) {
+
+          totalElement.textContent =
+            `${total.toFixed(2)} ج.م`;
+
+        }
+
+      },
+
+
+      // =====================================================
+      // SUBTOTAL
+      // =====================================================
+
       getSubtotal() {
 
         return this.cart.reduce(
-          (sum, item) => {
+          (
+            sum,
+            item
+          ) => {
 
             const price =
               Number(item.price) || 0;
@@ -607,7 +883,10 @@
               Number(item.quantity) || 0;
 
             return sum +
-              (price * quantity);
+              (
+                price *
+                quantity
+              );
 
           },
           0
@@ -616,11 +895,21 @@
       },
 
 
+      // =====================================================
+      // EVENTS
+      // =====================================================
+
       bindEvents() {
 
-        document
-          .getElementById('checkout-form')
-          ?.addEventListener(
+        const form =
+          document.getElementById(
+            'checkout-form'
+          );
+
+
+        if (form) {
+
+          form.addEventListener(
             'submit',
             event => {
 
@@ -631,8 +920,322 @@
             }
           );
 
+        }
+
+
+        const locationButton =
+          document.getElementById(
+            'get-location-button'
+          );
+
+
+        if (locationButton) {
+
+          locationButton.addEventListener(
+            'click',
+            () => {
+
+              this.getCustomerLocation();
+
+            }
+          );
+
+        }
+
       },
 
+
+      // =====================================================
+      // INIT MAP
+      // =====================================================
+
+      initMap() {
+
+        const mapElement =
+          document.getElementById(
+            'delivery-map'
+          );
+
+
+        if (!mapElement) {
+
+          console.error(
+            '❌ Delivery map element not found'
+          );
+
+          return;
+
+        }
+
+
+        if (typeof L === 'undefined') {
+
+          console.error(
+            '❌ Leaflet not loaded'
+          );
+
+          return;
+
+        }
+
+
+        // Alexandria initial view
+        this.map =
+          L.map(
+            'delivery-map'
+          ).setView(
+            [
+              31.2001,
+              29.9187
+            ],
+            12
+          );
+
+
+        L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+            maxZoom: 19,
+            attribution:
+              '&copy; OpenStreetMap contributors'
+          }
+        ).addTo(
+          this.map
+        );
+
+
+        console.log(
+          '✅ Map initialized'
+        );
+
+      },
+
+
+      // =====================================================
+      // GET CUSTOMER LOCATION
+      // =====================================================
+
+      getCustomerLocation() {
+
+        const button =
+          document.getElementById(
+            'get-location-button'
+          );
+
+        const info =
+          document.getElementById(
+            'location-info'
+          );
+
+
+        if (
+          !navigator.geolocation
+        ) {
+
+          if (info) {
+
+            info.textContent =
+              'المتصفح لا يدعم تحديد الموقع.';
+
+          }
+
+          return;
+
+        }
+
+
+        if (!this.map) {
+
+          if (info) {
+
+            info.textContent =
+              'الخريطة لم يتم تحميلها بعد، حاولي مرة أخرى.';
+
+          }
+
+          return;
+
+        }
+
+
+        if (button) {
+
+          button.disabled = true;
+
+          button.textContent =
+            '📍 جاري تحديد موقعك...';
+
+        }
+
+
+        if (info) {
+
+          info.textContent =
+            'جاري الحصول على موقعك...';
+
+        }
+
+
+        navigator.geolocation.getCurrentPosition(
+
+          position => {
+
+            const latitude =
+              position.coords.latitude;
+
+            const longitude =
+              position.coords.longitude;
+
+
+            this.customerLocation = {
+
+              latitude:
+                latitude,
+
+              longitude:
+                longitude
+
+            };
+
+
+            // Remove old marker
+            if (this.customerMarker) {
+
+              this.map.removeLayer(
+                this.customerMarker
+              );
+
+            }
+
+
+            // Add new marker
+            this.customerMarker =
+              L.marker(
+                [
+                  latitude,
+                  longitude
+                ]
+              )
+              .addTo(
+                this.map
+              )
+              .bindPopup(
+                '📍 موقع التوصيل'
+              )
+              .openPopup();
+
+
+            // Center map
+            this.map.setView(
+              [
+                latitude,
+                longitude
+              ],
+              17
+            );
+
+
+            if (info) {
+
+              info.innerHTML = `
+                ✅ تم تحديد موقعك بنجاح<br>
+                خط العرض:
+                ${latitude.toFixed(6)}<br>
+                خط الطول:
+                ${longitude.toFixed(6)}
+              `;
+
+            }
+
+
+            if (button) {
+
+              button.disabled = false;
+
+              button.textContent =
+                '📍 تحديث موقعي';
+
+            }
+
+
+            console.log(
+              '📍 Customer location:',
+              this.customerLocation
+            );
+
+          },
+
+
+          error => {
+
+            console.error(
+              '❌ Geolocation error:',
+              error
+            );
+
+
+            let message =
+              'تعذر تحديد موقعك.';
+
+
+            if (error.code === 1) {
+
+              message =
+                'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى موقعك ثم حاولي مرة أخرى.';
+
+            }
+
+
+            if (error.code === 2) {
+
+              message =
+                'تعذر الحصول على موقعك حاليًا.';
+
+            }
+
+
+            if (error.code === 3) {
+
+              message =
+                'انتهت مهلة تحديد الموقع. حاولي مرة أخرى.';
+
+            }
+
+
+            if (info) {
+
+              info.textContent =
+                message;
+
+            }
+
+
+            if (button) {
+
+              button.disabled = false;
+
+              button.textContent =
+                '📍 تحديد موقعي الحالي';
+
+            }
+
+          },
+
+
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+          }
+
+        );
+
+      },
+
+
+      // =====================================================
+      // SUBMIT ORDER
+      // =====================================================
 
       async submitOrder() {
 
@@ -649,33 +1252,47 @@
 
 
         const name =
-          document.getElementById(
-            'customer-name'
-          ).value.trim();
+          document
+            .getElementById(
+              'customer-name'
+            )
+            ?.value
+            .trim();
 
 
         const phone =
-          document.getElementById(
-            'customer-phone'
-          ).value.trim();
+          document
+            .getElementById(
+              'customer-phone'
+            )
+            ?.value
+            .trim();
 
 
         const address =
-          document.getElementById(
-            'customer-address'
-          ).value.trim();
+          document
+            .getElementById(
+              'customer-address'
+            )
+            ?.value
+            .trim();
 
 
         const paymentMethod =
-          document.getElementById(
-            'payment-method'
-          ).value;
+          document
+            .getElementById(
+              'payment-method'
+            )
+            ?.value;
 
 
         const notes =
-          document.getElementById(
-            'order-notes'
-          ).value.trim();
+          document
+            .getElementById(
+              'order-notes'
+            )
+            ?.value
+            .trim();
 
 
         if (
@@ -686,7 +1303,7 @@
         ) {
 
           this.showMessage(
-            'برجاء إدخال جميع البيانات المطلوبة',
+            'برجاء إدخال جميع البيانات المطلوبة.',
             true
           );
 
@@ -700,42 +1317,47 @@
 
 
         /*
-         * مؤقتًا رسوم التوصيل = صفر
-         *
-         * هنربطها لاحقًا
-         * بحساب المسافة والإعدادات.
+         * حاليا التوصيل = صفر
+         * سنربطه لاحقا بالمسافة وسعر الكيلومتر.
          */
 
         const deliveryFee = 0;
 
+
         const total =
-          subtotal + deliveryFee;
+          subtotal +
+          deliveryFee;
 
 
         const items =
-          this.cart.map(item => ({
+          this.cart.map(
+            item => ({
 
-            id: item.id,
+              id:
+                item.id,
 
-            sku:
-              item.sku || null,
+              sku:
+                item.sku || null,
 
-            name:
-              item.name || '',
+              name:
+                item.name || '',
 
-            price:
-              Number(item.price) || 0,
+              price:
+                Number(item.price) || 0,
 
-            quantity:
-              Number(item.quantity) || 0,
+              quantity:
+                Number(item.quantity) || 0,
 
-            is_offer:
-              Boolean(item.is_offer),
+              is_offer:
+                Boolean(
+                  item.is_offer
+                ),
 
-            image:
-              item.image || null
+              image:
+                item.image || null
 
-          }));
+            })
+          );
 
 
         const order = {
@@ -788,53 +1410,123 @@
           );
 
 
-        button.disabled = true;
+        if (button) {
 
-        button.textContent =
-          'جاري إرسال الطلب...';
+          button.disabled = true;
+
+          button.textContent =
+            'جاري إرسال الطلب...';
+
+        }
 
 
         try {
 
-          const { error } = await supabaseClient
-  .from('orders')
-  .insert(order);
+          if (
+            typeof supabaseClient === 'undefined'
+          ) {
 
-if (error) {
-  console.error(
-    '❌ Order insert error:',
-    error
-  );
+            throw new Error(
+              'Supabase client غير متاح'
+            );
 
-  throw error;
-}
+          }
 
-console.log(
-  '✅ Order created:',
-  order
-);
 
-          
+          const {
+            error
+          } =
+            await supabaseClient
+              .from('orders')
+              .insert(order);
+
+
+          if (error) {
+
+            console.error(
+              '❌ Order insert error:',
+              error
+            );
+
+            throw error;
+
+          }
+
+
+          console.log(
+            '✅ Order created:',
+            order
+          );
+
+
+          // Clear cart
           localStorage.removeItem(
             'hamsa_cart'
           );
 
-
           this.cart = [];
 
-`تم إرسال طلبك بنجاح 🎉
-رقم الطلب: ${order.id}`
+
+          // Success message
+          this.showMessage(
+            `تم إرسال طلبك بنجاح 🎉
+رقم الطلب: ${order.id}`,
+            false
+          );
 
 
-          button.textContent =
-            'تم تأكيد الطلب ✓';
+          this.updateSummary(
+            0,
+            0
+          );
 
 
-          /*
-           * منع إرسال الطلب مرة أخرى
-           */
+          const itemsContainer =
+            document.getElementById(
+              'order-items'
+            );
 
-          button.disabled = true;
+
+          if (itemsContainer) {
+
+            itemsContainer.innerHTML = `
+
+              <div class="empty-cart">
+
+                <div class="empty-cart-icon">
+                  ✅
+                </div>
+
+                <h3>
+                  تم تأكيد الطلب بنجاح
+                </h3>
+
+                <p>
+                  رقم الطلب:
+                  <strong>
+                    ${this.escape(order.id)}
+                  </strong>
+                </p>
+
+                <a href="index.html">
+                  العودة للمتجر
+                </a>
+
+              </div>
+
+            `;
+
+          }
+
+
+          if (button) {
+
+            button.textContent =
+              'تم تأكيد الطلب ✓';
+
+            button.disabled = true;
+
+          }
 
 
         } catch (error) {
@@ -851,15 +1543,23 @@ console.log(
           );
 
 
-          button.disabled = false;
+          if (button) {
 
-          button.textContent =
-            'تأكيد الطلب';
+            button.disabled = false;
+
+            button.textContent =
+              'تأكيد الطلب';
+
+          }
 
         }
 
       },
 
+
+      // =====================================================
+      // GENERATE ORDER ID
+      // =====================================================
 
       generateOrderId() {
 
@@ -876,12 +1576,20 @@ console.log(
       },
 
 
-      showMessage(message, error = false) {
+      // =====================================================
+      // MESSAGE
+      // =====================================================
+
+      showMessage(
+        message,
+        error = false
+      ) {
 
         const element =
           document.getElementById(
             'checkout-message'
           );
+
 
         if (!element) return;
 
@@ -891,30 +1599,62 @@ console.log(
 
 
         element.className =
-          `message ${error ? 'error' : 'success'}`;
+          `message ${
+            error
+              ? 'error'
+              : 'success'
+          }`;
 
       },
 
 
+      // =====================================================
+      // ESCAPE
+      // =====================================================
+
       escape(value) {
 
-        return String(value ?? '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
+        return String(
+          value ?? ''
+        )
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+        .replace(
+          /</g,
+          '&lt;'
+        )
+        .replace(
+          />/g,
+          '&gt;'
+        )
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+        .replace(
+          /'/g,
+          '&#039;'
+        );
 
       }
 
     };
 
 
+    // =======================================================
+    // START
+    // =======================================================
+
     document.addEventListener(
       'DOMContentLoaded',
-      () => Checkout.init()
-    );
+      () => {
 
+        Checkout.init();
+
+      }
+    );
   </script>
 
 </body>
