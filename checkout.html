@@ -814,28 +814,7 @@ console.log(
   order
 );
 
-          if (error) {
-
-            console.error(
-              '❌ Order insert error:',
-              error
-            );
-
-            throw error;
-
-          }
-
-
-          console.log(
-            '✅ Order created:',
-            data
-          );
-
-
-          /*
-           * تفريغ السلة بعد نجاح الطلب فقط
-           */
-
+          
           localStorage.removeItem(
             'hamsa_cart'
           );
