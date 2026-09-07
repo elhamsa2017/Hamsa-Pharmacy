@@ -15,7 +15,7 @@ const Cart = {
 
     this.createCartUI();
     this.bindEvents();
-    this.syncFromApp();
+    this.load();
 
     console.log('✅ Cart system ready');
   },
@@ -25,53 +25,21 @@ const Cart = {
   // SYNC WITH APP
   // =======================================================
 
-  syncFromApp() {
+  load() {
+    try {
+      const saved = localStorage.getItem('hamsa_cart');
+      const parsed = saved ? JSON.parse(saved) : [];
 
-    if (
-      typeof App !== 'undefined' &&
-      Array.isArray(App.cart)
-    ) {
-      this.cart = App.cart;
-    } else {
+      this.cart = Array.isArray(parsed) ? parsed : [];
+    } catch {
       this.cart = [];
     }
 
-    this.save();
-    this.updateCount();
-  },
-
-
-  // =======================================================
-  // GET CART
-  // =======================================================
-
-  get cart() {
-
-    try {
-
-      const saved =
-        localStorage.getItem('hamsa_cart');
-
-      const parsed =
-        saved ? JSON.parse(saved) : [];
-
-      return Array.isArray(parsed)
-        ? parsed
-        : [];
-
-    } catch {
-
-      return [];
+    if (typeof App !== 'undefined') {
+      App.cart = this.cart;
     }
-  },
 
-
-  set cart(value) {
-
-    this._cart =
-      Array.isArray(value)
-        ? value
-        : [];
+    this.updateCount();
   },
 
 
@@ -95,6 +63,10 @@ const Cart = {
       }
 
       this.updateCount();
+
+      if (typeof App !== 'undefined') {
+        App.refreshProductCards?.();
+      }
 
     } catch (error) {
 
@@ -233,6 +205,10 @@ const Cart = {
 
     this.render();
 
+    if (typeof App !== 'undefined') {
+      App.refreshProductCards?.();
+    }
+
     this.open();
 
     console.log(
@@ -294,6 +270,10 @@ const Cart = {
     this.save();
 
     this.render();
+
+    if (typeof App !== 'undefined') {
+      App.refreshProductCards?.();
+    }
   },
 
 
@@ -339,6 +319,10 @@ const Cart = {
     this.save();
 
     this.render();
+
+    if (typeof App !== 'undefined') {
+      App.refreshProductCards?.();
+    }
   },
 
 
@@ -358,6 +342,10 @@ const Cart = {
     this.save();
 
     this.render();
+
+    if (typeof App !== 'undefined') {
+      App.refreshProductCards?.();
+    }
   },
 
 
@@ -498,11 +486,37 @@ const Cart = {
 
           </div>
 
+          <div class="cart-summary-row">
+            <span>عدد المنتجات</span>
+            <strong id="cart-quantity">0</strong>
+          </div>
+
+          <div class="cart-summary-row cart-summary-muted">
+            <span>خصم الكود</span>
+            <strong id="cart-promo-discount">0.00 ج.م</strong>
+          </div>
+
+          <div class="cart-summary-row cart-summary-muted">
+            <span>خصم النقاط</span>
+            <strong id="cart-loyalty-discount">0.00 ج.م</strong>
+          </div>
+
+          <div class="cart-summary-row cart-summary-muted">
+            <span>التوصيل</span>
+            <strong id="cart-delivery-fee">0.00 ج.م</strong>
+          </div>
+
+          <div class="cart-summary-row cart-summary-total">
+            <span>الإجمالي النهائي</span>
+            <strong id="cart-grand-total">0.00 ج.م</strong>
+          </div>
+
 
           <button
             type="button"
             id="cart-checkout-button"
             class="cart-checkout-button"
+            disabled
           >
             متابعة الطلب
           </button>
@@ -652,6 +666,15 @@ const Cart = {
         'cart-subtotal'
       );
 
+    const quantityElement =
+      document.getElementById('cart-quantity');
+
+    const checkoutButton =
+      document.getElementById('cart-checkout-button');
+
+    const grandTotalElement =
+      document.getElementById('cart-grand-total');
+
 
     if (!container) return;
 
@@ -663,7 +686,6 @@ const Cart = {
       container.innerHTML = `
 
         <div class="cart-empty">
-
           <div class="cart-empty-icon">
             🛒
           </div>
@@ -685,6 +707,10 @@ const Cart = {
         subtotalElement.textContent =
           '0.00 ج.م';
       }
+
+          if (quantityElement) quantityElement.textContent = '0';
+          if (grandTotalElement) grandTotalElement.textContent = '0.00 ج.م';
+          if (checkoutButton) checkoutButton.disabled = true;
 
       return;
     }
@@ -784,7 +810,6 @@ const Cart = {
                   ${quantity}
                 </span>
 
-
                 <button
                   type="button"
                   data-cart-increase="${this.escape(item.id)}"
@@ -827,6 +852,19 @@ const Cart = {
 
       subtotalElement.textContent =
         `${this.getItemsTotal().toFixed(2)} ج.م`;
+    }
+
+    if (grandTotalElement) {
+      grandTotalElement.textContent =
+        `${this.getItemsTotal().toFixed(2)} ج.م`;
+    }
+
+    if (quantityElement) {
+      quantityElement.textContent = this.getQuantity();
+    }
+
+    if (checkoutButton) {
+      checkoutButton.disabled = false;
     }
   },
 

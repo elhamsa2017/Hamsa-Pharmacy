@@ -223,6 +223,59 @@ const App = {
   // =======================================================
   // RENDER PRODUCTS
   // =======================================================
+  getProductCartQuantity(productId) {
+    const cart =
+      typeof Cart !== 'undefined' && Array.isArray(Cart.cart)
+        ? Cart.cart
+        : this.cart;
+
+    const item = cart.find(entry =>
+      String(entry.id) === String(productId)
+    );
+
+    return Number(item?.quantity) || 0;
+  },
+
+  renderProductActions(product) {
+    const stock = Number(product.stock) || 0;
+    const quantity = this.getProductCartQuantity(product.id);
+    const productId = this.escape(product.id);
+
+    if (stock <= 0) {
+      return '<span class="product-unavailable-label">غير متوفر</span>';
+    }
+
+    if (quantity > 0) {
+      return `
+        <div class="product-quantity-control" aria-label="تعديل كمية المنتج">
+          <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="تقليل الكمية">−</button>
+          <span class="product-quantity-value">${quantity}</span>
+          <button type="button" class="quantity-button" data-cart-increase="${productId}" aria-label="زيادة الكمية">+</button>
+        </div>
+      `;
+    }
+
+    return `
+      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة">
+        <span aria-hidden="true">🛒</span>
+        <span>أضف للسلة</span>
+      </button>
+    `;
+  },
+
+  refreshProductCards() {
+    document.querySelectorAll('.product-card').forEach(card => {
+      const product = this.products.find(item =>
+        String(item.id) === String(card.dataset.productId)
+      );
+      const actions = card.querySelector('.product-card-actions');
+
+      if (product && actions) {
+        actions.innerHTML = this.renderProductActions(product);
+      }
+    });
+  },
+
 renderProducts(products = this.products) {
 
   const container =
@@ -373,15 +426,7 @@ renderProducts(products = this.products) {
 
 
           <div class="product-card-actions">
-            <button
-              type="button"
-              class="add-cart-btn"
-              data-add-to-cart="${this.escape(product.id)}"
-              aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة"
-              ${stock <= 0 ? 'disabled' : ''}
-            >
-              🛒
-            </button>
+            ${this.renderProductActions(product)}
           </div>
 
         </div>
@@ -417,6 +462,10 @@ renderProducts(products = this.products) {
             categoryId
           );
 
+          return;
+        }
+
+        if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease]')) {
           return;
         }
 
