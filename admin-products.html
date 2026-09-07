@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المنتجات | لوحة الهمسة</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="admin.html">لوحة تحكم صيدليات الهمسة</a>
+      <nav class="admin-nav"><span class="admin-nav-title">الرئيسية</span><a href="admin.html">لوحة المعلومات</a><span class="admin-nav-title">الطلبات</span><a href="admin-orders.html">طلبات السلة</a><a href="admin-insurance.html">طلبات التأمين</a><span class="admin-nav-title">المنتجات</span><a class="active" href="admin-products.html">كل المنتجات</a><a href="admin-add-product.html">إضافة منتج</a><span class="admin-nav-title">التأمين</span><a href="insurance.html">شركات التأمين</a><span class="admin-nav-title">الموقع</span><a href="index.html">عرض الموقع</a></nav>
+    </aside>
+    <main class="admin-main">
+      <header class="admin-header"><div><h1>إدارة المنتجات</h1><p>عرض وتحديث المنتجات الموجودة في public.products</p></div><a class="admin-button" href="admin-add-product.html">إضافة منتج</a></header>
+      <section class="admin-content">
+        <div class="admin-panel">
+          <div class="admin-toolbar"><input class="admin-input" id="product-search" type="search" placeholder="البحث بالاسم أو SKU"><select class="admin-select" id="product-filter"><option value="all">كل المنتجات</option><option value="available">متوفر</option><option value="unavailable">غير متوفر</option><option value="offers">عروض</option><option value="regular">منتجات عادية</option></select><button class="admin-button secondary" id="reload-products" type="button">تحديث</button></div>
+          <div id="products-state" class="admin-state">جاري تحميل المنتجات...</div>
+          <div class="admin-table-wrap"><table class="admin-table" id="products-table" hidden><thead><tr><th>الصورة</th><th>الاسم</th><th>SKU</th><th>السعر</th><th>السعر القديم</th><th>المخزون</th><th>النقاط</th><th>التصنيف</th><th>العرض</th><th>إجراء</th></tr></thead><tbody></tbody></table></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="admin-modal" id="product-modal" hidden><div class="admin-modal-card"><div class="admin-panel-header"><h2>تعديل المنتج</h2><button class="admin-button secondary" id="close-product-modal" type="button">إغلاق</button></div><form id="product-form"><input id="edit-id" type="hidden"><div class="admin-form-grid"><div class="admin-form-group"><label for="edit-name">الاسم</label><input id="edit-name" required></div><div class="admin-form-group"><label for="edit-sku">SKU</label><input id="edit-sku"></div><div class="admin-form-group"><label for="edit-price">السعر</label><input id="edit-price" type="number" min="0" step="0.01" required></div><div class="admin-form-group"><label for="edit-old-price">السعر القديم</label><input id="edit-old-price" type="number" min="0" step="0.01"></div><div class="admin-form-group"><label for="edit-stock">المخزون</label><input id="edit-stock" type="number" min="0" step="1" required></div><div class="admin-form-group"><label for="edit-points">النقاط</label><input id="edit-points" type="number" min="0" step="1"></div><div class="admin-form-group"><label for="edit-category">التصنيف</label><input id="edit-category"></div><div class="admin-form-group"><label for="edit-image">رابط الصورة</label><input id="edit-image" type="url"></div><div class="admin-form-group full"><label for="edit-description">الوصف</label><textarea id="edit-description"></textarea></div><div class="admin-form-group"><label for="edit-split-parts">Split parts</label><input id="edit-split-parts" type="number" min="0" step="1"></div><div class="admin-form-group"><label><input id="edit-is-offer" type="checkbox"> المنتج عرض</label></div></div><div class="admin-actions"><button class="admin-button" type="submit">حفظ التعديلات</button></div></form></div></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-config.js"></script><script src="js/admin.js"></script><script src="js/admin-products.js"></script>
+</body>
+</html>

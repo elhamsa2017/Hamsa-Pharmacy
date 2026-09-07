@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم صيدليات الهمسة</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="admin.html">لوحة تحكم صيدليات الهمسة</a>
+      <nav class="admin-nav" aria-label="التنقل الإداري">
+        <span class="admin-nav-title">الرئيسية</span>
+        <a class="active" href="admin.html">لوحة المعلومات</a>
+        <span class="admin-nav-title">الطلبات</span>
+        <a href="admin-orders.html">طلبات السلة</a>
+        <a href="admin-insurance.html">طلبات التأمين</a>
+        <span class="admin-nav-title">المنتجات</span>
+        <a href="admin-products.html">كل المنتجات</a>
+        <span class="admin-nav-title">التأمين</span>
+        <a href="insurance.html">شركات التأمين</a>
+        <a href="admin-insurance-companies.html">إدارة شركات التأمين</a>
+        <span class="admin-nav-title">الموقع</span>
+        <a href="index.html">عرض الموقع</a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <h1>لوحة المعلومات</h1>
+          <p>ملخص مباشر من بيانات Supabase الحالية</p>
+        </div>
+        <button class="admin-button secondary" type="button" id="refresh-dashboard">تحديث</button>
+      </header>
+
+      <section class="admin-content">
+        <div id="dashboard-state" class="admin-state">جاري تحميل الإحصائيات...</div>
+        <div id="dashboard-cards" class="admin-grid" hidden></div>
+
+        <section class="admin-panel">
+          <div class="admin-panel-header">
+            <h2>نطاق اللوحة الحالي</h2>
+          </div>
+          <p>تم تفعيل الأقسام التي تتوافق مع الأعمدة الموجودة. Promo Codes وإعدادات التوصيل والمصادقة الإدارية تحتاج بنية أو ربطًا غير موجود حاليًا.</p>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    const Dashboard = {
+      async load() {
+        const state = document.getElementById('dashboard-state');
+        const cards = document.getElementById('dashboard-cards');
+        Admin.showState(state, 'جاري تحميل الإحصائيات...');
+        cards.hidden = true;
+        try {
+          const values = await Promise.all([
+            Admin.count('products'),
+            Admin.count('products', [['stock', 'gt', 0]]),
+            Admin.count('products', [['stock', 'eq', 0]]),
+            Admin.count('orders'),
+            Admin.count('orders', [['status', 'new']]),
+            Admin.count('insurance_requests', [['status', 'pending']])
+          ]);
+          const labels = ['إجمالي المنتجات', 'المنتجات المتاحة', 'المنتجات غير المتاحة', 'طلبات السلة', 'الطلبات الجديدة', 'طلبات التأمين الجديدة'];
+          cards.innerHTML = values.map((value, index) => `<article class="admin-card"><span class="admin-card-label">${labels[index]}</span><strong class="admin-card-value">${value}</strong></article>`).join('');
+          state.hidden = true;
+          cards.hidden = false;
+        } catch (error) {
+          Admin.showState(state, `تعذر تحميل الإحصائيات: ${error.message || 'تحقق من RLS'}`, true);
+        }
+      }
+    };
+    document.getElementById('refresh-dashboard').addEventListener('click', () => Dashboard.load());
+    Dashboard.load();
+  </script>
+</body>
+</html>
