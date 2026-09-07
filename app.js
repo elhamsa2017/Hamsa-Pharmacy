@@ -129,7 +129,7 @@ const App = {
           description,
           image,
           category
-      
+        
         `)
         .order('name', {
           ascending: true
@@ -223,7 +223,91 @@ const App = {
   // =======================================================
   // RENDER PRODUCTS
   // =======================================================
-renderProducts(products = this.products) {
+  getProductCartQuantity(productId) {
+
+    const cart =
+      typeof Cart !== 'undefined'
+        ? Cart.cart
+        : this.cart;
+
+    const item =
+      Array.isArray(cart)
+        ? cart.find(entry => String(entry.id) === String(productId))
+        : null;
+
+    return Number(item?.quantity) || 0;
+  },
+
+
+  renderProductActions(product) {
+
+    const stock = Number(product.stock) || 0;
+    const quantity = this.getProductCartQuantity(product.id);
+    const productId = this.escape(product.id);
+
+    if (stock <= 0) {
+      return `
+        <span class="product-unavailable-label">
+          غير متوفر
+        </span>
+      `;
+    }
+
+    if (quantity > 0) {
+      return `
+        <div class="product-quantity-control" aria-label="تعديل كمية المنتج">
+          <button
+            type="button"
+            class="quantity-button"
+            data-cart-decrease="${productId}"
+            aria-label="تقليل الكمية"
+          >−</button>
+          <span
+            class="product-quantity-value"
+            data-product-quantity="${productId}"
+          >${quantity}</span>
+          <button
+            type="button"
+            class="quantity-button"
+            data-cart-increase="${productId}"
+            aria-label="زيادة الكمية"
+          >+</button>
+        </div>
+      `;
+    }
+
+    return `
+      <button
+        type="button"
+        class="add-cart-btn"
+        data-add-to-cart="${productId}"
+        aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة"
+      >
+        <span aria-hidden="true">🛒</span>
+        <span>أضف للسلة</span>
+      </button>
+    `;
+  },
+
+
+  refreshProductCard(productId) {
+
+    const product =
+      this.products.find(item => String(item.id) === String(productId));
+
+    const card =
+      Array.from(document.querySelectorAll('.product-card'))
+        .find(item => String(item.dataset.productId) === String(productId));
+
+    const actions = card?.querySelector('.product-card-actions');
+
+    if (!product || !actions) return;
+
+    actions.innerHTML = this.renderProductActions(product);
+  },
+
+
+  renderProducts(products = this.products) {
 
   const container =
     document.getElementById('products-container');
@@ -373,15 +457,7 @@ renderProducts(products = this.products) {
 
 
           <div class="product-card-actions">
-            <button
-              type="button"
-              class="add-cart-btn"
-              data-add-to-cart="${this.escape(product.id)}"
-              aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة"
-              ${stock <= 0 ? 'disabled' : ''}
-            >
-              🛒
-            </button>
+            ${this.renderProductActions(product)}
           </div>
 
         </div>
