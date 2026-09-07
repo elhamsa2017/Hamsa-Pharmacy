@@ -117,7 +117,6 @@ const App = {
       const { data, error } = await sb
         .from('products')
         .select(`
-          id,
           sku,
           name,
           price,
@@ -129,8 +128,7 @@ const App = {
           description,
           image,
           category,
-          created_at,
-          updated_at
+      
         `)
         .order('name', {
           ascending: true
