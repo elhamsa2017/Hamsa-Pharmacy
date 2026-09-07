@@ -796,15 +796,23 @@
 
         try {
 
-          const {
-            data,
-            error
-          } = await supabaseClient
-            .from('orders')
-            .insert(order)
-            .select()
-            .single();
+          const { error } = await supabaseClient
+  .from('orders')
+  .insert(order);
 
+if (error) {
+  console.error(
+    '❌ Order insert error:',
+    error
+  );
+
+  throw error;
+}
+
+console.log(
+  '✅ Order created:',
+  order
+);
 
           if (error) {
 
@@ -835,12 +843,8 @@
 
           this.cart = [];
 
-
-          this.showMessage(
-            `تم إرسال طلبك بنجاح 🎉
-             رقم الطلب: ${data.id}`,
-            false
-          );
+`تم إرسال طلبك بنجاح 🎉
+رقم الطلب: ${order.id}`
 
 
           button.textContent =
