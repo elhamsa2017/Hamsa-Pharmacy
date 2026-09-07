@@ -13,7 +13,7 @@
   <title>شركات التأمين | صيدليات الهمسة</title>
 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- script src="./supabase-config.js"></script>
+ <script src="./supabase-config.js"></script>
   <style>
 
     /* =====================================================
@@ -866,10 +866,11 @@
         if (!container) return;
 
 
-        if (
-          typeof supabaseClient === 'undefined' ||
-          !supabaseClient
-        ) {
+       if (
+  typeof window.supabase === 'undefined' ||
+  typeof supabaseClient === 'undefined' ||
+  !supabaseClient
+) {
 
           this.showMessage(
             container,
