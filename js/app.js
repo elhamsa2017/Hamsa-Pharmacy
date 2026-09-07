@@ -128,9 +128,8 @@ const App = {
           old_price,
           description,
           image,
-          category,
-          created_at,
-          updated_at
+          category
+          
         `)
         .order('name', {
           ascending: true
