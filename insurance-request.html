@@ -1406,134 +1406,85 @@ content="width=device-width, initial-scale=1.0"
 
   <!-- JAVASCRIPT -->
 
-  <script>
+<script>
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
 
-
-    const insuranceId =
-      params.get('insurance_id');
-
-
-    const InsuranceRequestPage = {
+  const insuranceId =
+    params.get('insurance_id');
 
 
-      insurance: null,
+  const InsuranceRequestPage = {
 
-      prescriptionFiles: [],
-      async init() {
+    insurance: null,
 
-        this.updateYear();
-
-        this.bindEvents();
-
-        this.showFileNames();
-
-        await this.loadInsurance();
-
-      },
+    // جميع ملفات الروشتة المختارة
+    prescriptionFiles: [],
 
 
-      updateYear() {
+    async init() {
 
-        const year =
-          document.getElementById(
-            'current-year'
-          );
+      this.updateYear();
 
-        if (year) {
+      this.bindEvents();
 
-          year.textContent =
-            new Date().getFullYear();
+      this.showFileNames();
 
-        }
+      await this.loadInsurance();
 
-      },
+    },
 
 
-      bindEvents() {
+    updateYear() {
+
+      const year =
+        document.getElementById(
+          'current-year'
+        );
+
+      if (year) {
+
+        year.textContent =
+          new Date().getFullYear();
+
+      }
+
+    },
 
 
-        document
-          .getElementById(
-            'insurance-form'
-          )
-          ?.addEventListener(
-            'submit',
-            (event) => {
+    bindEvents() {
 
-              event.preventDefault();
+      document
+        .getElementById(
+          'insurance-form'
+        )
+        ?.addEventListener(
+          'submit',
+          (event) => {
 
-              this.submitRequest();
+            event.preventDefault();
 
-            }
-          );
+            this.submitRequest();
 
-
-        document
-          .querySelectorAll(
-            'input[name="treatment_type"]'
-          )
-          .forEach(
-            input => {
-
-              input.addEventListener(
-                'change',
-                () => {
-
-                  this.togglePrescription();
-
-                }
-              );
-
-            }
-          );
-
-      },
+          }
+        );
 
 
-      showFileNames() {
+      document
+        .querySelectorAll(
+          'input[name="treatment_type"]'
+        )
+        .forEach(
+          input => {
 
-        const singleFields = [
-
-          [
-            'card-front',
-            'card-front-name'
-          ],
-
-          [
-            'national-id-front',
-            'national-id-front-name'
-          ],
-
-          [
-            'national-id-back',
-            'national-id-back-name'
-          ]
-
-        ];
-
-
-        singleFields.forEach(
-          ([inputId, nameId]) => {
-
-            const input =
-              document.getElementById(
-                inputId
-              );
-
-
-            input?.addEventListener(
+            input.addEventListener(
               'change',
               () => {
 
-                this.showSingleFilePreview(
-                  input,
-                  nameId
-                );
+                this.togglePrescription();
 
               }
             );
@@ -1541,175 +1492,427 @@ content="width=device-width, initial-scale=1.0"
           }
         );
 
-
-        const prescription =
-          document.getElementById(
-            'prescription'
-          );
+    },
 
 
-        prescription?.addEventListener(
-          'change',
-          () => {
+    showFileNames() {
 
-            this.addPrescriptionFiles();
+      const singleFields = [
 
-          }
-        );
+        [
+          'card-front',
+          'card-front-name'
+        ],
 
+        [
+          'national-id-front',
+          'national-id-front-name'
+        ],
 
-        const addButton =
-          document.getElementById(
-            'add-prescription-button'
-          );
+        [
+          'national-id-back',
+          'national-id-back-name'
+        ]
 
-
-        addButton?.addEventListener(
-          'click',
-          () => {
-
-            prescription?.click();
-
-          }
-        );
-
-      },
+      ];
 
 
-      showSingleFilePreview(
-        input,
-        nameId
-      ) {
+      singleFields.forEach(
+        ([inputId, nameId]) => {
 
-        const name =
-          document.getElementById(
-            nameId
-          );
+          const input =
+            document.getElementById(
+              inputId
+            );
 
 
-        if (
-          !input.files ||
-          !input.files[0]
-        ) {
+          input?.addEventListener(
+            'change',
+            () => {
 
-          if (name) {
-            name.textContent = '';
-          }
-
-          return;
-
-        }
-
-
-        const file =
-          input.files[0];
-
-
-        if (
-          !file.type.startsWith(
-            'image/'
-          )
-        ) {
-
-          if (name) {
-
-            name.textContent =
-              '✓ ' +
-              file.name;
-
-          }
-
-          return;
-
-        }
-
-
-        const reader =
-          new FileReader();
-
-
-        reader.onload =
-          (event) => {
-
-
-            let preview =
-              document.getElementById(
-                input.id +
-                '-preview'
-              );
-
-
-            if (!preview) {
-
-              preview =
-                document.createElement(
-                  'div'
-                );
-
-              preview.id =
-                input.id +
-                '-preview';
-
-              preview.className =
-                'file-preview-container';
-
-              name.parentNode.appendChild(
-                preview
+              this.showSingleFilePreview(
+                input,
+                nameId
               );
 
             }
+          );
+
+        }
+      );
 
 
-            preview.innerHTML = '';
+      const prescription =
+        document.getElementById(
+          'prescription'
+        );
 
 
-            const item =
+      prescription?.addEventListener(
+        'change',
+        () => {
+
+          this.addPrescriptionFiles();
+
+        }
+      );
+
+
+      const addButton =
+        document.getElementById(
+          'add-prescription-button'
+        );
+
+
+      addButton?.addEventListener(
+        'click',
+        () => {
+
+          prescription?.click();
+
+        }
+      );
+
+    },
+
+
+    showSingleFilePreview(
+      input,
+      nameId
+    ) {
+
+      const name =
+        document.getElementById(
+          nameId
+        );
+
+
+      if (
+        !input.files ||
+        !input.files[0]
+      ) {
+
+        if (name) {
+
+          name.textContent = '';
+
+        }
+
+        return;
+
+      }
+
+
+      const file =
+        input.files[0];
+
+
+      if (
+        !file.type.startsWith(
+          'image/'
+        )
+      ) {
+
+        if (name) {
+
+          name.textContent =
+            '✓ ' +
+            file.name;
+
+        }
+
+        return;
+
+      }
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        (event) => {
+
+          let preview =
+            document.getElementById(
+              input.id +
+              '-preview'
+            );
+
+
+          if (!preview) {
+
+            preview =
               document.createElement(
                 'div'
               );
 
+            preview.id =
+              input.id +
+              '-preview';
 
-            item.className =
-              'file-preview';
+            preview.className =
+              'file-preview-container';
+
+            name.parentNode.appendChild(
+              preview
+            );
+
+          }
 
 
-            const removeButton =
-              document.createElement(
-                'button'
+          preview.innerHTML = '';
+
+
+          const item =
+            document.createElement(
+              'div'
+            );
+
+
+          item.className =
+            'file-preview';
+
+
+          const removeButton =
+            document.createElement(
+              'button'
+            );
+
+
+          removeButton.type =
+            'button';
+
+          removeButton.className =
+            'remove-file';
+
+          removeButton.title =
+            'حذف الصورة';
+
+          removeButton.textContent =
+            '×';
+
+
+          removeButton.addEventListener(
+            'click',
+            () => {
+
+              input.value = '';
+
+              name.textContent = '';
+
+              preview.innerHTML = '';
+
+            }
+          );
+
+
+          item.appendChild(
+            removeButton
+          );
+
+
+          const image =
+            document.createElement(
+              'img'
+            );
+
+
+          image.src =
+            event.target.result;
+
+          image.alt =
+            'معاينة الصورة';
+
+
+          item.appendChild(
+            image
+          );
+
+
+          const fileName =
+            document.createElement(
+              'span'
+            );
+
+
+          fileName.className =
+            'file-preview-name';
+
+          fileName.textContent =
+            file.name;
+
+
+          item.appendChild(
+            fileName
+          );
+
+
+          preview.appendChild(
+            item
+          );
+
+
+          if (name) {
+
+            name.textContent =
+              '✓ تم اختيار الصورة';
+
+          }
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    },
+
+
+    /* =====================================================
+       إضافة صور الروشتة بدون حذف الصور السابقة
+       ===================================================== */
+
+    addPrescriptionFiles() {
+
+      const input =
+        document.getElementById(
+          'prescription'
+        );
+
+
+      if (!input) {
+
+        return;
+
+      }
+
+
+      const newFiles =
+        Array.from(
+          input.files || []
+        );
+
+
+      if (
+        newFiles.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      // إضافة الملفات الجديدة إلى الملفات القديمة
+      this.prescriptionFiles = [
+        ...(this.prescriptionFiles || []),
+        ...newFiles
+      ];
+
+
+      // إعادة بناء input.files بكل الملفات
+      const dataTransfer =
+        new DataTransfer();
+
+
+      this.prescriptionFiles.forEach(
+        file => {
+
+          dataTransfer.items.add(
+            file
+          );
+
+        }
+      );
+
+
+      input.files =
+        dataTransfer.files;
+
+
+      // عرض كل الصور
+      this.renderPrescriptionFiles();
+
+    },
+
+
+    /* =====================================================
+       عرض جميع صور الروشتة
+       ===================================================== */
+
+    renderPrescriptionFiles() {
+
+      const preview =
+        document.getElementById(
+          'prescription-preview'
+        );
+
+
+      if (!preview) {
+
+        return;
+
+      }
+
+
+      preview.innerHTML = '';
+
+
+      this.prescriptionFiles.forEach(
+        (file, index) => {
+
+          const item =
+            document.createElement(
+              'div'
+            );
+
+
+          item.className =
+            'file-preview';
+
+
+          const removeButton =
+            document.createElement(
+              'button'
+            );
+
+
+          removeButton.type =
+            'button';
+
+          removeButton.className =
+            'remove-file';
+
+          removeButton.textContent =
+            '×';
+
+          removeButton.title =
+            'حذف الملف';
+
+
+          removeButton.addEventListener(
+            'click',
+            () => {
+
+              this.removePrescriptionFile(
+                index
               );
 
-
-            removeButton.type =
-              'button';
-
-            removeButton.className =
-              'remove-file';
-
-            removeButton.title =
-              'حذف الصورة';
-
-            removeButton.textContent =
-              '×';
+            }
+          );
 
 
-            removeButton.addEventListener(
-              'click',
-              () => {
-
-                input.value = '';
-
-                name.textContent = '';
-
-                preview.innerHTML = '';
-
-              }
-            );
+          item.appendChild(
+            removeButton
+          );
 
 
-            item.appendChild(
-              removeButton
-            );
-
+          if (
+            file.type.startsWith(
+              'image/'
+            )
+          ) {
 
             const image =
               document.createElement(
@@ -1717,566 +1920,188 @@ content="width=device-width, initial-scale=1.0"
               );
 
 
-            image.src =
-              event.target.result;
-
             image.alt =
-              'معاينة الصورة';
+              'معاينة صورة الروشتة';
+
+
+            const reader =
+              new FileReader();
+
+
+            reader.onload =
+              (event) => {
+
+                image.src =
+                  event.target.result;
+
+              };
+
+
+            reader.readAsDataURL(
+              file
+            );
 
 
             item.appendChild(
               image
             );
 
+          } else {
 
-            const fileName =
+            const pdf =
               document.createElement(
-                'span'
+                'div'
               );
 
 
-            fileName.className =
-              'file-preview-name';
+            pdf.className =
+              'file-preview pdf-preview';
 
-            fileName.textContent =
-              file.name;
+            pdf.textContent =
+              '📄';
 
 
             item.appendChild(
-              fileName
-            );
-
-
-            preview.appendChild(
-              item
-            );
-
-
-            if (name) {
-
-              name.textContent =
-                '✓ تم اختيار الصورة';
-
-            }
-
-          };
-
-
-        reader.readAsDataURL(
-          file
-        );
-
-      },
-
-
-      addPrescriptionFiles() {
-
-  const input =
-    document.getElementById(
-      'prescription'
-    );
-
-  if (!input) {
-    return;
-  }
-
-  const newFiles =
-    Array.from(
-      input.files || []
-    );
-
-  if (newFiles.length === 0) {
-    return;
-  }
-
-  const oldFiles =
-    this.prescriptionFiles || [];
-
-  this.prescriptionFiles = [
-    ...oldFiles,
-    ...newFiles
-  ];
-
-  const dataTransfer =
-    new DataTransfer();
-
-  this.prescriptionFiles.forEach(
-    file => {
-
-      dataTransfer.items.add(file);
-
-    }
-  );
-
-  input.files =
-    dataTransfer.files;
-
-  this.handlePrescriptionFiles();{
-
-
-            item.appendChild(
-              removeButton
-            );
-
-
-            if (
-              file.type.startsWith(
-                'image/'
-              )
-            ) {
-
-
-              const image =
-                document.createElement(
-                  'img'
-                );
-
-
-              image.alt =
-                'معاينة صورة الروشتة';
-
-
-              const reader =
-                new FileReader();
-
-
-              reader.onload =
-                (event) => {
-
-                  image.src =
-                    event.target.result;
-
-                };
-
-
-              reader.readAsDataURL(
-                file
-              );
-
-
-              item.appendChild(
-                image
-              );
-
-
-            } else {
-
-
-              const pdf =
-                document.createElement(
-                  'div'
-                );
-
-
-              pdf.className =
-                'file-preview pdf-preview';
-
-
-              pdf.textContent =
-                '📄';
-
-
-              item.appendChild(
-                pdf
-              );
-
-            }
-
-
-            const fileName =
-              document.createElement(
-                'span'
-              );
-
-
-            fileName.className =
-              'file-preview-name';
-
-
-            fileName.textContent =
-              file.name;
-
-
-            item.appendChild(
-              fileName
-            );
-
-
-            preview.appendChild(
-              item
+              pdf
             );
 
           }
 
 
-      },
+          const fileName =
+            document.createElement(
+              'span'
+            );
 
 
-      removePrescriptionFile(
-        index
-      ) {
+          fileName.className =
+            'file-preview-name';
 
-        const input =
-          document.getElementById(
-            'prescription'
+          fileName.textContent =
+            file.name;
+
+
+          item.appendChild(
+            fileName
           );
 
 
-        if (!input) {
-          return;
+          preview.appendChild(
+            item
+          );
+
         }
+      );
+
+    },
 
 
-        const files =
-  this.prescriptionFiles || [];
+    /* =====================================================
+       حذف صورة واحدة فقط
+       ===================================================== */
 
-        files.splice(
-          index,
-          1
-        );
+    removePrescriptionFile(
+      index
+    ) {
 
-this.prescriptionFiles = files;
-        const dataTransfer =
-          new DataTransfer();
-
-
-        files.forEach(
-          file => {
-
-            dataTransfer.items.add(
-              file
-            );
-
-          }
+      const input =
+        document.getElementById(
+          'prescription'
         );
 
 
-        input.files =
-          dataTransfer.files;
+      if (!input) {
+
+        return;
+
+      }
 
 
-        this.handlePrescriptionFiles();
-
-      },
-
-
-      async loadInsurance() {
+      this.prescriptionFiles.splice(
+        index,
+        1
+      );
 
 
-        const companyName =
-          document.getElementById(
-            'company-name'
+      const dataTransfer =
+        new DataTransfer();
+
+
+      this.prescriptionFiles.forEach(
+        file => {
+
+          dataTransfer.items.add(
+            file
           );
-
-
-        if (
-          !insuranceId
-        ) {
-
-          companyName.textContent =
-            'لم يتم تحديد شركة التأمين';
-
-          return;
 
         }
+      );
 
 
-        if (
-          typeof supabaseClient ===
-          'undefined'
-        ) {
-
-          companyName.textContent =
-            'تعذر الاتصال بقاعدة البيانات';
-
-          return;
-
-        }
+      input.files =
+        dataTransfer.files;
 
 
-        try {
+      this.renderPrescriptionFiles();
+
+    },
 
 
-          const {
-            data,
-            error
-          } = await supabaseClient
+    async loadInsurance() {
 
-            .from('insurance')
-
-            .select(
-              'id, name, active'
-            )
-
-            .eq(
-              'id',
-              insuranceId
-            )
-
-            .eq(
-              'active',
-              true
-            )
-
-            .single();
+      const companyName =
+        document.getElementById(
+          'company-name'
+        );
 
 
-          if (error) {
+      if (!insuranceId) {
 
-            throw error;
+        companyName.textContent =
+          'لم يتم تحديد شركة التأمين';
 
-          }
+        return;
 
-
-          this.insurance =
-            data;
-
-
-          companyName.textContent =
-            data.name;
+      }
 
 
-        } catch (error) {
-
-
-          console.error(
-            '❌ Insurance company loading error:',
-            error
-          );
-
-
-          companyName.textContent =
-            'تعذر تحميل شركة التأمين';
-
-        }
-
-      },
-
-
-      togglePrescription() {
-
-
-        const selected =
-          document.querySelector(
-            'input[name="treatment_type"]:checked'
-          );
-
-
-        const section =
-          document.getElementById(
-            'prescription-section'
-          );
-
-
-        const prescription =
-          document.getElementById(
-            'prescription'
-          );
-
-
-        if (
-          selected &&
-          selected.value === 'daily'
-        ) {
-
-
-          section.classList.add(
-            'show'
-          );
-
-
-          prescription.required =
-            true;
-
-
-        } else {
-
-
-          section.classList.remove(
-            'show'
-          );
-
-
-          prescription.required =
-            false;
-
-
-          prescription.value =
-            '';
-
-
-          const preview =
-            document.getElementById(
-              'prescription-preview'
-            );
-
-
-          if (preview) {
-
-            preview.innerHTML =
-              '';
-
-          }
-
-        }
-
-      },
-
-
-      showMessage(
-        text,
-        type
+      if (
+        typeof supabaseClient ===
+        'undefined'
       ) {
 
+        companyName.textContent =
+          'تعذر الاتصال بقاعدة البيانات';
 
-        const message =
-          document.getElementById(
-            'message'
-          );
+        return;
 
-
-        message.textContent =
-          text;
+      }
 
 
-        message.className =
-          'message show ' +
-          type;
-
-
-        message.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center'
-        });
-
-      },
-
-
-      validateFile(
-        file,
-        required = true
-      ) {
-
-
-        if (!file) {
-
-
-          if (required) {
-
-            return {
-              valid: false,
-              message:
-                'من فضلك ارفع جميع المستندات المطلوبة.'
-            };
-
-          }
-
-
-          return {
-            valid: true
-          };
-
-        }
-
-
-        const maxSize =
-          5 * 1024 * 1024;
-
-
-        if (
-          file.size >
-          maxSize
-        ) {
-
-          return {
-            valid: false,
-            message:
-              'حجم الملف يجب ألا يتجاوز 5 ميجابايت.'
-          };
-
-        }
-
-
-        const allowedTypes = [
-
-          'image/jpeg',
-          'image/png',
-          'image/webp',
-          'application/pdf'
-
-        ];
-
-
-        if (
-          !allowedTypes.includes(
-            file.type
-          )
-        ) {
-
-          return {
-            valid: false,
-            message:
-              'نوع الملف غير مسموح. استخدم صورة JPG أو PNG أو WEBP أو ملف PDF.'
-          };
-
-        }
-
-
-        return {
-          valid: true
-        };
-
-      },
-
-
-      async uploadFile(
-        file,
-        folder
-      ) {
-
-
-        const extension =
-          file.name
-            .split('.')
-            .pop()
-            .toLowerCase();
-
-
-        const random =
-          Math.random()
-            .toString(36)
-            .substring(2, 10);
-
-
-        const path =
-          'requests/' +
-          Date.now() +
-          '-' +
-          random +
-          '-' +
-          folder +
-          '.' +
-          extension;
-
+      try {
 
         const {
+          data,
           error
         } = await supabaseClient
 
-          .storage
+          .from('insurance')
 
-          .from(
-            'insurance-documents'
+          .select(
+            'id, name, active'
           )
 
-          .upload(
-            path,
-            file,
-            {
-              cacheControl: '3600',
-              upsert: false
-            }
-          );
+          .eq(
+            'id',
+            insuranceId
+          )
+
+          .eq(
+            'active',
+            true
+          )
+
+          .single();
 
 
         if (error) {
@@ -2286,165 +2111,463 @@ this.prescriptionFiles = files;
         }
 
 
-        return path;
-
-      },
-
-
-      async submitRequest() {
+        this.insurance =
+          data;
 
 
-        const form =
+        companyName.textContent =
+          data.name;
+
+
+      } catch (error) {
+
+        console.error(
+          '❌ Insurance company loading error:',
+          error
+        );
+
+
+        companyName.textContent =
+          'تعذر تحميل شركة التأمين';
+
+      }
+
+    },
+
+
+    togglePrescription() {
+
+      const selected =
+        document.querySelector(
+          'input[name="treatment_type"]:checked'
+        );
+
+
+      const section =
+        document.getElementById(
+          'prescription-section'
+        );
+
+
+      const prescription =
+        document.getElementById(
+          'prescription'
+        );
+
+
+      if (
+        selected &&
+        selected.value === 'daily'
+      ) {
+
+        section.classList.add(
+          'show'
+        );
+
+
+        prescription.required =
+          true;
+
+      } else {
+
+        section.classList.remove(
+          'show'
+        );
+
+
+        prescription.required =
+          false;
+
+
+        prescription.value =
+          '';
+
+
+        // مسح جميع صور الروشتة
+        this.prescriptionFiles = [];
+
+
+        const preview =
           document.getElementById(
-            'insurance-form'
+            'prescription-preview'
           );
 
 
-        const button =
-          document.getElementById(
-            'submit-button'
-          );
+        if (preview) {
+
+          preview.innerHTML =
+            '';
+
+        }
+
+      }
+
+    },
 
 
-        if (
-          !this.insurance
-        ) {
+    showMessage(
+      text,
+      type
+    ) {
 
-          this.showMessage(
-            'لم يتم تحميل شركة التأمين بشكل صحيح.',
-            'error'
-          );
+      const message =
+        document.getElementById(
+          'message'
+        );
 
-          return;
+
+      message.textContent =
+        text;
+
+
+      message.className =
+        'message show ' +
+        type;
+
+
+      message.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+    },
+
+
+    validateFile(
+      file,
+      required = true
+    ) {
+
+      if (!file) {
+
+        if (required) {
+
+          return {
+            valid: false,
+            message:
+              'من فضلك ارفع جميع المستندات المطلوبة.'
+          };
 
         }
 
 
-        const cardNumber =
-          document
-            .getElementById(
-              'card-number'
-            )
-            .value
-            .trim();
+        return {
+          valid: true
+        };
+
+      }
 
 
-        const customerName =
-          document
-            .getElementById(
-              'customer-name'
-            )
-            .value
-            .trim();
+      const maxSize =
+        5 * 1024 * 1024;
 
 
-        const phone =
-          document
-            .getElementById(
-              'phone'
-            )
-            .value
-            .trim();
+      if (
+        file.size >
+        maxSize
+      ) {
+
+        return {
+          valid: false,
+          message:
+            'حجم الملف يجب ألا يتجاوز 5 ميجابايت.'
+        };
+
+      }
 
 
-        const treatment =
-          document.querySelector(
-            'input[name="treatment_type"]:checked'
-          )?.value;
+      const allowedTypes = [
+
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'application/pdf'
+
+      ];
 
 
-        const delivery =
-          document.querySelector(
-            'input[name="delivery_method"]:checked'
-          )?.value;
+      if (
+        !allowedTypes.includes(
+          file.type
+        )
+      ) {
+
+        return {
+          valid: false,
+          message:
+            'نوع الملف غير مسموح. استخدم صورة JPG أو PNG أو WEBP أو ملف PDF.'
+        };
+
+      }
 
 
-        const cardFront =
-          document.getElementById(
-            'card-front'
-          ).files[0];
+      return {
+        valid: true
+      };
+
+    },
 
 
-        const nationalIdFront =
-          document.getElementById(
-            'national-id-front'
-          ).files[0];
+    async uploadFile(
+      file,
+      folder
+    ) {
+
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          .toLowerCase();
 
 
-        const nationalIdBack =
-          document.getElementById(
-            'national-id-back'
-          ).files[0];
+      const random =
+        Math.random()
+          .toString(36)
+          .substring(2, 10);
 
 
-        const prescriptionInput =
-          document.getElementById(
-            'prescription'
-          );
+      const path =
+        'requests/' +
+        Date.now() +
+        '-' +
+        random +
+        '-' +
+        folder +
+        '.' +
+        extension;
 
 
-        const prescriptionFiles =
-          Array.from(
-            prescriptionInput?.files || []
-          );
+      const {
+        error
+      } = await supabaseClient
 
+        .storage
 
-        if (
-          !cardNumber ||
-          !customerName ||
-          !phone ||
-          !treatment ||
-          !delivery
-        ) {
+        .from(
+          'insurance-documents'
+        )
 
-          this.showMessage(
-            'من فضلك أكمل جميع البيانات المطلوبة.',
-            'error'
-          );
-
-          return;
-
-        }
-
-
-        const files = [
-
+        .upload(
+          path,
+          file,
           {
-            file: cardFront,
-            name: 'صورة الكارنية'
-          },
-
-          {
-            file: nationalIdFront,
-            name: 'صورة البطاقة الأمامية'
-          },
-
-          {
-            file: nationalIdBack,
-            name: 'صورة البطاقة الخلفية'
+            cacheControl: '3600',
+            upsert: false
           }
+        );
 
-        ];
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      return path;
+
+    },
+
+
+    async submitRequest() {
+
+      const form =
+        document.getElementById(
+          'insurance-form'
+        );
+
+
+      const button =
+        document.getElementById(
+          'submit-button'
+        );
+
+
+      if (!this.insurance) {
+
+        this.showMessage(
+          'لم يتم تحميل شركة التأمين بشكل صحيح.',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      const cardNumber =
+        document
+          .getElementById(
+            'card-number'
+          )
+          .value
+          .trim();
+
+
+      const customerName =
+        document
+          .getElementById(
+            'customer-name'
+          )
+          .value
+          .trim();
+
+
+      const phone =
+        document
+          .getElementById(
+            'phone'
+          )
+          .value
+          .trim();
+
+
+      const treatment =
+        document.querySelector(
+          'input[name="treatment_type"]:checked'
+        )?.value;
+
+
+      const delivery =
+        document.querySelector(
+          'input[name="delivery_method"]:checked'
+        )?.value;
+
+
+      const cardFront =
+        document.getElementById(
+          'card-front'
+        ).files[0];
+
+
+      const nationalIdFront =
+        document.getElementById(
+          'national-id-front'
+        ).files[0];
+
+
+      const nationalIdBack =
+        document.getElementById(
+          'national-id-back'
+        ).files[0];
+
+
+      const prescriptionInput =
+        document.getElementById(
+          'prescription'
+        );
+
+
+      // نأخذ النسخة المحفوظة في المصفوفة
+      const prescriptionFiles =
+        this.prescriptionFiles || [];
+
+
+      if (
+        !cardNumber ||
+        !customerName ||
+        !phone ||
+        !treatment ||
+        !delivery
+      ) {
+
+        this.showMessage(
+          'من فضلك أكمل جميع البيانات المطلوبة.',
+          'error'
+        );
+
+        return;
+
+      }
+
+
+      const files = [
+
+        {
+          file: cardFront,
+          name: 'صورة الكارنية'
+        },
+
+        {
+          file: nationalIdFront,
+          name: 'صورة البطاقة الأمامية'
+        },
+
+        {
+          file: nationalIdBack,
+          name: 'صورة البطاقة الخلفية'
+        }
+
+      ];
+
+
+      for (
+        const item of files
+      ) {
+
+        const result =
+          this.validateFile(
+            item.file,
+            true
+          );
+
+
+        if (!result.valid) {
+
+          this.showMessage(
+            item.name +
+            ': ' +
+            result.message,
+            'error'
+          );
+
+          return;
+
+        }
+
+      }
+
+
+      /* ==============================
+         DAILY PRESCRIPTION VALIDATION
+         ============================== */
+
+      if (
+        treatment === 'daily'
+      ) {
+
+        if (
+          prescriptionFiles.length === 0
+        ) {
+
+          this.showMessage(
+            'من فضلك ارفع صورة واحدة على الأقل للروشتة أو النموذج.',
+            'error'
+          );
+
+          return;
+
+        }
 
 
         for (
-          const item of files
+          let i = 0;
+          i < prescriptionFiles.length;
+          i++
         ) {
-
 
           const result =
             this.validateFile(
-              item.file,
+              prescriptionFiles[i],
               true
             );
 
 
-          if (
-            !result.valid
-          ) {
+          if (!result.valid) {
 
             this.showMessage(
-              item.name +
+              'الروشتة / النموذج رقم ' +
+              (i + 1) +
               ': ' +
               result.message,
               'error'
@@ -2456,295 +2579,278 @@ this.prescriptionFiles = files;
 
         }
 
+      }
 
-        /* ==============================
-           DAILY PRESCRIPTION VALIDATION
-           ============================== */
 
-       /* ==============================
-   DAILY PRESCRIPTION VALIDATION
-   ============================== */
+      button.disabled =
+        true;
 
-if (treatment === 'daily') {
 
-  if (prescriptionFiles.length === 0) {
+      button.textContent =
+        'جاري إرسال الطلب...';
 
-    this.showMessage(
-      'من فضلك ارفع صورة واحدة على الأقل للروشتة أو النموذج.',
-      'error'
-    );
-
-    return;
-
-  }
-
-  for (
-    let i = 0;
-    i < prescriptionFiles.length;
-    i++
-  ) {
-
-    const result =
-      this.validateFile(
-        prescriptionFiles[i],
-        true
-      );
-
-    if (!result.valid) {
 
       this.showMessage(
-        'الروشتة / النموذج رقم ' +
-        (i + 1) +
-        ': ' +
-        result.message,
-        'error'
+        'جاري رفع المستندات وإرسال الطلب، من فضلك انتظر...',
+        'success'
       );
 
-      return;
 
-    }
+      try {
 
-  }
+        /* ==============================
+           رفع المستندات الأساسية
+           ============================== */
 
-}
+        const cardFrontPath =
+          await this.uploadFile(
+            cardFront,
+            'card-front'
+          );
 
 
-        button.disabled =
-          true;
+        const nationalIdFrontPath =
+          await this.uploadFile(
+            nationalIdFront,
+            'national-id-front'
+          );
 
 
-        button.textContent =
-          'جاري إرسال الطلب...';
+        const nationalIdBackPath =
+          await this.uploadFile(
+            nationalIdBack,
+            'national-id-back'
+          );
+
+
+        /* ==============================
+           رفع جميع صور الروشتة
+           ============================== */
+
+        let prescriptionPath =
+          null;
+
+
+        let prescriptionPaths =
+          [];
+
+
+        if (
+          treatment === 'daily' &&
+          prescriptionFiles.length > 0
+        ) {
+
+          for (
+            let i = 0;
+            i < prescriptionFiles.length;
+            i++
+          ) {
+
+            const path =
+              await this.uploadFile(
+                prescriptionFiles[i],
+                'prescription-' + (i + 1)
+              );
+
+
+            prescriptionPaths.push(
+              path
+            );
+
+          }
+
+
+          // الحقل القديم = أول صورة
+          prescriptionPath =
+            prescriptionPaths[0] || null;
+
+        }
+
+
+        /* ==============================
+           حفظ الطلب في Supabase
+           ============================== */
+
+        const {
+          error
+        } = await supabaseClient
+
+          .from(
+            'insurance_requests'
+          )
+
+          .insert({
+
+            insurance_id:
+              this.insurance.id,
+
+            card_number:
+              cardNumber,
+
+            customer_name:
+              customerName,
+
+            phone:
+              phone,
+
+            card_front_url:
+              cardFrontPath,
+
+            national_id_front_url:
+              nationalIdFrontPath,
+
+            national_id_back_url:
+              nationalIdBackPath,
+
+            treatment_type:
+              treatment,
+
+            // الحقل القديم للتوافق
+            prescription_url:
+              prescriptionPath,
+
+            // جميع الصور
+            prescription_urls:
+              prescriptionPaths,
+
+            delivery_method:
+              delivery
+
+          });
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        /* ==============================
+           تنظيف النموذج بعد النجاح
+           ============================== */
+
+        form.reset();
+
+
+        this.prescriptionFiles =
+          [];
+
+
+        this.togglePrescription();
+
+
+        document
+          .getElementById(
+            'card-front-name'
+          )
+          .textContent = '';
+
+
+        document
+          .getElementById(
+            'national-id-front-name'
+          )
+          .textContent = '';
+
+
+        document
+          .getElementById(
+            'national-id-back-name'
+          )
+          .textContent = '';
+
+
+        [
+          'card-front-preview',
+          'national-id-front-preview',
+          'national-id-back-preview'
+        ].forEach(
+          id => {
+
+            const preview =
+              document.getElementById(
+                id
+              );
+
+
+            if (preview) {
+
+              preview.innerHTML =
+                '';
+
+            }
+
+          }
+        );
+
+
+        const prescriptionPreview =
+          document.getElementById(
+            'prescription-preview'
+          );
+
+
+        if (
+          prescriptionPreview
+        ) {
+
+          prescriptionPreview.innerHTML =
+            '';
+
+        }
 
 
         this.showMessage(
-          'جاري رفع المستندات وإرسال الطلب، من فضلك انتظر...',
+          'تم إرسال طلب التأمين بنجاح. سيتم مراجعة الطلب والتواصل معك عند الحاجة.',
           'success'
         );
 
 
-        try {
+        button.textContent =
+          'تم إرسال الطلب ✓';
 
 
-          const cardFrontPath =
-            await this.uploadFile(
-              cardFront,
-              'card-front'
-            );
+      } catch (error) {
 
+        console.error(
+          '❌ Insurance request error:',
+          error
+        );
 
-          const nationalIdFrontPath =
-            await this.uploadFile(
-              nationalIdFront,
-              'national-id-front'
-            );
 
+        this.showMessage(
+          'حدث خطأ أثناء إرسال الطلب. من فضلك حاول مرة أخرى.',
+          'error'
+        );
 
-          const nationalIdBackPath =
-            await this.uploadFile(
-              nationalIdBack,
-              'national-id-back'
-            );
 
+        button.disabled =
+          false;
 
-         let prescriptionPath = null;
 
-let prescriptionPaths = [];
-
-
-if (
-  treatment === 'daily' &&
-  prescriptionFiles.length > 0
-) {
-
-  for (
-    let i = 0;
-    i < prescriptionFiles.length;
-    i++
-  ) {
-
-    const path =
-      await this.uploadFile(
-        prescriptionFiles[i],
-        'prescription-' + (i + 1)
-      );
-
-    prescriptionPaths.push(path);
-
-  }
-
-
-  // الحفاظ على الحقل القديم
-  prescriptionPath =
-    prescriptionPaths[0] || null;
-
-}
-
-
-          const {
-            error
-          } = await supabaseClient
-
-            .from(
-              'insurance_requests'
-            )
-
-            .insert({
-
-              insurance_id:
-                this.insurance.id,
-
-              card_number:
-                cardNumber,
-
-              customer_name:
-                customerName,
-
-              phone:
-                phone,
-
-              card_front_url:
-                cardFrontPath,
-
-              national_id_front_url:
-                nationalIdFrontPath,
-
-              national_id_back_url:
-                nationalIdBackPath,
-
-              treatment_type:
-                treatment,
-
-             prescription_url:
-              prescriptionPath,
-
-             prescription_urls:
-              prescriptionPaths,
-
-            delivery_method:
-             delivery
-
-            });
-
-
-          if (error) {
-
-            throw error;
-
-          }
-
-
-          form.reset();
-
-
-          this.togglePrescription();
-
-
-          document
-            .getElementById(
-              'card-front-name'
-            )
-            .textContent = '';
-
-
-          document
-            .getElementById(
-              'national-id-front-name'
-            )
-            .textContent = '';
-
-
-          document
-            .getElementById(
-              'national-id-back-name'
-            )
-            .textContent = '';
-
-
-          [
-            'card-front-preview',
-            'national-id-front-preview',
-            'national-id-back-preview'
-          ].forEach(
-            id => {
-
-              const preview =
-                document.getElementById(id);
-
-              if (preview) {
-
-                preview.innerHTML =
-                  '';
-
-              }
-
-            }
-          );
-
-
-          const prescriptionPreview =
-            document.getElementById(
-              'prescription-preview'
-            );
-
-
-          if (
-            prescriptionPreview
-          ) {
-
-            prescriptionPreview.innerHTML =
-              '';
-
-          }
-
-
-          this.showMessage(
-            'تم إرسال طلب التأمين بنجاح. سيتم مراجعة الطلب والتواصل معك عند الحاجة.',
-            'success'
-          );
-
-
-          button.textContent =
-            'تم إرسال الطلب ✓';
-
-
-        } catch (error) {
-
-
-          console.error(
-            '❌ Insurance request error:',
-            error
-          );
-
-
-          this.showMessage(
-            'حدث خطأ أثناء إرسال الطلب. من فضلك حاول مرة أخرى.',
-            'error'
-          );
-
-
-          button.disabled =
-            false;
-
-
-          button.textContent =
-            'إرسال طلب التأمين';
-
-        }
+        button.textContent =
+          'إرسال طلب التأمين';
 
       }
 
-    };
+    }
+
+  };
 
 
-    document.addEventListener(
-      'DOMContentLoaded',
-      () => {
+  document.addEventListener(
+    'DOMContentLoaded',
+    () => {
 
-        InsuranceRequestPage.init();
+      InsuranceRequestPage.init();
 
-      }
-    );
+    }
+  );
+
+</script>
+
+
 
   </script>
 
