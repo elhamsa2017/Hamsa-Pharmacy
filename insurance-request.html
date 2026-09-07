@@ -2498,80 +2498,52 @@ content="width=device-width, initial-scale=1.0"
            DAILY PRESCRIPTION VALIDATION
            ============================== */
 
-        if (
-          treatment === 'daily'
-        ) {
+       /* ==============================
+   DAILY PRESCRIPTION VALIDATION
+   ============================== */
 
+if (treatment === 'daily') {
 
-          if (
-            prescriptionFiles.length === 0
-          ) {
+  if (prescriptionFiles.length === 0) {
 
-            this.showMessage(
-              'من فضلك ارفع صورة واحدة على الأقل للروشتة أو النموذج.',
-              'error'
-            );
+    this.showMessage(
+      'من فضلك ارفع صورة واحدة على الأقل للروشتة أو النموذج.',
+      'error'
+    );
 
-            return;
+    return;
 
-          }
+  }
 
+  for (
+    let i = 0;
+    i < prescriptionFiles.length;
+    i++
+  ) {
 
-          for (
-            let i = 0;
-            i < prescriptionFiles.length;
-            i++
-          ) {
+    const result =
+      this.validateFile(
+        prescriptionFiles[i],
+        true
+      );
 
+    if (!result.valid) {
 
-            const result =
-              this.validateFile(
-                prescriptionFiles[i],
-                true
-              );
+      this.showMessage(
+        'الروشتة / النموذج رقم ' +
+        (i + 1) +
+        ': ' +
+        result.message,
+        'error'
+      );
 
+      return;
 
-            if (
-              !result.valid
-            ) {
+    }
 
-              this.showMessage(
-                'الروشتة / النموذج رقم ' +
-                (i + 1) +
-                ': ' +
-                result.message,
-                'error'
-              );
+  }
 
-              return;
-
-            }
-
-          }
-
-
-          /*
-           * قاعدة البيانات الحالية تحتوي على
-           * prescription_url واحد فقط.
-           *
-           * لذلك لن نسمح بالإرسال بأكثر من صورة
-           * قبل إضافة prescription_urls في قاعدة البيانات.
-           */
-
-          if (
-            prescriptionFiles.length > 1
-          ) {
-
-            this.showMessage(
-              'تم اختيار أكثر من صورة للروشتة بنجاح، لكن حفظ أكثر من صورة يحتاج أولاً لإضافة حقل الصور المتعددة في قاعدة البيانات. لا ترسل الطلب الآن.',
-              'error'
-            );
-
-            return;
-
-          }
-
-        }
+}
 
 
         button.disabled =
@@ -2612,22 +2584,38 @@ content="width=device-width, initial-scale=1.0"
             );
 
 
-          let prescriptionPath =
-            null;
+         let prescriptionPath = null;
+
+let prescriptionPaths = [];
 
 
-          if (
-            treatment === 'daily' &&
-            prescriptionFiles.length === 1
-          ) {
+if (
+  treatment === 'daily' &&
+  prescriptionFiles.length > 0
+) {
 
-            prescriptionPath =
-              await this.uploadFile(
-                prescriptionFiles[0],
-                'prescription'
-              );
+  for (
+    let i = 0;
+    i < prescriptionFiles.length;
+    i++
+  ) {
 
-          }
+    const path =
+      await this.uploadFile(
+        prescriptionFiles[i],
+        'prescription-' + (i + 1)
+      );
+
+    prescriptionPaths.push(path);
+
+  }
+
+
+  // الحفاظ على الحقل القديم
+  prescriptionPath =
+    prescriptionPaths[0] || null;
+
+}
 
 
           const {
@@ -2664,11 +2652,14 @@ content="width=device-width, initial-scale=1.0"
               treatment_type:
                 treatment,
 
-              prescription_url:
-                prescriptionPath,
+             prescription_url:
+              prescriptionPath,
 
-              delivery_method:
-                delivery
+             prescription_urls:
+              prescriptionPaths,
+
+            delivery_method:
+             delivery
 
             });
 
