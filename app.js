@@ -117,6 +117,7 @@ const App = {
       const { data, error } = await sb
         .from('products')
         .select(`
+          id,
           sku,
           name,
           price,
