@@ -224,127 +224,174 @@ const App = {
   // =======================================================
   // RENDER PRODUCTS
   // =======================================================
+renderProducts(products = this.products) {
 
-  renderProducts(products = this.products) {
+  const container =
+    document.getElementById('products-container');
 
-    const container =
-      document.getElementById(
-        'products-container'
-      );
+  if (!container) return;
 
-    if (!container) return;
+  if (!Array.isArray(products) || products.length === 0) {
 
-    if (!Array.isArray(products) || products.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        لا توجد منتجات حاليًا
+      </div>
+    `;
 
-      container.innerHTML = `
-        <div class="empty-state">
-          لا توجد منتجات حاليًا
-        </div>
-      `;
+    return;
+  }
 
-      return;
-    }
+  container.innerHTML = products.map(product => {
 
-    container.innerHTML =
-      products.map(product => {
+    const stock =
+      Number(product.stock) || 0;
 
-        const stock =
-          Number(product.stock) || 0;
+    const price =
+      Number(product.price) || 0;
 
-        const price =
-          Number(product.price) || 0;
+    const oldPrice =
+      Number(product.old_price) || 0;
 
-        const oldPrice =
-          Number(product.old_price) || 0;
+    const image =
+      product.image || '';
 
-        const image =
-          product.image || '';
+    const isOffer =
+      Boolean(product.is_offer) &&
+      oldPrice > price;
 
-        return `
-          <article
-            class="product-card"
-            data-product-id="${this.escape(
-              product.id
-            )}"
-          >
+    const discount =
+      isOffer
+        ? Math.round(
+            ((oldPrice - price) / oldPrice) * 100
+          )
+        : 0;
 
-            <div class="product-image-wrapper">
+    return `
+      <article
+        class="product-card"
+        data-product-id="${this.escape(product.id)}"
+      >
 
-              ${
-                image
-                  ? `
-                    <img
-                      class="product-image"
-                      src="${this.escape(image)}"
-                      alt="${this.escape(
-                        product.name
-                      )}"
-                      loading="lazy"
-                    >
-                  `
-                  : `
-                    <div class="product-image">
-                      💊
-                    </div>
-                  `
-              }
+        <div class="product-image-box">
 
-            </div>
+          <span class="product-sku product-sku-top">
+            id: ${this.escape(product.sku || product.id || '-')}
+          </span>
 
-            <div class="product-info">
-
-              <h3 class="product-name">
-                ${this.escape(
-                  product.name
-                )}
-              </h3>
-
-              <div class="product-sku">
-                SKU:
-                ${this.escape(
-                  product.sku || '-'
-                )}
-              </div>
-
-              <div>
-
-                <span class="product-price">
-                  ${price.toFixed(2)}
+          ${
+            isOffer
+              ? `
+                <span class="product-badge">
+                  -${discount}%
                 </span>
+              `
+              : ''
+          }
 
-                ${
-                  product.is_offer && oldPrice > price
-                    ? `
-                      <span class="product-old-price">
-                        ${oldPrice.toFixed(2)}
-                      </span>
-                    `
-                    : ''
-                }
+          <button
+            type="button"
+            class="favorite-btn"
+            aria-label="إضافة المنتج للمفضلة"
+          >
+            ♡
+          </button>
 
-              </div>
+          <button
+            type="button"
+            class="compare-btn"
+            aria-label="مقارنة المنتج"
+          >
+            ⚖
+          </button>
 
-              <div
-                class="product-stock ${
-                  stock > 0
-                    ? 'stock-available'
-                    : 'stock-unavailable'
-                }"
-              >
-                ${
-                  stock > 0
-                    ? `متوفر (${stock})`
-                    : 'غير متوفر'
-                }
-              </div>
+          ${
+            image
+              ? `
+                <img
+                  class="product-image"
+                  src="${this.escape(image)}"
+                  alt="${this.escape(product.name || 'منتج')}"
+                  loading="lazy"
+                >
+              `
+              : `
+                <div class="product-image product-placeholder">
+                  💊
+                </div>
+              `
+          }
 
-            </div>
+        </div>
 
-          </article>
-        `;
 
-      }).join('');
-  },
+        <div class="product-card-body">
+
+          <h3 class="product-name">
+            ${this.escape(product.name || 'منتج')}
+          </h3>
+
+          <div class="product-rating" aria-label="تقييم 5 من 5">
+            <span class="rating-stars">★★★★★</span>
+            <span class="rating-count">${this.escape(product.reviews_count || 0)}</span>
+          </div>
+
+
+          <!-- السعر -->
+          <div class="product-price-row">
+
+            <span class="product-price">
+              ${price.toFixed(2)}
+              <small>ج.م</small>
+            </span>
+
+            ${
+              isOffer
+                ? `
+                  <span class="product-old-price">
+                    ${oldPrice.toFixed(2)} ج.م
+                  </span>
+                `
+                : ''
+            }
+
+          </div>
+
+
+          <div
+            class="product-stock ${
+              stock > 0
+                ? 'stock-available'
+                : 'stock-unavailable'
+            }"
+          >
+            ${
+              stock > 0
+                ? `متوفر (${stock})`
+                : 'غير متوفر'
+            }
+          </div>
+
+
+          <div class="product-card-actions">
+            <button
+              type="button"
+              class="add-cart-btn"
+              data-add-to-cart="${this.escape(product.id)}"
+              aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة"
+              ${stock <= 0 ? 'disabled' : ''}
+            >
+              🛒
+            </button>
+          </div>
+
+        </div>
+
+      </article>
+    `;
+
+  }).join('');
+},
 
 
   // =======================================================
@@ -450,17 +497,29 @@ const App = {
     }
 
 
-    document
-      .getElementById('cart-button')
-      ?.addEventListener(
-        'click',
-        () => {
-          console.log(
-            'Cart clicked'
-          );
-        }
-      );
+   document
+  .getElementById('cart-button')
+  ?.addEventListener(
+    'click',
+    () => {
 
+      if (
+        typeof Cart !== 'undefined'
+      ) {
+
+        Cart.render();
+        Cart.open();
+
+      } else {
+
+        console.error(
+          '❌ Cart system not loaded'
+        );
+
+      }
+
+    }
+  );
 
     document
       .getElementById('account-button')
