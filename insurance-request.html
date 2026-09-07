@@ -1423,7 +1423,7 @@ content="width=device-width, initial-scale=1.0"
 
       insurance: null,
 
-
+      prescriptionFiles: [],
       async init() {
 
         this.updateYear();
@@ -1552,7 +1552,7 @@ content="width=device-width, initial-scale=1.0"
           'change',
           () => {
 
-            this.handlePrescriptionFiles();
+            this.addPrescriptionFiles();
 
           }
         );
@@ -1769,82 +1769,49 @@ content="width=device-width, initial-scale=1.0"
       },
 
 
-      handlePrescriptionFiles() {
+      addPrescriptionFiles() {
 
-        const input =
-          document.getElementById(
-            'prescription'
-          );
+  const input =
+    document.getElementById(
+      'prescription'
+    );
 
+  if (!input) {
+    return;
+  }
 
-        const preview =
-          document.getElementById(
-            'prescription-preview'
-          );
+  const newFiles =
+    Array.from(
+      input.files || []
+    );
 
+  if (newFiles.length === 0) {
+    return;
+  }
 
-        if (
-          !input ||
-          !preview
-        ) {
+  const oldFiles =
+    this.prescriptionFiles || [];
 
-          return;
+  this.prescriptionFiles = [
+    ...oldFiles,
+    ...newFiles
+  ];
 
-        }
+  const dataTransfer =
+    new DataTransfer();
 
+  this.prescriptionFiles.forEach(
+    file => {
 
-        const files =
-          Array.from(
-            input.files || []
-          );
+      dataTransfer.items.add(file);
 
+    }
+  );
 
-        preview.innerHTML = '';
+  input.files =
+    dataTransfer.files;
 
-
-        files.forEach(
-          (file, index) => {
-
-
-            const item =
-              document.createElement(
-                'div'
-              );
-
-
-            item.className =
-              'file-preview';
-
-
-            const removeButton =
-              document.createElement(
-                'button'
-              );
-
-
-            removeButton.type =
-              'button';
-
-            removeButton.className =
-              'remove-file';
-
-            removeButton.textContent =
-              '×';
-
-            removeButton.title =
-              'حذف الملف';
-
-
-            removeButton.addEventListener(
-              'click',
-              () => {
-
-                this.removePrescriptionFile(
-                  index
-                );
-
-              }
-            );
+  this.handlePrescriptionFiles();{
 
 
             item.appendChild(
@@ -1940,7 +1907,6 @@ content="width=device-width, initial-scale=1.0"
             );
 
           }
-        );
 
 
       },
@@ -1962,17 +1928,14 @@ content="width=device-width, initial-scale=1.0"
 
 
         const files =
-          Array.from(
-            input.files || []
-          );
-
+  this.prescriptionFiles || [];
 
         files.splice(
           index,
           1
         );
 
-
+this.prescriptionFiles = files;
         const dataTransfer =
           new DataTransfer();
 
