@@ -497,17 +497,29 @@ renderProducts(products = this.products) {
     }
 
 
-    document
-      .getElementById('cart-button')
-      ?.addEventListener(
-        'click',
-        () => {
-          console.log(
-            'Cart clicked'
-          );
-        }
-      );
+   document
+  .getElementById('cart-button')
+  ?.addEventListener(
+    'click',
+    () => {
 
+      if (
+        typeof Cart !== 'undefined'
+      ) {
+
+        Cart.render();
+        Cart.open();
+
+      } else {
+
+        console.error(
+          '❌ Cart system not loaded'
+        );
+
+      }
+
+    }
+  );
 
     document
       .getElementById('account-button')
