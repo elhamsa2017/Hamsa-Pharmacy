@@ -128,7 +128,7 @@ const App = {
           old_price,
           description,
           image,
-          category,
+          category
       
         `)
         .order('name', {
