@@ -1,0 +1,2041 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>طلب التأمين | صيدليات الهمسة</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabase-config.js"></script>
+
+  <style>
+
+    :root {
+      --orange: #f97316;
+      --orange-dark: #ea580c;
+      --orange-light: #fff7ed;
+      --orange-soft: #ffedd5;
+
+      --text: #292524;
+      --muted: #78716c;
+      --white: #ffffff;
+      --border: #fed7aa;
+
+      --success: #16a34a;
+      --danger: #dc2626;
+
+      --shadow:
+        0 8px 30px rgba(124, 45, 18, 0.09);
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    body {
+
+      font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffaf5 0%,
+          #ffffff 40%
+        );
+
+      color: var(--text);
+
+      min-height: 100vh;
+    }
+
+
+    /* ==============================
+       HEADER
+       ============================== */
+
+    header {
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--orange-dark),
+          var(--orange)
+        );
+
+      color: white;
+
+      padding: 18px 20px;
+
+      box-shadow:
+        0 4px 18px
+        rgba(124,45,18,0.18);
+    }
+
+
+    .header-inner {
+
+      max-width: 900px;
+
+      margin: auto;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 15px;
+    }
+
+
+    .brand {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+    }
+
+
+    .brand-icon {
+
+      width: 46px;
+      height: 46px;
+
+      background: white;
+
+      color: var(--orange-dark);
+
+      border-radius: 13px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      font-size: 24px;
+    }
+
+
+    .brand h1 {
+
+      font-size: 19px;
+
+      margin-bottom: 3px;
+    }
+
+
+    .brand span {
+
+      font-size: 12px;
+
+      opacity: 0.9;
+    }
+
+
+    .back-button {
+
+      color: white;
+
+      text-decoration: none;
+
+      border:
+        1px solid
+        rgba(255,255,255,0.45);
+
+      background:
+        rgba(255,255,255,0.12);
+
+      padding: 9px 14px;
+
+      border-radius: 11px;
+
+      font-size: 13px;
+    }
+
+
+    /* ==============================
+       PAGE
+       ============================== */
+
+    .page {
+
+      max-width: 900px;
+
+      margin: auto;
+
+      padding:
+        35px 16px 60px;
+    }
+
+
+    .page-title {
+
+      text-align: center;
+
+      margin-bottom: 30px;
+    }
+
+
+    .page-title .icon {
+
+      width: 70px;
+      height: 70px;
+
+      margin:
+        0 auto 15px;
+
+      background:
+        var(--orange-soft);
+
+      border-radius: 22px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      font-size: 36px;
+    }
+
+
+    .page-title h2 {
+
+      color:
+        var(--orange-dark);
+
+      font-size: 30px;
+
+      margin-bottom: 8px;
+    }
+
+
+    .page-title p {
+
+      color: var(--muted);
+
+      font-size: 14px;
+
+      line-height: 1.8;
+    }
+
+
+    /* ==============================
+       FORM CARD
+       ============================== */
+
+    .form-card {
+
+      background: white;
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 22px;
+
+      padding: 28px;
+
+      box-shadow:
+        var(--shadow);
+    }
+
+
+    .company-box {
+
+      background:
+        var(--orange-light);
+
+      border:
+        1px solid
+        var(--border);
+
+      border-radius: 15px;
+
+      padding: 15px 18px;
+
+      margin-bottom: 25px;
+
+      text-align: center;
+    }
+
+
+    .company-box small {
+
+      display: block;
+
+      color: var(--muted);
+
+      margin-bottom: 5px;
+    }
+
+
+    .company-box strong {
+
+      color:
+        var(--orange-dark);
+
+      font-size: 18px;
+    }
+
+
+    /* ==============================
+       FORM
+       ============================== */
+
+    .form-group {
+
+      margin-bottom: 20px;
+    }
+
+
+    label {
+
+      display: block;
+
+      font-size: 14px;
+
+      font-weight: 700;
+
+      margin-bottom: 8px;
+    }
+
+
+    label .required {
+
+      color: var(--danger);
+    }
+
+
+    input,
+    select {
+
+      width: 100%;
+
+      padding: 13px 14px;
+
+      border:
+        1px solid
+        #d6d3d1;
+
+      border-radius: 12px;
+
+      font-family: inherit;
+
+      font-size: 14px;
+
+      outline: none;
+
+      background: white;
+
+      transition: 0.2s;
+    }
+
+
+    input:focus,
+    select:focus {
+
+      border-color:
+        var(--orange);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(249,115,22,0.10);
+    }
+
+
+    /* ==============================
+       UPLOAD
+       ============================== */
+
+    .upload-box {
+
+      border:
+        2px dashed
+        var(--border);
+
+      background:
+        var(--orange-light);
+
+      border-radius: 15px;
+
+      padding: 18px;
+
+      text-align: center;
+    }
+
+
+    .upload-box .upload-icon {
+
+      font-size: 28px;
+
+      margin-bottom: 8px;
+    }
+
+
+    .upload-box p {
+
+      color: var(--muted);
+
+      font-size: 12px;
+
+      margin-bottom: 12px;
+
+      line-height: 1.6;
+    }
+
+
+    .upload-box input {
+
+      background: white;
+
+      border: 1px solid var(--border);
+    }
+
+
+    .file-name {
+
+      display: block;
+
+      margin-top: 8px;
+
+      font-size: 12px;
+
+      color: var(--success);
+    }
+
+
+    /* ==============================
+       OPTIONS
+       ============================== */
+
+    .options {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+      gap: 12px;
+    }
+
+
+    .option {
+
+      position: relative;
+    }
+
+
+    .option input {
+
+      position: absolute;
+
+      opacity: 0;
+
+      pointer-events: none;
+    }
+
+
+    .option label {
+
+      border:
+        1px solid
+        #d6d3d1;
+
+      border-radius: 13px;
+
+      padding: 15px;
+
+      margin: 0;
+
+      cursor: pointer;
+
+      text-align: center;
+
+      background: white;
+
+      transition: 0.2s;
+    }
+
+
+    .option input:checked + label {
+
+      border-color:
+        var(--orange);
+
+      background:
+        var(--orange-light);
+
+      color:
+        var(--orange-dark);
+
+      box-shadow:
+        0 0 0 2px
+        rgba(249,115,22,0.10);
+    }
+
+
+    .option-title {
+
+      display: block;
+
+      font-weight: 800;
+
+      margin-bottom: 5px;
+    }
+
+
+    .option-description {
+
+      display: block;
+
+      font-size: 11px;
+
+      color: var(--muted);
+
+      font-weight: normal;
+    }
+
+
+    /* ==============================
+       PRESCRIPTION
+       ============================== */
+
+    #prescription-section {
+
+      display: none;
+
+      margin-top: 20px;
+    }
+
+
+    #prescription-section.show {
+
+      display: block;
+    }
+
+
+    /* ==============================
+       BUTTON
+       ============================== */
+
+    .submit-button {
+
+      width: 100%;
+
+      border: none;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--orange-dark),
+          var(--orange)
+        );
+
+      color: white;
+
+      padding: 15px;
+
+      border-radius: 13px;
+
+      font-family: inherit;
+
+      font-size: 16px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+
+      margin-top: 10px;
+
+      transition: 0.2s;
+    }
+
+
+    .submit-button:hover {
+
+      transform:
+        translateY(-2px);
+
+      box-shadow:
+        0 8px 20px
+        rgba(234,88,12,0.25);
+    }
+
+
+    .submit-button:disabled {
+
+      opacity: 0.6;
+
+      cursor: not-allowed;
+
+      transform: none;
+    }
+
+
+    /* ==============================
+       MESSAGE
+       ============================== */
+
+    .message {
+
+      display: none;
+
+      margin-bottom: 20px;
+
+      padding: 14px 16px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+
+      line-height: 1.7;
+    }
+
+
+    .message.show {
+
+      display: block;
+    }
+
+
+    .message.error {
+
+      background: #fef2f2;
+
+      color: #991b1b;
+
+      border:
+        1px solid #fecaca;
+    }
+
+
+    .message.success {
+
+      background: #f0fdf4;
+
+      color: #166534;
+
+      border:
+        1px solid #bbf7d0;
+    }
+
+
+    /* ==============================
+       FOOTER
+       ============================== */
+
+    footer {
+
+      text-align: center;
+
+      padding: 22px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+
+      border-top:
+        1px solid
+        var(--border);
+
+      background:
+        var(--orange-light);
+    }
+
+
+    footer strong {
+
+      color:
+        var(--orange-dark);
+    }
+
+
+    /* ==============================
+       MOBILE
+       ============================== */
+
+    @media (max-width: 600px) {
+
+      .form-card {
+
+        padding: 20px 15px;
+      }
+
+
+      .page-title h2 {
+
+        font-size: 25px;
+      }
+
+
+      .options {
+
+        grid-template-columns: 1fr;
+      }
+
+
+      .brand h1 {
+
+        font-size: 16px;
+      }
+
+
+      .brand span {
+
+        display: none;
+      }
+
+
+      .back-button {
+
+        font-size: 11px;
+
+        padding:
+          8px 10px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="header-inner">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          🏥
+        </div>
+
+        <div>
+
+          <h1>
+            صيدليات الهمسة
+          </h1>
+
+          <span>
+            خدمات التأمين الطبي
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <a
+        href="insurance.html"
+        class="back-button"
+      >
+        ← شركات التأمين
+      </a>
+
+    </div>
+
+  </header>
+
+
+
+  <!-- PAGE -->
+
+  <main class="page">
+
+
+    <div class="page-title">
+
+      <div class="icon">
+        🛡️
+      </div>
+
+      <h2>
+        طلب علاج تأميني
+      </h2>
+
+      <p>
+        من فضلك أدخل بياناتك وارفع المستندات المطلوبة
+        لإرسال طلب العلاج إلى صيدليات الهمسة.
+      </p>
+
+    </div>
+
+
+
+    <div class="form-card">
+
+
+      <!-- COMPANY -->
+
+      <div
+        id="company-box"
+        class="company-box"
+      >
+
+        <small>
+          شركة التأمين
+        </small>
+
+        <strong id="company-name">
+          جاري تحميل الشركة...
+        </strong>
+
+      </div>
+
+
+
+      <!-- MESSAGE -->
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+
+
+      <!-- FORM -->
+
+      <form id="insurance-form">
+
+
+        <!-- CARD NUMBER -->
+
+        <div class="form-group">
+
+          <label for="card-number">
+            رقم الكارنية
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="card-number"
+            name="card_number"
+            type="text"
+            required
+            autocomplete="off"
+            placeholder="أدخل رقم الكارنية"
+          >
+
+        </div>
+
+
+
+        <!-- CUSTOMER NAME -->
+
+        <div class="form-group">
+
+          <label for="customer-name">
+            الاسم
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="customer-name"
+            name="customer_name"
+            type="text"
+            required
+            autocomplete="name"
+            placeholder="اكتب الاسم بالكامل"
+          >
+
+        </div>
+
+
+
+        <!-- PHONE -->
+
+        <div class="form-group">
+
+          <label for="phone">
+            رقم الموبايل
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            required
+            autocomplete="tel"
+            placeholder="مثال: 01xxxxxxxxx"
+          >
+
+        </div>
+
+
+
+        <!-- CARD FRONT -->
+
+        <div class="form-group">
+
+          <label>
+            صورة الكارنية - وش
+            <span class="required">*</span>
+          </label>
+
+          <div class="upload-box">
+
+            <div class="upload-icon">
+              🪪
+            </div>
+
+            <p>
+              ارفع صورة واضحة للوجه الأمامي للكارنية
+            </p>
+
+            <input
+              id="card-front"
+              type="file"
+              accept="image/*"
+              required
+            >
+
+            <span
+              id="card-front-name"
+              class="file-name"
+            ></span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- NATIONAL ID FRONT -->
+
+        <div class="form-group">
+
+          <label>
+            صورة البطاقة - وش
+            <span class="required">*</span>
+          </label>
+
+          <div class="upload-box">
+
+            <div class="upload-icon">
+              🪪
+            </div>
+
+            <p>
+              ارفع صورة واضحة للوجه الأمامي للبطاقة
+            </p>
+
+            <input
+              id="national-id-front"
+              type="file"
+              accept="image/*"
+              required
+            >
+
+            <span
+              id="national-id-front-name"
+              class="file-name"
+            ></span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- NATIONAL ID BACK -->
+
+        <div class="form-group">
+
+          <label>
+            صورة البطاقة - ظهر
+            <span class="required">*</span>
+          </label>
+
+          <div class="upload-box">
+
+            <div class="upload-icon">
+              🪪
+            </div>
+
+            <p>
+              ارفع صورة واضحة للوجه الخلفي للبطاقة
+            </p>
+
+            <input
+              id="national-id-back"
+              type="file"
+              accept="image/*"
+              required
+            >
+
+            <span
+              id="national-id-back-name"
+              class="file-name"
+            ></span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- TREATMENT -->
+
+        <div class="form-group">
+
+          <label>
+            نوع العلاج
+            <span class="required">*</span>
+          </label>
+
+
+          <div class="options">
+
+
+            <div class="option">
+
+              <input
+                id="treatment-monthly"
+                type="radio"
+                name="treatment_type"
+                value="monthly"
+                required
+              >
+
+              <label for="treatment-monthly">
+
+                <span class="option-title">
+                  علاج شهري
+                </span>
+
+                <span class="option-description">
+                  بموافقة مسبقة
+                </span>
+
+              </label>
+
+            </div>
+
+
+
+            <div class="option">
+
+              <input
+                id="treatment-daily"
+                type="radio"
+                name="treatment_type"
+                value="daily"
+              >
+
+              <label for="treatment-daily">
+
+                <span class="option-title">
+                  علاج يومي
+                </span>
+
+                <span class="option-description">
+                  يحتاج موافقة
+                </span>
+
+              </label>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- PRESCRIPTION -->
+
+        <div
+          id="prescription-section"
+          class="form-group"
+        >
+
+          <label>
+            صورة النموذج أو الروشتة
+            <span class="required">*</span>
+          </label>
+
+          <div class="upload-box">
+
+            <div class="upload-icon">
+              📄
+            </div>
+
+            <p>
+              مطلوبة في حالة العلاج اليومي
+            </p>
+
+            <input
+              id="prescription"
+              type="file"
+              accept="image/*,.pdf"
+            >
+
+            <span
+              id="prescription-name"
+              class="file-name"
+            ></span>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- DELIVERY -->
+
+        <div class="form-group">
+
+          <label>
+            طريقة الاستلام
+            <span class="required">*</span>
+          </label>
+
+
+          <div class="options">
+
+
+            <div class="option">
+
+              <input
+                id="delivery"
+                type="radio"
+                name="delivery_method"
+                value="delivery"
+                required
+              >
+
+              <label for="delivery">
+
+                <span class="option-title">
+                  🚚 توصيل
+                </span>
+
+                <span class="option-description">
+                  توصيل الطلب
+                </span>
+
+              </label>
+
+            </div>
+
+
+
+            <div class="option">
+
+              <input
+                id="pickup"
+                type="radio"
+                name="delivery_method"
+                value="pickup"
+              >
+
+              <label for="pickup">
+
+                <span class="option-title">
+                  🏥 استلام من الصيدلية
+                </span>
+
+                <span class="option-description">
+                  استلام الطلب من الفرع
+                </span>
+
+              </label>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+
+        <!-- SUBMIT -->
+
+        <button
+          id="submit-button"
+          type="submit"
+          class="submit-button"
+        >
+          إرسال طلب التأمين
+        </button>
+
+
+      </form>
+
+
+    </div>
+
+
+  </main>
+
+
+
+  <footer>
+
+    ©
+    <span id="current-year"></span>
+
+    <strong>
+      صيدليات الهمسة
+    </strong>
+
+    — جميع الحقوق محفوظة
+
+  </footer>
+
+
+
+  <!-- JAVASCRIPT -->
+
+  <script>
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const insuranceId =
+      params.get('insurance_id');
+
+
+    const InsuranceRequestPage = {
+
+
+      insurance: null,
+
+
+      async init() {
+
+        this.updateYear();
+
+        this.bindEvents();
+
+        this.showFileNames();
+
+        await this.loadInsurance();
+
+      },
+
+
+      updateYear() {
+
+        const year =
+          document.getElementById(
+            'current-year'
+          );
+
+        if (year) {
+
+          year.textContent =
+            new Date().getFullYear();
+
+        }
+
+      },
+
+
+      bindEvents() {
+
+
+        document
+          .getElementById(
+            'insurance-form'
+          )
+          ?.addEventListener(
+            'submit',
+            (event) => {
+
+              event.preventDefault();
+
+              this.submitRequest();
+
+            }
+          );
+
+
+        document
+          .querySelectorAll(
+            'input[name="treatment_type"]'
+          )
+          .forEach(
+            input => {
+
+              input.addEventListener(
+                'change',
+                () => {
+
+                  this.togglePrescription();
+
+                }
+              );
+
+            }
+          );
+
+      },
+
+
+      showFileNames() {
+
+        const fields = [
+
+          [
+            'card-front',
+            'card-front-name'
+          ],
+
+          [
+            'national-id-front',
+            'national-id-front-name'
+          ],
+
+          [
+            'national-id-back',
+            'national-id-back-name'
+          ],
+
+          [
+            'prescription',
+            'prescription-name'
+          ]
+
+        ];
+
+
+        fields.forEach(
+          ([inputId, nameId]) => {
+
+            const input =
+              document.getElementById(
+                inputId
+              );
+
+            const name =
+              document.getElementById(
+                nameId
+              );
+
+
+            input?.addEventListener(
+              'change',
+              () => {
+
+                if (
+                  input.files &&
+                  input.files[0]
+                ) {
+
+                  name.textContent =
+                    '✓ ' +
+                    input.files[0].name;
+
+                } else {
+
+                  name.textContent = '';
+
+                }
+
+              }
+            );
+
+          }
+        );
+
+      },
+
+
+      async loadInsurance() {
+
+
+        const companyName =
+          document.getElementById(
+            'company-name'
+          );
+
+
+        if (
+          !insuranceId
+        ) {
+
+          companyName.textContent =
+            'لم يتم تحديد شركة التأمين';
+
+          return;
+
+        }
+
+
+        if (
+          typeof supabaseClient ===
+          'undefined'
+        ) {
+
+          companyName.textContent =
+            'تعذر الاتصال بقاعدة البيانات';
+
+          return;
+
+        }
+
+
+        try {
+
+
+          const {
+            data,
+            error
+          } = await supabaseClient
+
+            .from('insurance')
+
+            .select(
+              'id, name, active'
+            )
+
+            .eq(
+              'id',
+              insuranceId
+            )
+
+            .eq(
+              'active',
+              true
+            )
+
+            .single();
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          this.insurance =
+            data;
+
+
+          companyName.textContent =
+            data.name;
+
+
+        } catch (error) {
+
+
+          console.error(
+            '❌ Insurance company loading error:',
+            error
+          );
+
+
+          companyName.textContent =
+            'تعذر تحميل شركة التأمين';
+
+        }
+
+      },
+
+
+      togglePrescription() {
+
+
+        const selected =
+          document.querySelector(
+            'input[name="treatment_type"]:checked'
+          );
+
+
+        const section =
+          document.getElementById(
+            'prescription-section'
+          );
+
+
+        const prescription =
+          document.getElementById(
+            'prescription'
+          );
+
+
+        if (
+          selected &&
+          selected.value === 'daily'
+        ) {
+
+          section.classList.add(
+            'show'
+          );
+
+          prescription.required =
+            true;
+
+        } else {
+
+          section.classList.remove(
+            'show'
+          );
+
+          prescription.required =
+            false;
+
+          prescription.value = '';
+
+          document.getElementById(
+            'prescription-name'
+          ).textContent = '';
+
+        }
+
+      },
+
+
+      showMessage(
+        text,
+        type
+      ) {
+
+
+        const message =
+          document.getElementById(
+            'message'
+          );
+
+
+        message.textContent =
+          text;
+
+
+        message.className =
+          'message show ' +
+          type;
+
+
+        message.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+
+      },
+
+
+      validateFile(
+        file,
+        required = true
+      ) {
+
+
+        if (!file) {
+
+          if (required) {
+
+            return {
+              valid: false,
+              message:
+                'من فضلك ارفع جميع المستندات المطلوبة.'
+            };
+
+          }
+
+          return {
+            valid: true
+          };
+
+        }
+
+
+        const maxSize =
+          5 * 1024 * 1024;
+
+
+        if (
+          file.size >
+          maxSize
+        ) {
+
+          return {
+            valid: false,
+            message:
+              'حجم الملف يجب ألا يتجاوز 5 ميجابايت.'
+          };
+
+        }
+
+
+        const allowedTypes = [
+
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+          'application/pdf'
+
+        ];
+
+
+        if (
+          !allowedTypes.includes(
+            file.type
+          )
+        ) {
+
+          return {
+            valid: false,
+            message:
+              'نوع الملف غير مسموح. استخدم صورة JPG أو PNG أو WEBP أو ملف PDF.'
+          };
+
+        }
+
+
+        return {
+          valid: true
+        };
+
+      },
+
+
+      async uploadFile(
+        file,
+        folder
+      ) {
+
+
+        const extension =
+          file.name
+            .split('.')
+            .pop()
+            .toLowerCase();
+
+
+        const random =
+          Math.random()
+            .toString(36)
+            .substring(2, 10);
+
+
+        const path =
+          'requests/' +
+          Date.now() +
+          '-' +
+          random +
+          '-' +
+          folder +
+          '.' +
+          extension;
+
+
+        const {
+          error
+        } = await supabaseClient
+
+          .storage
+
+          .from(
+            'insurance-documents'
+          )
+
+          .upload(
+            path,
+            file,
+            {
+              cacheControl: '3600',
+              upsert: false
+            }
+          );
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        return path;
+
+      },
+
+
+      async submitRequest() {
+
+
+        const form =
+          document.getElementById(
+            'insurance-form'
+          );
+
+
+        const button =
+          document.getElementById(
+            'submit-button'
+          );
+
+
+        if (
+          !this.insurance
+        ) {
+
+          this.showMessage(
+            'لم يتم تحميل شركة التأمين بشكل صحيح.',
+            'error'
+          );
+
+          return;
+
+        }
+
+
+        const cardNumber =
+          document
+            .getElementById(
+              'card-number'
+            )
+            .value
+            .trim();
+
+
+        const customerName =
+          document
+            .getElementById(
+              'customer-name'
+            )
+            .value
+            .trim();
+
+
+        const phone =
+          document
+            .getElementById(
+              'phone'
+            )
+            .value
+            .trim();
+
+
+        const treatment =
+          document.querySelector(
+            'input[name="treatment_type"]:checked'
+          )?.value;
+
+
+        const delivery =
+          document.querySelector(
+            'input[name="delivery_method"]:checked'
+          )?.value;
+
+
+        const cardFront =
+          document.getElementById(
+            'card-front'
+          ).files[0];
+
+
+        const nationalIdFront =
+          document.getElementById(
+            'national-id-front'
+          ).files[0];
+
+
+        const nationalIdBack =
+          document.getElementById(
+            'national-id-back'
+          ).files[0];
+
+
+        const prescription =
+          document.getElementById(
+            'prescription'
+          ).files[0];
+
+
+        if (
+          !cardNumber ||
+          !customerName ||
+          !phone ||
+          !treatment ||
+          !delivery
+        ) {
+
+          this.showMessage(
+            'من فضلك أكمل جميع البيانات المطلوبة.',
+            'error'
+          );
+
+          return;
+
+        }
+
+
+        const files = [
+
+          {
+            file: cardFront,
+            name: 'صورة الكارنية'
+          },
+
+          {
+            file: nationalIdFront,
+            name: 'صورة البطاقة الأمامية'
+          },
+
+          {
+            file: nationalIdBack,
+            name: 'صورة البطاقة الخلفية'
+          }
+
+        ];
+
+
+        for (
+          const item of files
+        ) {
+
+
+          const result =
+            this.validateFile(
+              item.file,
+              true
+            );
+
+
+          if (
+            !result.valid
+          ) {
+
+            this.showMessage(
+              item.name +
+              ': ' +
+              result.message,
+              'error'
+            );
+
+            return;
+
+          }
+
+        }
+
+
+        if (
+          treatment === 'daily'
+        ) {
+
+
+          const result =
+            this.validateFile(
+              prescription,
+              true
+            );
+
+
+          if (
+            !result.valid
+          ) {
+
+            this.showMessage(
+              'صورة النموذج أو الروشتة: ' +
+              result.message,
+              'error'
+            );
+
+            return;
+
+          }
+
+        }
+
+
+        button.disabled =
+          true;
+
+
+        button.textContent =
+          'جاري إرسال الطلب...';
+
+
+        this.showMessage(
+          'جاري رفع المستندات وإرسال الطلب، من فضلك انتظر...',
+          'success'
+        );
+
+
+        try {
+
+
+          const cardFrontPath =
+            await this.uploadFile(
+              cardFront,
+              'card-front'
+            );
+
+
+          const nationalIdFrontPath =
+            await this.uploadFile(
+              nationalIdFront,
+              'national-id-front'
+            );
+
+
+          const nationalIdBackPath =
+            await this.uploadFile(
+              nationalIdBack,
+              'national-id-back'
+            );
+
+
+          let prescriptionPath =
+            null;
+
+
+          if (
+            treatment === 'daily' &&
+            prescription
+          ) {
+
+            prescriptionPath =
+              await this.uploadFile(
+                prescription,
+                'prescription'
+              );
+
+          }
+
+
+          const {
+            error
+          } = await supabaseClient
+
+            .from(
+              'insurance_requests'
+            )
+
+            .insert({
+
+              insurance_id:
+                this.insurance.id,
+
+              card_number:
+                cardNumber,
+
+              customer_name:
+                customerName,
+
+              phone:
+                phone,
+
+              card_front_url:
+                cardFrontPath,
+
+              national_id_front_url:
+                nationalIdFrontPath,
+
+              national_id_back_url:
+                nationalIdBackPath,
+
+              treatment_type:
+                treatment,
+
+              prescription_url:
+                prescriptionPath,
+
+              delivery_method:
+                delivery
+
+            });
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          form.reset();
+
+
+          this.togglePrescription();
+
+
+          this.showMessage(
+            'تم إرسال طلب التأمين بنجاح. سيتم مراجعة الطلب والتواصل معك عند الحاجة.',
+            'success'
+          );
+
+
+          button.textContent =
+            'تم إرسال الطلب ✓';
+
+
+        } catch (error) {
+
+
+          console.error(
+            '❌ Insurance request error:',
+            error
+          );
+
+
+          this.showMessage(
+            'حدث خطأ أثناء إرسال الطلب. من فضلك حاول مرة أخرى.',
+            'error'
+          );
+
+
+          button.disabled =
+            false;
+
+
+          button.textContent =
+            'إرسال طلب التأمين';
+
+        }
+
+      }
+
+    };
+
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        InsuranceRequestPage.init();
+
+      }
+    );
+
+  </script>
+
+
+</body>
+
+</html>
+
