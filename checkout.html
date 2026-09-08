@@ -684,7 +684,7 @@
       deliveryDistanceKm: 0,
 
       deliveryFee: 0,
-
+      pricePerKm: 0,
 
       // =====================================================
       // PHARMACY LOCATION
@@ -705,20 +705,26 @@
       // INIT
       // =====================================================
 
-      init() {
+      async init() {
 
         console.log(
           '🧾 Checkout starting...'
         );
 
 
-        this.loadCart();
+       this.loadCart();
 
-        this.render();
+       this.render();
 
-        this.bindEvents();
+       this.bindEvents();
 
-        this.initMap();
+       this.initMap();
+
+await this.loadDeliverySettings();
+
+if (this.customerLocation) {
+  this.updateDeliveryFee();
+}
 
 
         console.log(
@@ -1110,7 +1116,58 @@
       // =====================================================
       // INIT MAP
       // =====================================================
+async loadDeliverySettings() {
 
+  try {
+
+    if (
+      typeof supabaseClient === 'undefined'
+    ) {
+      throw new Error(
+        'Supabase client غير متاح'
+      );
+    }
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from('settings')
+      .select('data')
+      .eq('id', 'delivery_settings')
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    const price =
+      Number(
+        data?.data?.delivery?.price_per_km
+      );
+
+    this.pricePerKm =
+      Number.isFinite(price)
+        ? price
+        : 0;
+
+    console.log(
+      '🚚 Price per km:',
+      this.pricePerKm
+    );
+
+  } catch (error) {
+
+    console.error(
+      '❌ Delivery settings error:',
+      error
+    );
+
+    this.pricePerKm = 0;
+
+  }
+
+},
       initMap() {
 
         const mapElement =
@@ -1526,17 +1583,17 @@
         // =================================================
 
         this.deliveryDistanceKm =
-          this.calculateDistanceKm(
+          this.calculateDistanceKm
+            (
+              this.pharmacyLocation.latitude,
 
-            this.pharmacyLocation.latitude,
+              this.pharmacyLocation.longitude,
 
-            this.pharmacyLocation.longitude,
+              safeLatitude,
 
-            safeLatitude,
+              safeLongitude
 
-            safeLongitude
-
-          );
+            );
 
 
         // =================================================
@@ -1637,7 +1694,7 @@
           this.deliveryDistanceKm,
           'km'
         );
-
+          this.updateDeliveryFee();
       },
 
 
