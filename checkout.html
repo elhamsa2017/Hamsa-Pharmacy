@@ -115,6 +115,103 @@
     }
 
     /* =========================
+       PROMO CODE
+       ========================= */
+
+    .promo-section {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid #e4e8ec;
+      border-radius: 12px;
+      background: #fafcfd;
+    }
+
+    .promo-title {
+      margin: 0 0 10px;
+      color: #155e75;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .promo-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .promo-row input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d8dee4;
+      border-radius: 10px;
+      font: inherit;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    .promo-row input:focus {
+      border-color: #155e75;
+    }
+
+    .promo-row button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      background: #0f766e;
+      color: #fff;
+      font: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .promo-row button:hover {
+      opacity: .92;
+    }
+
+    .promo-row button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .promo-message {
+      margin-top: 9px;
+      font-size: 13px;
+      line-height: 1.7;
+      display: none;
+    }
+
+    .promo-message.success {
+      display: block;
+      color: #16703a;
+    }
+
+    .promo-message.error {
+      display: block;
+      color: #a52222;
+    }
+
+    .promo-applied {
+      margin-top: 9px;
+      padding: 9px 10px;
+      background: #e8f7ee;
+      color: #16703a;
+      border-radius: 9px;
+      font-size: 13px;
+      display: none;
+      line-height: 1.7;
+    }
+
+    .promo-remove {
+      margin-right: 8px;
+      border: 0;
+      background: transparent;
+      color: #a52222;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* =========================
        LOCATION
        ========================= */
 
@@ -242,6 +339,17 @@
       white-space: nowrap;
     }
 
+    .offer-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #fff3cd;
+      color: #8a6500;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
     /* =========================
        SUMMARY
        ========================= */
@@ -258,6 +366,14 @@
       padding: 9px 0;
     }
 
+    .summary-row.discount {
+      color: #16703a;
+    }
+
+    .summary-row.muted {
+      color: #666;
+    }
+
     .summary-row.total {
       border-top: 2px solid #eee;
       margin-top: 8px;
@@ -267,7 +383,7 @@
     }
 
     /* =========================
-       BUTTONS
+       BUTTON
        ========================= */
 
     .submit-button {
@@ -371,6 +487,14 @@
       .order-item-total {
         font-size: 14px;
       }
+
+      .promo-row {
+        grid-template-columns: 1fr;
+      }
+
+      .promo-row button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -379,10 +503,6 @@
 
   <main class="checkout-container">
 
-    <!-- =========================
-         BACK
-         ========================= -->
-
     <a
       href="index.html"
       class="back-button"
@@ -390,10 +510,6 @@
       ← العودة للمتجر
     </a>
 
-
-    <!-- =========================
-         HEADER
-         ========================= -->
 
     <section class="checkout-header">
 
@@ -532,6 +648,71 @@
 
 
             <!-- =========================
+                 PROMO CODE
+                 ========================= -->
+
+            <div class="promo-section">
+
+              <div class="promo-title">
+                🎟️ كود الخصم
+              </div>
+
+              <div
+                id="promo-unavailable-message"
+                class="promo-message"
+              >
+                لا يوجد منتج عادي مؤهل للخصم.
+                المنتجات التي عليها عروض لا تقبل كود الخصم.
+              </div>
+
+
+              <div class="promo-row">
+
+                <input
+                  type="text"
+                  id="promo-code-input"
+                  placeholder="اكتب كود الخصم"
+                  maxlength="50"
+                  autocomplete="off"
+                >
+
+                <button
+                  type="button"
+                  id="apply-promo-button"
+                >
+                  تطبيق الكود
+                </button>
+
+              </div>
+
+
+              <div
+                id="promo-message"
+                class="promo-message"
+              ></div>
+
+
+              <div
+                id="promo-applied"
+                class="promo-applied"
+              >
+
+                <span id="promo-applied-text"></span>
+
+                <button
+                  type="button"
+                  id="remove-promo-button"
+                  class="promo-remove"
+                >
+                  إزالة
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <!-- =========================
                  PAYMENT
                  ========================= -->
 
@@ -582,9 +763,7 @@
             </div>
 
 
-            <!-- =========================
-                 MESSAGE
-                 ========================= -->
+            <!-- MESSAGE -->
 
             <div
               id="checkout-message"
@@ -592,9 +771,7 @@
             ></div>
 
 
-            <!-- =========================
-                 SUBMIT
-                 ========================= -->
+            <!-- SUBMIT -->
 
             <button
               type="submit"
@@ -625,7 +802,7 @@
 
           <div class="summary">
 
-            <!-- SUBTOTAL -->
+            <!-- ORIGINAL SUBTOTAL -->
 
             <div class="summary-row">
 
@@ -634,6 +811,25 @@
               </span>
 
               <strong id="order-subtotal">
+                0.00 ج.م
+              </strong>
+
+            </div>
+
+
+            <!-- PROMO DISCOUNT -->
+
+            <div
+              class="summary-row discount"
+              id="promo-discount-row"
+              hidden
+            >
+
+              <span>
+                خصم الكود
+              </span>
+
+              <strong id="order-promo-discount">
                 0.00 ج.م
               </strong>
 
@@ -690,7 +886,7 @@
 
 
   <!-- =========================
-       LEAFLET JS
+       LEAFLET
        ========================= -->
 
   <script
@@ -707,10 +903,15 @@
     const Checkout = {
 
       // =====================================================
-      // STATE
+      // CART
       // =====================================================
 
       cart: [],
+
+
+      // =====================================================
+      // MAP
+      // =====================================================
 
       map: null,
 
@@ -720,11 +921,27 @@
 
       customerLocation: null,
 
+
+      // =====================================================
+      // DELIVERY
+      // =====================================================
+
       deliveryDistanceKm: 0,
 
       deliveryFee: 0,
 
       pricePerKm: 0,
+
+
+      // =====================================================
+      // PROMO
+      // =====================================================
+
+      promoCodes: [],
+
+      appliedPromo: null,
+
+      promoDiscount: 0,
 
 
       // =====================================================
@@ -755,24 +972,19 @@
 
         this.loadCart();
 
-
         this.render();
-
 
         this.bindEvents();
 
-
         this.initMap();
-
 
         await this.loadDeliverySettings();
 
+        await this.loadPromoCodes();
 
-        if (this.customerLocation) {
+        this.updatePromoAvailability();
 
-          this.updateDeliveryFee();
-
-        }
+        this.recalculateTotals();
 
 
         console.log(
@@ -858,9 +1070,7 @@
 
 
           if (error) {
-
             throw error;
-
           }
 
 
@@ -882,16 +1092,6 @@
           );
 
 
-          if (
-            this.pricePerKm <= 0
-          ) {
-
-            console.warn(
-              '⚠️ Delivery price per km is zero or unavailable'
-            );
-
-          }
-
         } catch (error) {
 
           console.error(
@@ -900,7 +1100,79 @@
           );
 
 
-          this.pricePerKm = 0;
+          this.pricePerKm =
+            0;
+
+        }
+
+      },
+
+
+      // =====================================================
+      // LOAD PROMO CODES
+      // =====================================================
+
+      async loadPromoCodes() {
+
+        try {
+
+          if (
+            typeof supabaseClient ===
+            'undefined'
+          ) {
+
+            throw new Error(
+              'Supabase client غير متاح'
+            );
+
+          }
+
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('settings')
+              .select('data')
+              .eq(
+                'id',
+                'promo_settings'
+              )
+              .maybeSingle();
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          const promos =
+            data?.data?.promo_codes;
+
+
+          this.promoCodes =
+            Array.isArray(promos)
+              ? promos
+              : [];
+
+
+          console.log(
+            '🎟️ Promo codes loaded:',
+            this.promoCodes
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            '❌ Promo settings error:',
+            error
+          );
+
+
+          this.promoCodes =
+            [];
 
         }
 
@@ -926,9 +1198,7 @@
 
 
         if (!container) {
-
           return;
-
         }
 
 
@@ -1004,6 +1274,12 @@
                   item.image || '';
 
 
+                const isOffer =
+                  Boolean(
+                    item.is_offer
+                  );
+
+
                 return `
 
                   <div class="order-item">
@@ -1016,8 +1292,12 @@
                           ? `
 
                             <img
-                              src="${this.escape(image)}"
-                              alt="${this.escape(item.name)}"
+                              src="${this.escape(
+                                image
+                              )}"
+                              alt="${this.escape(
+                                item.name
+                              )}"
                             >
 
                           `
@@ -1041,6 +1321,22 @@
                           item.name
                         )}
                       </h3>
+
+
+                      ${
+                        isOffer
+
+                          ? `
+
+                            <span class="offer-badge">
+                              عرض
+                            </span>
+
+                          `
+
+                          : ''
+
+                      }
 
 
                       <p>
@@ -1074,28 +1370,6 @@
             .join('');
 
 
-        const subtotal =
-          this.getSubtotal();
-
-
-        /*
-         * قبل اختيار الموقع:
-         * رسوم التوصيل = صفر.
-         *
-         * بمجرد اختيار الموقع:
-         * updateDeliveryFee()
-         * تحسب الرسوم تلقائيًا.
-         */
-
-        this.deliveryFee = 0;
-
-
-        this.updateSummary(
-          subtotal,
-          this.deliveryFee
-        );
-
-
         if (submitButton) {
 
           submitButton.disabled =
@@ -1107,7 +1381,7 @@
 
 
       // =====================================================
-      // UPDATE SUMMARY
+      // SUMMARY
       // =====================================================
 
       updateSummary(
@@ -1118,6 +1392,18 @@
         const subtotalElement =
           document.getElementById(
             'order-subtotal'
+          );
+
+
+        const promoDiscountRow =
+          document.getElementById(
+            'promo-discount-row'
+          );
+
+
+        const promoDiscountElement =
+          document.getElementById(
+            'order-promo-discount'
           );
 
 
@@ -1145,15 +1431,47 @@
           ) || 0;
 
 
+        const safeDiscount =
+          Math.min(
+            Math.max(
+              Number(
+                this.promoDiscount
+              ) || 0,
+              0
+            ),
+            safeSubtotal
+          );
+
+
         const total =
-          safeSubtotal +
-          safeDelivery;
+          Math.max(
+            0,
+            safeSubtotal -
+            safeDiscount +
+            safeDelivery
+          );
 
 
         if (subtotalElement) {
 
           subtotalElement.textContent =
             `${safeSubtotal.toFixed(2)} ج.م`;
+
+        }
+
+
+        if (promoDiscountElement) {
+
+          promoDiscountElement.textContent =
+            `-${safeDiscount.toFixed(2)} ج.م`;
+
+        }
+
+
+        if (promoDiscountRow) {
+
+          promoDiscountRow.hidden =
+            safeDiscount <= 0;
 
         }
 
@@ -1216,49 +1534,121 @@
 
 
       // =====================================================
-      // BIND EVENTS
+      // GET PROMO ELIGIBLE TOTAL
       // =====================================================
 
-      bindEvents() {
+      getPromoEligibleSubtotal() {
 
-        const form =
-          document.getElementById(
-            'checkout-form'
-          );
+        return this.cart.reduce(
+          (
+            sum,
+            item
+          ) => {
+
+            const isOffer =
+              Boolean(
+                item.is_offer
+              );
 
 
-        if (form) {
+            if (isOffer) {
 
-          form.addEventListener(
-            'submit',
-            event => {
-
-              event.preventDefault();
-
-              this.submitOrder();
+              return sum;
 
             }
+
+
+            const price =
+              Number(
+                item.price
+              ) || 0;
+
+
+            const quantity =
+              Number(
+                item.quantity
+              ) || 0;
+
+
+            return (
+              sum +
+              (
+                price *
+                quantity
+              )
+            );
+
+          },
+          0
+        );
+
+      },
+
+
+      // =====================================================
+      // PROMO AVAILABILITY
+      // =====================================================
+
+      updatePromoAvailability() {
+
+        const input =
+          document.getElementById(
+            'promo-code-input'
           );
+
+
+        const button =
+          document.getElementById(
+            'apply-promo-button'
+          );
+
+
+        const message =
+          document.getElementById(
+            'promo-unavailable-message'
+          );
+
+
+        const eligibleSubtotal =
+          this.getPromoEligibleSubtotal();
+
+
+        const unavailable =
+          eligibleSubtotal <= 0;
+
+
+        if (input) {
+
+          input.disabled =
+            unavailable;
 
         }
 
 
-        const locationButton =
-          document.getElementById(
-            'get-location-button'
-          );
+        if (button) {
+
+          button.disabled =
+            unavailable;
+
+        }
 
 
-        if (locationButton) {
+        if (message) {
 
-          locationButton.addEventListener(
-            'click',
-            () => {
+          message.style.display =
+            unavailable
+              ? 'block'
+              : 'none';
 
-              this.getCustomerLocation();
+        }
 
-            }
-          );
+
+        if (
+          unavailable &&
+          this.appliedPromo
+        ) {
+
+          this.removePromo();
 
         }
 
@@ -1266,7 +1656,503 @@
 
 
       // =====================================================
-      // INIT MAP
+      // APPLY PROMO
+      // =====================================================
+
+      applyPromo() {
+
+        const input =
+          document.getElementById(
+            'promo-code-input'
+          );
+
+
+        const message =
+          document.getElementById(
+            'promo-message'
+          );
+
+
+        const appliedBox =
+          document.getElementById(
+            'promo-applied'
+          );
+
+
+        const appliedText =
+          document.getElementById(
+            'promo-applied-text'
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        const code =
+          String(
+            input.value || ''
+          )
+          .trim()
+          .toUpperCase();
+
+
+        this.showPromoMessage(
+          '',
+          false
+        );
+
+
+        if (!code) {
+
+          this.showPromoMessage(
+            'اكتب كود الخصم أولًا.',
+            true
+          );
+
+          return;
+
+        }
+
+
+        const eligibleSubtotal =
+          this.getPromoEligibleSubtotal();
+
+
+        if (
+          eligibleSubtotal <= 0
+        ) {
+
+          this.showPromoMessage(
+            'لا يوجد منتج عادي مؤهل للخصم.',
+            true
+          );
+
+          return;
+
+        }
+
+
+        const promo =
+          this.promoCodes.find(
+            item =>
+              String(
+                item.code || ''
+              )
+                .trim()
+                .toUpperCase() ===
+              code &&
+              Boolean(
+                item.active
+              )
+          );
+
+
+        if (!promo) {
+
+          this.showPromoMessage(
+            'كود الخصم غير صحيح أو غير مفعّل.',
+            true
+          );
+
+          return;
+
+        }
+
+
+        const promoType =
+          String(
+            promo.type || ''
+          )
+          .trim()
+          .toLowerCase();
+
+
+        const promoValue =
+          Number(
+            promo.value
+          );
+
+
+        if (
+          !Number.isFinite(
+            promoValue
+          ) ||
+          promoValue <= 0
+        ) {
+
+          this.showPromoMessage(
+            'قيمة كود الخصم غير صالحة.',
+            true
+          );
+
+          return;
+
+        }
+
+
+        let discount = 0;
+
+
+        if (
+          promoType ===
+          'percentage'
+        ) {
+
+          discount =
+            eligibleSubtotal *
+            (
+              promoValue /
+              100
+            );
+
+        }
+
+        else if (
+          promoType ===
+          'fixed'
+        ) {
+
+          discount =
+            promoValue;
+
+        }
+
+        else {
+
+          this.showPromoMessage(
+            'نوع كود الخصم غير صالح.',
+            true
+          );
+
+          return;
+
+        }
+
+
+        discount =
+          Math.min(
+            Math.max(
+              discount,
+              0
+            ),
+            eligibleSubtotal
+          );
+
+
+        discount =
+          Math.round(
+            discount *
+            100
+          ) / 100;
+
+
+        this.appliedPromo = {
+
+          code:
+            String(
+              promo.code
+            )
+            .trim()
+            .toUpperCase(),
+
+          type:
+            promoType,
+
+          value:
+            promoValue,
+
+          discount:
+            discount
+
+        };
+
+
+        this.promoDiscount =
+          discount;
+
+
+        this.recalculateTotals();
+
+
+        if (
+          appliedBox &&
+          appliedText
+        ) {
+
+          const description =
+            promoType ===
+            'percentage'
+
+              ? `${this.appliedPromo.code} — خصم ${promoValue}% = ${discount.toFixed(2)} ج.م`
+
+              : `${this.appliedPromo.code} — خصم ${discount.toFixed(2)} ج.م`;
+
+          appliedText.textContent =
+            description;
+
+          appliedBox.style.display =
+            'block';
+
+        }
+
+
+        this.showPromoMessage(
+          'تم تطبيق كود الخصم بنجاح.',
+          false
+        );
+
+
+        input.value =
+          this.appliedPromo.code;
+
+
+        console.log(
+          '🎟️ Promo applied:',
+          this.appliedPromo
+        );
+
+      },
+
+
+      // =====================================================
+      // REMOVE PROMO
+      // =====================================================
+
+      removePromo() {
+
+        this.appliedPromo =
+          null;
+
+
+        this.promoDiscount =
+          0;
+
+
+        const input =
+          document.getElementById(
+            'promo-code-input'
+          );
+
+
+        const appliedBox =
+          document.getElementById(
+            'promo-applied'
+          );
+
+
+        if (input) {
+
+          input.value =
+            '';
+
+        }
+
+
+        if (appliedBox) {
+
+          appliedBox.style.display =
+            'none';
+
+        }
+
+
+        this.showPromoMessage(
+          '',
+          false
+        );
+
+
+        this.recalculateTotals();
+
+      },
+
+
+      // =====================================================
+      // PROMO MESSAGE
+      // =====================================================
+
+      showPromoMessage(
+        message,
+        error = false
+      ) {
+
+        const element =
+          document.getElementById(
+            'promo-message'
+          );
+
+
+        if (!element) {
+          return;
+        }
+
+
+        if (!message) {
+
+          element.textContent =
+            '';
+
+          element.className =
+            'promo-message';
+
+          return;
+
+        }
+
+
+        element.textContent =
+          message;
+
+
+        element.className =
+          `promo-message ${
+            error
+              ? 'error'
+              : 'success'
+          }`;
+
+      },
+
+
+      // =====================================================
+      // RECALCULATE TOTALS
+      // =====================================================
+
+      recalculateTotals() {
+
+        const subtotal =
+          this.getSubtotal();
+
+
+        if (
+          this.appliedPromo
+        ) {
+
+          const eligibleSubtotal =
+            this.getPromoEligibleSubtotal();
+
+
+          const promoType =
+            this.appliedPromo.type;
+
+
+          let discount = 0;
+
+
+          if (
+            promoType ===
+            'percentage'
+          ) {
+
+            discount =
+              eligibleSubtotal *
+              (
+                Number(
+                  this.appliedPromo.value
+                ) /
+                100
+              );
+
+          }
+
+          else {
+
+            discount =
+              Number(
+                this.appliedPromo.value
+              ) || 0;
+
+          }
+
+
+          this.promoDiscount =
+            Math.round(
+              Math.min(
+                Math.max(
+                  discount,
+                  0
+                ),
+                eligibleSubtotal
+              ) *
+              100
+            ) / 100;
+
+
+          this.appliedPromo.discount =
+            this.promoDiscount;
+
+        }
+
+        else {
+
+          this.promoDiscount =
+            0;
+
+        }
+
+
+        this.updateSummary(
+          subtotal,
+          this.deliveryFee
+        );
+
+      },
+
+
+      // =====================================================
+      // UPDATE DELIVERY FEE
+      // =====================================================
+
+      updateDeliveryFee() {
+
+        const distance =
+          Number(
+            this.deliveryDistanceKm
+          ) || 0;
+
+
+        const pricePerKm =
+          Number(
+            this.pricePerKm
+          ) || 0;
+
+
+        this.deliveryFee =
+          Math.round(
+            (
+              distance *
+              pricePerKm
+            ) *
+            100
+          ) / 100;
+
+
+        this.recalculateTotals();
+
+
+        console.log(
+          '🚚 Delivery calculation:',
+          {
+
+            distanceKm:
+              distance,
+
+            pricePerKm:
+              pricePerKm,
+
+            deliveryFee:
+              this.deliveryFee
+
+          }
+        );
+
+      },
+
+
+      // =====================================================
+      // MAP
       // =====================================================
 
       initMap() {
@@ -1334,10 +2220,6 @@
           );
 
 
-          // =================================================
-          // PHARMACY MARKER
-          // =================================================
-
           this.pharmacyMarker =
             L.marker(
 
@@ -1363,9 +2245,7 @@
             );
 
 
-          // =================================================
-          // MAP CLICK
-          // =================================================
+          // Manual location
 
           this.map.on(
             'click',
@@ -1406,7 +2286,7 @@
 
 
       // =====================================================
-      // GET CUSTOMER GPS
+      // GPS
       // =====================================================
 
       getCustomerLocation() {
@@ -1555,7 +2435,9 @@
                 info.innerHTML =
                   message;
 
-              } else {
+              }
+
+              else {
 
                 info.textContent =
                   message;
@@ -1657,10 +2539,6 @@
         };
 
 
-        // =================================================
-        // REMOVE OLD CUSTOMER MARKER
-        // =================================================
-
         if (
           this.customerMarker
         ) {
@@ -1671,10 +2549,6 @@
 
         }
 
-
-        // =================================================
-        // CUSTOMER MARKER
-        // =================================================
 
         this.customerMarker =
           L.marker(
@@ -1694,10 +2568,6 @@
           .openPopup();
 
 
-        // =================================================
-        // DISTANCE
-        // =================================================
-
         this.deliveryDistanceKm =
           this.calculateDistanceKm(
 
@@ -1711,10 +2581,6 @@
 
           );
 
-
-        // =================================================
-        // MAP BOUNDS
-        // =================================================
 
         const bounds =
           L.latLngBounds(
@@ -1749,10 +2615,6 @@
         );
 
 
-        // =================================================
-        // LOCATION INFO
-        // =================================================
-
         const info =
           document.getElementById(
             'location-info'
@@ -1773,10 +2635,6 @@
 
         }
 
-
-        // =================================================
-        // DISTANCE INFO
-        // =================================================
 
         const distanceInfo =
           document.getElementById(
@@ -1806,10 +2664,6 @@
         }
 
 
-        // =================================================
-        // DELIVERY FEE
-        // =================================================
-
         this.updateDeliveryFee();
 
 
@@ -1829,68 +2683,7 @@
 
 
       // =====================================================
-      // CALCULATE DELIVERY FEE
-      // =====================================================
-
-      updateDeliveryFee() {
-
-        const distance =
-          Number(
-            this.deliveryDistanceKm
-          ) || 0;
-
-
-        const pricePerKm =
-          Number(
-            this.pricePerKm
-          ) || 0;
-
-
-        /*
-         * المسافة × سعر الكيلومتر
-         */
-
-        this.deliveryFee =
-          Math.round(
-            (
-              distance *
-              pricePerKm
-            ) *
-            100
-          ) / 100;
-
-
-        const subtotal =
-          this.getSubtotal();
-
-
-        this.updateSummary(
-          subtotal,
-          this.deliveryFee
-        );
-
-
-        console.log(
-          '🚚 Delivery calculation:',
-          {
-
-            distanceKm:
-              distance,
-
-            pricePerKm:
-              pricePerKm,
-
-            deliveryFee:
-              this.deliveryFee
-
-          }
-        );
-
-      },
-
-
-      // =====================================================
-      // HAVERSINE DISTANCE
+      // HAVERSINE
       // =====================================================
 
       calculateDistanceKm(
@@ -1914,13 +2707,15 @@
 
         const dLat =
           toRadians(
-            lat2 - lat1
+            lat2 -
+            lat1
           );
 
 
         const dLon =
           toRadians(
-            lon2 - lon1
+            lon2 -
+            lon1
           );
 
 
@@ -1959,7 +2754,8 @@
             Math.sqrt(a),
 
             Math.sqrt(
-              1 - a
+              1 -
+              a
             )
 
           );
@@ -2054,10 +2850,6 @@
         }
 
 
-        // =================================================
-        // CURRENT TOTALS
-        // =================================================
-
         const subtotal =
           this.getSubtotal();
 
@@ -2068,14 +2860,30 @@
           ) || 0;
 
 
+        const discount =
+          Math.min(
+
+            Math.max(
+              Number(
+                this.promoDiscount
+              ) || 0,
+
+              0
+            ),
+
+            subtotal
+
+          );
+
+
         const total =
-          subtotal +
-          deliveryFee;
+          Math.max(
+            0,
+            subtotal -
+            discount +
+            deliveryFee
+          );
 
-
-        // =================================================
-        // ITEMS
-        // =================================================
 
         const items =
           this.cart.map(
@@ -2113,8 +2921,33 @@
 
 
         // =================================================
-        // ORDER
+        // NOTES WITH PROMO DETAILS
         // =================================================
+
+        let finalNotes =
+          notes;
+
+
+        if (
+          this.appliedPromo &&
+          discount > 0
+        ) {
+
+          const promoNote =
+            `كود الخصم: ${
+              this.appliedPromo.code
+            } | قيمة الخصم: ${
+              discount.toFixed(2)
+            } ج.م`;
+
+
+          finalNotes =
+            finalNotes
+              ? `${finalNotes}\n${promoNote}`
+              : promoNote;
+
+        }
+
 
         const order = {
 
@@ -2152,7 +2985,7 @@
             paymentMethod,
 
           notes:
-            notes || null,
+            finalNotes || null,
 
           delivery_notified:
             false
@@ -2217,10 +3050,6 @@
           );
 
 
-          // =================================================
-          // CLEAR CART
-          // =================================================
-
           localStorage.removeItem(
             'hamsa_cart'
           );
@@ -2228,10 +3057,6 @@
 
           this.cart = [];
 
-
-          // =================================================
-          // SUCCESS
-          // =================================================
 
           this.showMessage(
 
@@ -2382,9 +3207,7 @@
 
 
         if (!element) {
-
           return;
-
         }
 
 
@@ -2438,14 +3261,149 @@
 
 
     // =======================================================
-    // START
+    // EVENTS
     // =======================================================
 
     document.addEventListener(
       'DOMContentLoaded',
       () => {
 
+        // ===================================================
+        // INIT
+        // ===================================================
+
         Checkout.init();
+
+
+        // ===================================================
+        // FORM
+        // ===================================================
+
+        const form =
+          document.getElementById(
+            'checkout-form'
+          );
+
+
+        if (form) {
+
+          form.addEventListener(
+            'submit',
+            event => {
+
+              event.preventDefault();
+
+              Checkout.submitOrder();
+
+            }
+          );
+
+        }
+
+
+        // ===================================================
+        // LOCATION
+        // ===================================================
+
+        const locationButton =
+          document.getElementById(
+            'get-location-button'
+          );
+
+
+        if (locationButton) {
+
+          locationButton.addEventListener(
+            'click',
+            () => {
+
+              Checkout.getCustomerLocation();
+
+            }
+          );
+
+        }
+
+
+        // ===================================================
+        // APPLY PROMO
+        // ===================================================
+
+        const promoButton =
+          document.getElementById(
+            'apply-promo-button'
+          );
+
+
+        const promoInput =
+          document.getElementById(
+            'promo-code-input'
+          );
+
+
+        if (promoButton) {
+
+          promoButton.addEventListener(
+            'click',
+            () => {
+
+              Checkout.applyPromo();
+
+            }
+          );
+
+        }
+
+
+        // ===================================================
+        // ENTER PROMO
+        // ===================================================
+
+        if (promoInput) {
+
+          promoInput.addEventListener(
+            'keydown',
+            event => {
+
+              if (
+                event.key ===
+                'Enter'
+              ) {
+
+                event.preventDefault();
+
+                Checkout.applyPromo();
+
+              }
+
+            }
+          );
+
+        }
+
+
+        // ===================================================
+        // REMOVE PROMO
+        // ===================================================
+
+        const removePromoButton =
+          document.getElementById(
+            'remove-promo-button'
+          );
+
+
+        if (removePromoButton) {
+
+          removePromoButton.addEventListener(
+            'click',
+            () => {
+
+              Checkout.removePromo();
+
+            }
+          );
+
+        }
 
       }
     );
