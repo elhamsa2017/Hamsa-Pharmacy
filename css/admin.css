@@ -3,17 +3,17 @@
 }
 
 :root {
-  --admin-primary: #0f766e;
-  --admin-primary-dark: #115e59;
-  --admin-bg: #f1f5f9;
+  --admin-primary: #ea580c;
+  --admin-primary-dark: #c2410c;
+  --admin-bg: #fff7ed;
   --admin-surface: #ffffff;
   --admin-text: #0f172a;
   --admin-muted: #64748b;
-  --admin-border: #e2e8f0;
+  --admin-border: #fed7aa;
   --admin-danger: #dc2626;
   --admin-success: #15803d;
   --admin-warning: #b45309;
-  --admin-sidebar: #102a43;
+  --admin-sidebar: #431407;
 }
 
 body.admin-body {
@@ -33,7 +33,7 @@ body.admin-body {
   width: 270px;
   flex: 0 0 270px;
   background: var(--admin-sidebar);
-  color: #dbeafe;
+  color: #ffedd5;
   padding: 22px 16px;
 }
 
@@ -54,20 +54,20 @@ body.admin-body {
   display: block;
   padding: 11px 13px;
   border-radius: 8px;
-  color: #dbeafe;
+  color: #ffedd5;
   text-decoration: none;
   font-size: 14px;
 }
 
 .admin-nav a:hover,
 .admin-nav a.active {
-  background: #1f4e68;
+  background: #9a3412;
   color: #fff;
 }
 
 .admin-nav-title {
   margin: 16px 12px 4px;
-  color: #8fb3c9;
+  color: #fdba74;
   font-size: 11px;
   font-weight: 700;
 }

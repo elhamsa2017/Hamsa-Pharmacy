@@ -574,9 +574,9 @@ renderProducts(products = this.products) {
       ?.addEventListener(
         'click',
         () => {
-          console.log(
-            'Account clicked'
-          );
+          if (typeof Auth !== 'undefined') {
+            Auth.goToCustomerPage();
+          }
         }
       );
   },

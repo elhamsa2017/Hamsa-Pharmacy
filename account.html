@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حسابي - صيدليات الهمسة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #f8fafc; }
+    .account-page { width: min(100% - 32px, 900px); margin: 0 auto; padding: 34px 0 60px; }
+    .account-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+    .account-header h1 { color: var(--primary-dark); font-size: 28px; }
+    .account-header p { color: var(--muted); margin-top: 4px; }
+    .account-section { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-top: 16px; box-shadow: var(--shadow); }
+    .account-section h2 { color: var(--primary-dark); font-size: 20px; margin-bottom: 14px; }
+    .account-info { display: grid; gap: 8px; color: var(--muted); }
+    .account-info strong { color: var(--text); }
+    .account-orders { display: grid; gap: 10px; }
+    .account-order { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; border: 1px solid var(--border); border-radius: 9px; padding: 12px; }
+    .account-order span { color: var(--muted); }
+    .account-button { border: 0; border-radius: 9px; background: var(--primary); color: #fff; padding: 11px 16px; font-weight: 700; }
+    .account-button.secondary { background: #fff; color: var(--primary-dark); border: 1px solid var(--border); }
+    @media (max-width: 600px) { .account-header { align-items: stretch; flex-direction: column; } .account-order { grid-template-columns: 1fr 1fr; } .account-order b { grid-column: 1 / -1; } }
+  </style>
+</head>
+<body>
+  <main class="account-page">
+    <header class="account-header">
+      <div>
+        <h1>حسابي</h1>
+        <p>أهلًا بك في صيدليات الهمسة</p>
+      </div>
+      <button id="customer-signout" class="account-button secondary" type="button">تسجيل الخروج</button>
+    </header>
+
+    <section class="account-section">
+      <h2>بيانات الحساب</h2>
+      <div class="account-info">
+        <div>الاسم: <strong id="account-name">-</strong></div>
+        <div>البريد الإلكتروني: <strong id="account-email">-</strong></div>
+      </div>
+    </section>
+
+    <section class="account-section">
+      <h2>طلباتي</h2>
+      <div id="customer-orders" class="account-orders">جاري تحميل الطلبات...</div>
+    </section>
+
+    <a class="auth-back" href="index.html">العودة إلى المتجر</a>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('customer-signout').addEventListener('click', async event => {
+        event.currentTarget.disabled = true;
+        try {
+          await Auth.customerSignOut();
+        } catch {
+          event.currentTarget.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

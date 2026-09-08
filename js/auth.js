@@ -16,12 +16,20 @@ const Auth = {
 
   adminPage: 'admin.html',
 
+  customerLoginPage: 'login.html',
+
+  customerAccountPage: 'account.html',
+
+  currentUser: null,
+
+  customerListenerBound: false,
+
   /**
    * Initialize authentication.
    */
   async init() {
 
-    console.log('🔐 Hamsa Admin Auth starting...');
+    console.log('🔐 Hamsa Auth starting...');
 
     if (!this.sb) {
       console.error('❌ Supabase client not available');
@@ -40,7 +48,186 @@ const Auth = {
       return;
     }
 
+    await this.initCustomerAuth();
+
+    if (page === 'login.html') {
+      this.handleCustomerLoginPage();
+    }
+
+    if (page === 'account.html') {
+      await this.handleAccountPage();
+    }
+
     console.log('🔐 Auth loaded');
+  },
+
+  async initCustomerAuth() {
+    const result = await this.sb.auth.getSession();
+    this.currentUser = result.data?.session?.user || null;
+    this.updateCustomerUI();
+
+    if (!this.customerListenerBound) {
+      this.customerListenerBound = true;
+      this.sb.auth.onAuthStateChange((_event, session) => {
+        this.currentUser = session?.user || null;
+        this.updateCustomerUI();
+        this.renderAccountPage();
+      });
+    }
+  },
+
+  updateCustomerUI() {
+    const accountButton = document.getElementById('account-button');
+    if (!accountButton) return;
+
+    const name = this.currentUser?.user_metadata?.full_name || this.currentUser?.email;
+    accountButton.textContent = name ? `👤 ${name}` : '👤 حسابي';
+  },
+
+  goToCustomerPage() {
+    window.location.href = this.currentUser
+      ? this.customerAccountPage
+      : this.customerLoginPage;
+  },
+
+  handleCustomerLoginPage() {
+    const loginForm = document.getElementById('customer-login-form');
+    const registerForm = document.getElementById('customer-register-form');
+    const forgotForm = document.getElementById('customer-forgot-form');
+    const message = document.getElementById('customer-auth-message');
+
+    const showMessage = (text, type = 'error') => {
+      if (!message) return;
+      message.textContent = text;
+      message.className = `auth-message ${type}`;
+    };
+
+    const setLoading = (button, loading, label) => {
+      if (!button) return;
+      button.disabled = loading;
+      button.textContent = loading ? 'جاري التنفيذ...' : label;
+    };
+
+    loginForm?.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = loginForm.querySelector('button[type="submit"]');
+      setLoading(button, true, 'تسجيل الدخول');
+      showMessage('');
+
+      try {
+        const { error } = await this.sb.auth.signInWithPassword({
+          email: loginForm.elements.email.value.trim(),
+          password: loginForm.elements.password.value
+        });
+        if (error) throw error;
+        window.location.href = this.customerAccountPage;
+      } catch (error) {
+        showMessage(this.getErrorMessage(error));
+        setLoading(button, false, 'تسجيل الدخول');
+      }
+    });
+
+    registerForm?.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = registerForm.querySelector('button[type="submit"]');
+      setLoading(button, true, 'إنشاء الحساب');
+      showMessage('');
+
+      try {
+        const { data, error } = await this.sb.auth.signUp({
+          email: registerForm.elements.email.value.trim(),
+          password: registerForm.elements.password.value,
+          options: {
+            data: { full_name: registerForm.elements.full_name.value.trim() }
+          }
+        });
+        if (error) throw error;
+        showMessage(
+          data.session
+            ? 'تم إنشاء الحساب بنجاح.'
+            : 'تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتفعيله.',
+          'success'
+        );
+        registerForm.reset();
+      } catch (error) {
+        showMessage(this.getErrorMessage(error));
+      } finally {
+        setLoading(button, false, 'إنشاء الحساب');
+      }
+    });
+
+    forgotForm?.addEventListener('submit', async event => {
+      event.preventDefault();
+      const button = forgotForm.querySelector('button[type="submit"]');
+      setLoading(button, true, 'إرسال الرابط');
+      showMessage('');
+
+      try {
+        const { error } = await this.sb.auth.resetPasswordForEmail(
+          forgotForm.elements.email.value.trim(),
+          { redirectTo: `${window.location.origin}/login.html` }
+        );
+        if (error) throw error;
+        showMessage('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك.', 'success');
+      } catch (error) {
+        showMessage(this.getErrorMessage(error));
+      } finally {
+        setLoading(button, false, 'إرسال الرابط');
+      }
+    });
+  },
+
+  async handleAccountPage() {
+    if (!this.currentUser) {
+      window.location.replace(this.customerLoginPage);
+      return;
+    }
+    this.renderAccountPage();
+    await this.loadCustomerOrders();
+  },
+
+  renderAccountPage() {
+    const userElement = document.getElementById('account-email');
+    const nameElement = document.getElementById('account-name');
+    if (!userElement || !nameElement) return;
+
+    userElement.textContent = this.currentUser?.email || '-';
+    nameElement.textContent = this.currentUser?.user_metadata?.full_name || 'عميل الهمسة';
+  },
+
+  async loadCustomerOrders() {
+    const container = document.getElementById('customer-orders');
+    if (!container || !this.currentUser) return;
+
+    const { data, error } = await this.sb
+      .from('orders')
+      .select('id,total,status,created_at')
+      .eq('user_id', this.currentUser.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      container.textContent = 'تعذر تحميل الطلبات. تحقق من سياسة RLS الخاصة بقراءة طلبات المستخدم.';
+      return;
+    }
+
+    container.innerHTML = data?.length
+      ? data.map(order => `<div class="account-order"><strong>${this.escape(order.id)}</strong><span>${this.escape(order.status || 'جديد')}</span><b>${Number(order.total || 0).toFixed(2)} ج.م</b></div>`).join('')
+      : '<p>لا توجد طلبات مرتبطة بهذا الحساب.</p>';
+  },
+
+  async customerSignOut() {
+    const { error } = await this.sb.auth.signOut();
+    if (error) throw error;
+    window.location.replace(this.customerLoginPage);
+  },
+
+  escape(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   },
 
   /**

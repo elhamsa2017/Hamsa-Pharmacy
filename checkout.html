@@ -44,7 +44,7 @@
 
     .checkout-header h1 {
       margin: 0 0 8px;
-      color: #155e75;
+      color: #c2410c;
       font-size: 26px;
     }
 
@@ -68,7 +68,7 @@
 
     .checkout-card h2 {
       margin-top: 0;
-      color: #155e75;
+      color: #c2410c;
       font-size: 20px;
       border-bottom: 1px solid #eee;
       padding-bottom: 12px;
@@ -104,7 +104,7 @@
     .form-group input:focus,
     .form-group textarea:focus,
     .form-group select:focus {
-      border-color: #155e75;
+      border-color: #ea580c;
     }
 
     .form-group textarea {
@@ -132,7 +132,7 @@
       border: 0;
       border-radius: 10px;
       padding: 13px;
-      background: #0f766e;
+      background: #ea580c;
       color: #fff;
       font-size: 16px;
       font-weight: bold;
@@ -178,7 +178,7 @@
     }
 
     .distance-box strong {
-      color: #0f766e;
+      color: #c2410c;
     }
 
     .pharmacy-label {
@@ -201,7 +201,7 @@
 
     .promo-title {
       margin-bottom: 10px;
-      color: #155e75;
+      color: #c2410c;
       font-weight: bold;
     }
 
@@ -222,14 +222,14 @@
     }
 
     .promo-row input:focus {
-      border-color: #155e75;
+      border-color: #ea580c;
     }
 
     .promo-row button {
       border: 0;
       border-radius: 10px;
       padding: 11px 16px;
-      background: #0f766e;
+      background: #ea580c;
       color: #fff;
       font: inherit;
       font-weight: bold;
@@ -365,7 +365,7 @@
       margin-top: 8px;
       padding-top: 15px;
       font-size: 20px;
-      color: #155e75;
+      color: #c2410c;
     }
 
     /* =========================
@@ -378,7 +378,7 @@
       border-radius: 12px;
       padding: 15px;
       margin-top: 20px;
-      background: #155e75;
+      background: #c2410c;
       color: #fff;
       font-size: 17px;
       font-weight: bold;
@@ -394,7 +394,7 @@
       display: inline-block;
       margin-bottom: 15px;
       text-decoration: none;
-      color: #155e75;
+      color: #c2410c;
       font-weight: bold;
     }
 
@@ -784,6 +784,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script src="js/supabase-config.js"></script>
+
+  <script src="js/auth.js"></script>
 
 
   <!-- =========================
@@ -2754,6 +2756,14 @@
 
           );
 
+        const sessionResult =
+          typeof supabaseClient !== 'undefined'
+            ? await supabaseClient.auth.getSession()
+            : { data: { session: null } };
+
+        const userId =
+          sessionResult.data?.session?.user?.id || null;
+
 
         const items =
           this.cart.map(
@@ -2823,7 +2833,7 @@
             this.generateOrderId(),
 
           user_id:
-            null,
+            userId,
 
           customer_name:
             name,

@@ -9,17 +9,17 @@
 }
 
 :root {
-  --primary: #0f766e;
-  --primary-dark: #115e59;
-  --secondary: #14b8a6;
-  --background: #f8fafc;
+  --primary: #ea580c;
+  --primary-dark: #c2410c;
+  --secondary: #f97316;
+  --background: #fffaf5;
   --surface: #ffffff;
   --text: #0f172a;
   --muted: #64748b;
-  --border: #e2e8f0;
+  --border: #fed7aa;
   --danger: #dc2626;
   --success: #16a34a;
-  --shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+  --shadow: 0 4px 20px rgba(124, 45, 18, 0.08);
 }
 
 html {

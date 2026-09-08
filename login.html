@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - صيدليات الهمسة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: linear-gradient(145deg, #fff7ed, #fffaf5 55%, #fff); }
+    .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+    .auth-card { width: min(100%, 430px); background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px; box-shadow: 0 18px 45px rgba(124, 45, 18, .12); }
+    .auth-brand { text-align: center; margin-bottom: 24px; }
+    .auth-brand .icon { width: 64px; height: 64px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 18px; background: var(--primary); color: #fff; font-size: 30px; }
+    .auth-brand h1 { color: var(--primary-dark); font-size: 25px; margin-bottom: 4px; }
+    .auth-brand p { color: var(--muted); font-size: 14px; }
+    .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .auth-tab { border: 1px solid var(--border); background: #fff; color: var(--muted); border-radius: 9px; padding: 10px; font-weight: 700; }
+    .auth-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .auth-form { display: grid; gap: 14px; }
+    .auth-form[hidden] { display: none; }
+    .auth-field { display: grid; gap: 6px; }
+    .auth-field label { font-weight: 700; font-size: 14px; }
+    .auth-field input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; outline: none; }
+    .auth-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(234, 88, 12, .1); }
+    .password-wrap { display: flex; gap: 8px; }
+    .password-wrap input { flex: 1; }
+    .password-toggle { border: 1px solid var(--border); background: #fff; border-radius: 9px; padding: 0 12px; }
+    .auth-submit { min-height: 48px; border: 0; border-radius: 9px; background: var(--primary); color: #fff; font-weight: 800; }
+    .auth-submit:disabled { opacity: .65; cursor: wait; }
+    .auth-link { border: 0; background: transparent; color: var(--primary-dark); padding: 0; text-align: right; font-size: 13px; }
+    .auth-message { min-height: 0; margin-bottom: 14px; padding: 10px 12px; border-radius: 8px; font-size: 14px; line-height: 1.6; }
+    .auth-message:empty { display: none; }
+    .auth-message.error { color: #991b1b; background: #fef2f2; border: 1px solid #fecaca; }
+    .auth-message.success { color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .auth-back { display: block; margin-top: 20px; text-align: center; color: var(--primary); font-size: 14px; }
+    @media (max-width: 480px) { .auth-card { padding: 24px 18px; } }
+  </style>
+</head>
+<body>
+  <main class="auth-page">
+    <section class="auth-card" aria-labelledby="auth-title">
+      <div class="auth-brand">
+        <div class="icon" aria-hidden="true">💊</div>
+        <h1 id="auth-title">صيدليات الهمسة</h1>
+        <p>حسابك لتجربة شراء أسهل</p>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" id="login-tab" type="button">تسجيل الدخول</button>
+        <button class="auth-tab" id="register-tab" type="button">إنشاء حساب</button>
+      </div>
+
+      <div id="customer-auth-message" class="auth-message" role="alert"></div>
+
+      <form id="customer-login-form" class="auth-form">
+        <div class="auth-field">
+          <label for="login-email">البريد الإلكتروني</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="auth-field">
+          <label for="login-password">كلمة المرور</label>
+          <div class="password-wrap">
+            <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-password-target="login-password" aria-label="إظهار كلمة المرور">إظهار</button>
+          </div>
+        </div>
+        <button class="auth-link" id="forgot-link" type="button">نسيت كلمة المرور؟</button>
+        <button class="auth-submit" type="submit">تسجيل الدخول</button>
+      </form>
+
+      <form id="customer-register-form" class="auth-form" hidden>
+        <div class="auth-field">
+          <label for="register-name">الاسم</label>
+          <input id="register-name" name="full_name" autocomplete="name" required>
+        </div>
+        <div class="auth-field">
+          <label for="register-email">البريد الإلكتروني</label>
+          <input id="register-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="auth-field">
+          <label for="register-password">كلمة المرور</label>
+          <div class="password-wrap">
+            <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" required>
+            <button class="password-toggle" type="button" data-password-target="register-password" aria-label="إظهار كلمة المرور">إظهار</button>
+          </div>
+        </div>
+        <button class="auth-submit" type="submit">إنشاء حساب</button>
+      </form>
+
+      <form id="customer-forgot-form" class="auth-form" hidden>
+        <div class="auth-field">
+          <label for="forgot-email">البريد الإلكتروني</label>
+          <input id="forgot-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <button class="auth-submit" type="submit">إرسال رابط الاستعادة</button>
+        <button class="auth-link" id="back-to-login" type="button">العودة لتسجيل الدخول</button>
+      </form>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginTab = document.getElementById('login-tab');
+      const registerTab = document.getElementById('register-tab');
+      const loginForm = document.getElementById('customer-login-form');
+      const registerForm = document.getElementById('customer-register-form');
+      const forgotForm = document.getElementById('customer-forgot-form');
+      const forgotLink = document.getElementById('forgot-link');
+      const backToLogin = document.getElementById('back-to-login');
+
+      const showForm = form => {
+        loginForm.hidden = form !== loginForm;
+        registerForm.hidden = form !== registerForm;
+        forgotForm.hidden = form !== forgotForm;
+        loginTab.classList.toggle('active', form === loginForm);
+        registerTab.classList.toggle('active', form === registerForm);
+      };
+
+      loginTab.addEventListener('click', () => showForm(loginForm));
+      registerTab.addEventListener('click', () => showForm(registerForm));
+      forgotLink.addEventListener('click', () => showForm(forgotForm));
+      backToLogin.addEventListener('click', () => showForm(loginForm));
+
+      document.querySelectorAll('[data-password-target]').forEach(button => {
+        button.addEventListener('click', () => {
+          const input = document.getElementById(button.dataset.passwordTarget);
+          input.type = input.type === 'password' ? 'text' : 'password';
+          button.textContent = input.type === 'password' ? 'إظهار' : 'إخفاء';
+        });
+      });
+    });
+  </script>
+</body>
+</html>
