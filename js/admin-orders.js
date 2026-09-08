@@ -350,16 +350,16 @@ const detailsHTML = `
         ${this.getPromoDetails(notes)}
 
         <div>
-          <span>التوصيل</span>
+          <span>رسوم التوصيل</span>
           <strong>
-            ${Admin.formatMoney(order.delivery_fee)}
+            ${Admin.formatMoney(order.delivery_fee || 0)}
           </strong>
         </div>
 
-        <div class="order-final-total">
-          <span>الإجمالي النهائي</span>
+        <div class="order-total">
+          <span>الإجمالي</span>
           <strong>
-            ${Admin.formatMoney(order.total)}
+            ${Admin.formatMoney(order.total ?? order.subtotal)}
           </strong>
         </div>
 
@@ -388,28 +388,31 @@ document.getElementById('order-modal').hidden = false;
 },
 
 getPromoDetails(notes) {
-if (!notes) return '';
+  if (!notes) return '';
 
+  // الصيغة الحالية المحفوظة من checkout:
+  // كود الخصم: هاجر | قيمة الخصم: 0.75 ج.م
+  const promoMatch = notes.match(
+    /كود الخصم:\s*(.*?)\s*\|\s*قيمة الخصم:\s*([\d.]+)/i
+  );
 
-const promoMatch = notes.match(
-  /Promo:\s*([A-Z0-9_-]+)\s*-\s*Discount:\s*([\d.]+)/i
-);
+  if (!promoMatch) return '';
 
-if (!promoMatch) return '';
+  const code = promoMatch[1].trim();
+  const discount = Number(promoMatch[2]);
 
-const code = promoMatch[1];
-const discount = Number(promoMatch[2]);
+  if (!code || !Number.isFinite(discount) || discount <= 0) {
+    return '';
+  }
 
-return `
-  <div>
-    <span>الخصم (${Admin.escape(code)})</span>
-
-    <strong>
-      - ${Admin.formatMoney(discount)}
-    </strong>
-  </div>
-`;
-
+  return `
+    <div>
+      <span>خصم كود ${Admin.escape(code)}</span>
+      <strong>
+        - ${Admin.formatMoney(discount)}
+      </strong>
+    </div>
+  `;
 }
 };
 
@@ -430,3 +433,5 @@ document.getElementById('order-modal').hidden = true;
 });
 
 });
+
+
