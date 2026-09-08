@@ -5,6 +5,14 @@
 
 const Cart = {
 
+  translate(key, fallback, values = {}) {
+    let text = typeof I18n !== 'undefined' ? I18n.t(key) : fallback;
+    Object.entries(values).forEach(([name, value]) => {
+      text = text.replace(`{${name}}`, value);
+    });
+    return text;
+  },
+
   // =======================================================
   // INIT
   // =======================================================
@@ -88,7 +96,7 @@ const Cart = {
       typeof App === 'undefined' ||
       !Array.isArray(App.products)
     ) {
-      alert('جاري تحميل المنتجات، برجاء المحاولة مرة أخرى');
+      alert(this.translate('loadingProducts', 'جاري تحميل المنتجات، برجاء المحاولة مرة أخرى'));
       return;
     }
 
@@ -115,7 +123,7 @@ const Cart = {
 
     if (stock <= 0) {
 
-      alert('هذا المنتج غير متوفر حاليًا');
+      alert(this.translate('outOfStock', 'هذا المنتج غير متوفر حاليًا'));
       return;
     }
 
@@ -145,9 +153,7 @@ const Cart = {
 
       if (currentQuantity >= stock) {
 
-        alert(
-          `لا يمكن إضافة أكثر من ${stock} قطعة من هذا المنتج`
-        );
+        alert(this.translate('maxProduct', `لا يمكن إضافة أكثر من ${stock} قطعة من هذا المنتج`, { stock }));
 
         return;
       }
@@ -253,9 +259,7 @@ const Cart = {
       currentQuantity >= stock
     ) {
 
-      alert(
-        `لا يمكن إضافة أكثر من ${stock} قطعة`
-      );
+      alert(this.translate('maxQuantity', `لا يمكن إضافة أكثر من ${stock} قطعة`, { stock }));
 
       return;
     }
@@ -447,14 +451,14 @@ const Cart = {
         <div class="cart-header">
 
           <h2 id="cart-title">
-            🛒 سلة المشتريات
+            🛒 ${this.translate('cartTitle', 'سلة المشتريات')}
           </h2>
 
           <button
             type="button"
             class="cart-close"
             data-cart-close
-            aria-label="إغلاق السلة"
+            aria-label="${this.translate('closeCart', 'إغلاق السلة')}"
           >
             ✕
           </button>
@@ -475,40 +479,40 @@ const Cart = {
           <div class="cart-summary-row">
 
             <span>
-              إجمالي الأصناف
+              ${this.translate('totalItems', 'إجمالي الأصناف')}
             </span>
 
             <strong
               id="cart-subtotal"
             >
-              0.00 ج.م
+              0.00 ${this.translate('currency', 'ج.م')}
             </strong>
 
           </div>
 
           <div class="cart-summary-row">
-            <span>عدد المنتجات</span>
+            <span>${this.translate('productCount', 'عدد المنتجات')}</span>
             <strong id="cart-quantity">0</strong>
           </div>
 
           <div class="cart-summary-row cart-summary-muted">
-            <span>خصم الكود</span>
-            <strong id="cart-promo-discount">0.00 ج.م</strong>
+            <span>${this.translate('promoDiscount', 'خصم الكود')}</span>
+            <strong id="cart-promo-discount">0.00 ${this.translate('currency', 'ج.م')}</strong>
           </div>
 
           <div class="cart-summary-row cart-summary-muted">
-            <span>خصم النقاط</span>
-            <strong id="cart-loyalty-discount">0.00 ج.م</strong>
+            <span>${this.translate('pointsDiscount', 'خصم النقاط')}</span>
+            <strong id="cart-loyalty-discount">0.00 ${this.translate('currency', 'ج.م')}</strong>
           </div>
 
           <div class="cart-summary-row cart-summary-muted">
-            <span>التوصيل</span>
-            <strong id="cart-delivery-fee">0.00 ج.م</strong>
+            <span>${this.translate('delivery', 'التوصيل')}</span>
+            <strong id="cart-delivery-fee">0.00 ${this.translate('currency', 'ج.م')}</strong>
           </div>
 
           <div class="cart-summary-row cart-summary-total">
-            <span>الإجمالي النهائي</span>
-            <strong id="cart-grand-total">0.00 ج.م</strong>
+            <span>${this.translate('grandTotal', 'الإجمالي النهائي')}</span>
+            <strong id="cart-grand-total">0.00 ${this.translate('currency', 'ج.م')}</strong>
           </div>
 
 
@@ -518,7 +522,7 @@ const Cart = {
             class="cart-checkout-button"
             disabled
           >
-            متابعة الطلب
+            ${this.translate('continueOrder', 'متابعة الطلب')}
           </button>
 
         </div>
@@ -590,7 +594,7 @@ document
     () => {
 
       if (!this.cart || this.cart.length === 0) {
-        alert('السلة فارغة');
+        alert(this.translate('cartEmptyAlert', 'السلة فارغة'));
         return;
       }
 
@@ -709,11 +713,11 @@ document
           </div>
 
           <p>
-            السلة فارغة حاليًا
+            ${this.translate('emptyCart', 'السلة فارغة حاليًا')}
           </p>
 
           <small>
-            أضيفي المنتجات التي تريدين شراءها
+            ${this.translate('emptyCartHint', 'أضيفي المنتجات التي تريدين شراءها')}
           </small>
 
         </div>
@@ -723,11 +727,11 @@ document
       if (subtotalElement) {
 
         subtotalElement.textContent =
-          '0.00 ج.م';
+          `0.00 ${this.translate('currency', 'ج.م')}`;
       }
 
           if (quantityElement) quantityElement.textContent = '0';
-          if (grandTotalElement) grandTotalElement.textContent = '0.00 ج.م';
+          if (grandTotalElement) grandTotalElement.textContent = `0.00 ${this.translate('currency', 'ج.م')}`;
           if (checkoutButton) checkoutButton.disabled = true;
 
       return;
@@ -798,7 +802,7 @@ document
                 item.is_offer
                   ? `
                     <span class="cart-offer-badge">
-                      Offer
+                      ${this.translate('offer', 'عرض')}
                     </span>
                   `
                   : ''
@@ -808,7 +812,7 @@ document
               <div class="cart-item-price">
 
                 ${price.toFixed(2)}
-                ج.م
+                ${this.translate('currency', 'ج.م')}
 
               </div>
 
@@ -818,7 +822,7 @@ document
                 <button
                   type="button"
                   data-cart-decrease="${this.escape(item.id)}"
-                  aria-label="تقليل الكمية"
+                  aria-label="${this.translate('decrease', 'تقليل الكمية')}"
                 >
                   −
                 </button>
@@ -831,7 +835,7 @@ document
                 <button
                   type="button"
                   data-cart-increase="${this.escape(item.id)}"
-                  aria-label="زيادة الكمية"
+                  aria-label="${this.translate('increase', 'زيادة الكمية')}"
                 >
                   +
                 </button>
@@ -845,7 +849,7 @@ document
 
               <strong>
                 ${total.toFixed(2)}
-                ج.م
+                ${this.translate('currency', 'ج.م')}
               </strong>
 
 
@@ -854,7 +858,7 @@ document
                 class="cart-remove"
                 data-cart-remove="${this.escape(item.id)}"
               >
-                حذف
+                ${this.translate('remove', 'حذف')}
               </button>
 
             </div>
@@ -869,12 +873,12 @@ document
     if (subtotalElement) {
 
       subtotalElement.textContent =
-        `${this.getItemsTotal().toFixed(2)} ج.م`;
+        `${this.getItemsTotal().toFixed(2)} ${this.translate('currency', 'ج.م')}`;
     }
 
     if (grandTotalElement) {
       grandTotalElement.textContent =
-        `${this.getItemsTotal().toFixed(2)} ج.م`;
+        `${this.getItemsTotal().toFixed(2)} ${this.translate('currency', 'ج.م')}`;
     }
 
     if (quantityElement) {

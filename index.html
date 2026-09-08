@@ -37,12 +37,21 @@
 
       <div class="header-actions">
 
+        <select
+          id="language-select"
+          class="header-button language-select"
+          aria-label="اختيار اللغة"
+        >
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+
         <button
           type="button"
           id="search-button"
           class="header-button"
         >
-          🔍 البحث
+          🔍 <span data-i18n="search">البحث</span>
         </button>
 
         <button
@@ -50,7 +59,7 @@
           id="cart-button"
           class="header-button"
         >
-          🛒 السلة
+          🛒 <span data-i18n="cart">السلة</span>
           <span id="cart-count">0</span>
         </button>
 
@@ -59,14 +68,14 @@
           id="account-button"
           class="header-button"
         >
-          👤 حسابي
+          👤 <span data-i18n="account">حسابي</span>
         </button>
 
         <a
           href="insurance.html"
           class="header-button"
         >
-          🛡️ التأمين
+          🛡️ <span data-i18n="insurance">التأمين</span>
         </a>
 
       </div>
@@ -92,6 +101,7 @@
         type="search"
         id="search-input"
         placeholder="ابحث عن اسم المنتج أو الكود..."
+        data-i18n-placeholder="searchPlaceholder"
         autocomplete="off"
       >
 
@@ -111,11 +121,11 @@
       <div class="container">
 
         <h1>
-          أهلاً بكم في صيدليات الهمسة
+          <span data-i18n="welcome">أهلًا بكم في صيدليات الهمسة</span>
         </h1>
 
         <p>
-          صحتك وراحتك أولويتنا
+          <span data-i18n="priority">صحتك وراحتك أولويتنا</span>
         </p>
 
       </div>
@@ -134,7 +144,7 @@
         <div class="section-title">
 
           <h2>
-            التصنيفات
+            <span data-i18n="categories">التصنيفات</span>
           </h2>
 
         </div>
@@ -144,7 +154,7 @@
           class="categories-grid"
         >
           <p class="loading">
-            جاري تحميل التصنيفات...
+            <span data-i18n="loadingCategories">جاري تحميل التصنيفات...</span>
           </p>
         </div>
 
@@ -164,7 +174,7 @@
         <div class="section-title">
 
           <h2 id="products-title">
-            المنتجات
+            <span data-i18n="products">المنتجات</span>
           </h2>
 
         </div>
@@ -174,7 +184,7 @@
           class="products-grid"
         >
           <p class="loading">
-            جاري تحميل المنتجات...
+            <span data-i18n="loadingProducts">جاري تحميل المنتجات...</span>
           </p>
         </div>
 
@@ -213,6 +223,7 @@
 
   <script src="js/supabase-config.js"></script>
 
+  <script src="js/i18n.js"></script>
   <script src="js/app.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/auth.js"></script>

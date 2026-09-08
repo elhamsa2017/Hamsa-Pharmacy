@@ -16,6 +16,12 @@ const App = {
     this.loadCart();
     this.bindEvents();
 
+    window.addEventListener('hamsaLanguageChanged', () => {
+      this.renderCategories();
+      this.renderProducts();
+      if (typeof Cart !== 'undefined') Cart.render();
+    });
+
     await this.loadCategories();
     await this.loadProducts();
 
@@ -54,7 +60,7 @@ const App = {
     if (!sb) {
       this.showError(
         'categories-container',
-        'تعذر الاتصال بقاعدة البيانات'
+        this.translate('databaseUnavailable', 'تعذر الاتصال بقاعدة البيانات')
       );
       return;
     }
@@ -90,7 +96,7 @@ const App = {
 
       this.showError(
         'categories-container',
-        'حدث خطأ أثناء تحميل التصنيفات'
+        this.translate('categoriesError', 'حدث خطأ أثناء تحميل التصنيفات')
       );
     }
   },
@@ -107,7 +113,7 @@ const App = {
     if (!sb) {
       this.showError(
         'products-container',
-        'تعذر الاتصال بقاعدة البيانات'
+        this.translate('databaseUnavailable', 'تعذر الاتصال بقاعدة البيانات')
       );
       return;
     }
@@ -159,7 +165,7 @@ const App = {
 
       this.showError(
         'products-container',
-        'حدث خطأ أثناء تحميل المنتجات'
+        this.translate('productsError', 'حدث خطأ أثناء تحميل المنتجات')
       );
     }
   },
@@ -182,7 +188,7 @@ const App = {
 
       container.innerHTML = `
         <div class="empty-state">
-          لا توجد تصنيفات حاليًا
+          ${this.translate('noCategories', 'لا توجد تصنيفات حاليًا')}
         </div>
       `;
 
@@ -242,21 +248,21 @@ const App = {
     const productId = this.escape(product.id);
 
     if (stock <= 0) {
-      return '<span class="product-unavailable-label">غير متوفر</span>';
+      return `<span class="product-unavailable-label">${this.translate('unavailable', 'غير متوفر')}</span>`;
     }
 
     if (quantity > 0) {
       return `
-        <div class="product-quantity-control" aria-label="تعديل كمية المنتج">
-          <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="تقليل الكمية">−</button>
+        <div class="product-quantity-control" aria-label="${this.translate('adjustQuantity', 'تعديل كمية المنتج')}">
+          <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="${this.translate('decrease', 'تقليل الكمية')}">−</button>
           <span class="product-quantity-value">${quantity}</span>
-          <button type="button" class="quantity-button" data-cart-increase="${productId}" aria-label="زيادة الكمية">+</button>
+          <button type="button" class="quantity-button" data-cart-increase="${productId}" aria-label="${this.translate('increase', 'زيادة الكمية')}">+</button>
         </div>
       `;
     }
 
     return `
-      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="إضافة ${this.escape(product.name || 'المنتج')} للسلة">
+      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="${this.translate('addToCart', 'إضافة للسلة')} ${this.escape(product.name || 'المنتج')}">
         <span aria-hidden="true">🛒</span>
         <span>أضف للسلة</span>
       </button>
@@ -287,7 +293,7 @@ renderProducts(products = this.products) {
 
     container.innerHTML = `
       <div class="empty-state">
-        لا توجد منتجات حاليًا
+          ${this.translate('noProducts', 'لا توجد منتجات حاليًا')}
       </div>
     `;
 
@@ -712,6 +718,10 @@ renderProducts(products = this.products) {
       year.textContent =
         new Date().getFullYear();
     }
+  },
+
+  translate(key, fallback) {
+    return typeof I18n !== 'undefined' ? I18n.t(key) : fallback;
   },
 
 

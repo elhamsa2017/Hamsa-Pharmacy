@@ -73,6 +73,9 @@ const Auth = {
         this.updateCustomerUI();
         this.renderAccountPage();
       });
+      window.addEventListener('hamsaLanguageChanged', () => {
+        this.updateCustomerUI();
+      });
     }
   },
 
@@ -81,7 +84,10 @@ const Auth = {
     if (!accountButton) return;
 
     const name = this.currentUser?.user_metadata?.full_name || this.currentUser?.email;
-    accountButton.textContent = name ? `👤 ${name}` : '👤 حسابي';
+    const accountLabel = typeof I18n !== 'undefined'
+      ? I18n.t('account')
+      : 'حسابي';
+    accountButton.textContent = name ? `👤 ${name}` : `👤 ${accountLabel}`;
   },
 
   goToCustomerPage() {

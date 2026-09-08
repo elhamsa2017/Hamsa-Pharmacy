@@ -106,6 +106,13 @@ a {
   transform: translateY(-1px);
 }
 
+.language-select {
+  min-height: 40px;
+  padding: 0 10px;
+  color: var(--text);
+  cursor: pointer;
+}
+
 #cart-count {
   display: inline-flex;
   align-items: center;
