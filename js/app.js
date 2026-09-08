@@ -136,19 +136,22 @@ const App = {
   // =======================================================
 
   async loadProducts() {
+  const sb = this.getSupabase();
 
-    const sb = this.getSupabase();
+  if (!sb) {
+    this.showError(
+      'products-container',
+      this.translate('databaseUnavailable', 'تعذر الاتصال بقاعدة البيانات')
+    );
+    return;
+  }
 
-    if (!sb) {
-      this.showError(
-        'products-container',
-        this.translate('databaseUnavailable', 'تعذر الاتصال بقاعدة البيانات')
-      );
-      return;
-    }
+  try {
+    const pageSize = 1000;
+    let from = 0;
+    let allProducts = [];
 
-    try {
-
+    while (true) {
       const { data, error } = await sb
         .from('products')
         .select(`
@@ -164,40 +167,56 @@ const App = {
           description,
           image,
           category
-          
         `)
         .order('name', {
           ascending: true
-        });
+        })
+        .range(from, from + pageSize - 1);
 
       if (error) {
         throw error;
       }
 
-      this.products = Array.isArray(data)
-        ? data
-        : [];
+      const products = Array.isArray(data) ? data : [];
+
+      allProducts.push(...products);
 
       console.log(
-        '✅ Products loaded:',
-        this.products.length
+        `📦 Products batch loaded: ${products.length} | Total: ${allProducts.length}`
       );
 
-      console.table(this.products);
+      if (products.length < pageSize) {
+        break;
+      }
 
-    } catch (error) {
-
-      console.error(
-        '❌ Products loading error:',
-        error
-      );
-
-      this.showError(
-        'products-container',
-        this.translate('productsError', 'حدث خطأ أثناء تحميل المنتجات')
-      );
+      from += pageSize;
     }
-  },
+
+    this.products = allProducts;
+
+    console.log(
+      '✅ All products loaded:',
+      this.products.length
+    );
+
+    console.table(this.products);
+
+  } catch (error) {
+
+    console.error(
+      '❌ Products loading error:',
+      error
+    );
+
+    this.showError(
+      'products-container',
+      this.translate(
+        'productsError',
+        'حدث خطأ أثناء تحميل المنتجات'
+      )
+    );
+  }
+},
 
   async loadProductImages() {
     this.imagesBySku = {};
