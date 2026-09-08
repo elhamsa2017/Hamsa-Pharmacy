@@ -5,7 +5,12 @@ const AdminOrders = {
     const state = document.getElementById('orders-state');
     const table = document.getElementById('orders-table');
     try {
-      const result = await Admin.query('orders', 'id,customer_name,items,subtotal,total,delivery_fee,payment_method,status,created_at', { order: 'created_at', ascending: false });
+     const result = await Admin.query('orders','id,customer_name,customer_phone,customer_address,items,subtotal,total,delivery_fee,payment_method,notes,status,created_at',
+  {
+    order: 'created_at',
+    ascending: false
+  }
+);
       this.orders = result.data || [];
       this.render();
       state.hidden = true;
