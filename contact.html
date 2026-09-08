@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تواصل معنا - صيدليات الهمسة</title>
+  <meta name="description" content="تواصل مع صيدليات الهمسة عبر فيسبوك وإنستجرام وواتساب">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .contact-page {
+      width: min(100% - 32px, 900px);
+      margin: 0 auto;
+      padding: 52px 0 70px;
+    }
+
+    .contact-hero {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .contact-hero-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: var(--secondary);
+      color: #fff;
+      font-size: 36px;
+      box-shadow: 0 12px 26px rgba(194, 65, 12, .18);
+    }
+
+    .contact-hero h1 {
+      color: var(--primary-dark);
+      font-size: clamp(26px, 4vw, 38px);
+      margin-bottom: 8px;
+    }
+
+    .contact-hero p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .contact-card {
+      display: flex;
+      min-height: 210px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--secondary);
+      box-shadow: 0 14px 28px rgba(124, 45, 18, .14);
+    }
+
+    .contact-card img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+    }
+
+    .contact-card h2 {
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .contact-card span {
+      color: var(--muted);
+      font-size: 14px;
+      direction: ltr;
+    }
+
+    .contact-back {
+      display: block;
+      width: fit-content;
+      margin: 28px auto 0;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    @media (max-width: 700px) {
+      .contact-page {
+        padding-top: 34px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-card {
+        min-height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">صيدليات الهمسة</a>
+      <div class="header-actions">
+        <select id="language-select" class="header-button language-select" aria-label="اختيار اللغة">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+        <a href="index.html" class="header-button" data-i18n="home">الرئيسية</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="contact-page">
+    <section class="contact-hero">
+      <div class="contact-hero-icon" aria-hidden="true">💬</div>
+      <h1 data-i18n="contactTitle">تواصل معنا</h1>
+      <p data-i18n="contactIntro">يسعدنا تواصلك معنا عبر حساباتنا الرسمية</p>
+    </section>
+
+    <section class="contact-grid" aria-label="وسائل التواصل الاجتماعي">
+      <a class="contact-card" href="https://www.facebook.com/share/1VqYhR4Z7U/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+        <img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook">
+        <h2>Facebook</h2>
+        <span data-i18n="visitFacebook">زيارة صفحتنا</span>
+      </a>
+
+      <a class="contact-card" href="https://www.instagram.com/elhamsapharmacy2025?stkn=cG1md3RubTU5M3p5" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+        <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram">
+        <h2>Instagram</h2>
+        <span data-i18n="visitInstagram">تابعنا على إنستجرام</span>
+      </a>
+
+      <a class="contact-card" href="https://wa.me/201142187658" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+        <img src="https://cdn.simpleicons.org/whatsapp/25D366" alt="WhatsApp">
+        <h2>WhatsApp</h2>
+        <span dir="ltr">01142187658</span>
+      </a>
+    </section>
+
+    <a class="contact-back" href="index.html" data-i18n="backToStore">العودة إلى المتجر</a>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const translations = {
+        ar: {
+          home: 'الرئيسية',
+          contactTitle: 'تواصل معنا',
+          contactIntro: 'يسعدنا تواصلك معنا عبر حساباتنا الرسمية',
+          visitFacebook: 'زيارة صفحتنا',
+          visitInstagram: 'تابعنا على إنستجرام',
+          backToStore: 'العودة إلى المتجر'
+        },
+        en: {
+          home: 'Home',
+          contactTitle: 'Contact Us',
+          contactIntro: 'We would love to hear from you through our official accounts',
+          visitFacebook: 'Visit our page',
+          visitInstagram: 'Follow us on Instagram',
+          backToStore: 'Back to store'
+        }
+      };
+
+      const applyContactLanguage = () => {
+        const language = I18n.language;
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+          element.textContent = translations[language][element.dataset.i18n];
+        });
+      };
+
+      applyContactLanguage();
+      window.addEventListener('hamsaLanguageChanged', applyContactLanguage);
+    });
+  </script>
+</body>
+</html>
