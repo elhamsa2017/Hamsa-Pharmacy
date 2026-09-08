@@ -1,5 +1,7 @@
 const AdminProducts = {
   products: [],
+  imagesBySku: {},
+  currentImageSku: null,
 
   async load() {
     const state = document.getElementById('products-state');
@@ -8,6 +10,7 @@ const AdminProducts = {
       Admin.showState(state, 'جاري تحميل المنتجات...');
       const result = await Admin.query('products', 'id,sku,name,price,stock,points,split_parts,is_offer,old_price,description,image,category', { order: 'name' });
       this.products = result.data || [];
+      await this.loadProductImages();
       this.render();
       state.hidden = true;
       table.hidden = false;
@@ -15,6 +18,39 @@ const AdminProducts = {
       Admin.showState(state, `تعذر تحميل المنتجات: ${error.message || 'تحقق من RLS'}`, true);
       table.hidden = true;
     }
+  },
+
+  async loadProductImages() {
+    this.imagesBySku = {};
+    try {
+      const result = await Admin.query(
+        'product_images',
+        'id,sku,image_url,is_primary,sort_order',
+        { order: 'sort_order' }
+      );
+
+      (result.data || []).forEach(image => {
+        const sku = String(image.sku || '').trim();
+        if (!sku) return;
+        if (!this.imagesBySku[sku]) this.imagesBySku[sku] = [];
+        this.imagesBySku[sku].push(image);
+      });
+    } catch (error) {
+      console.warn('Product images could not be loaded:', error);
+    }
+  },
+
+  getImages(product) {
+    return this.imagesBySku[String(product.sku || '').trim()] || [];
+  },
+
+  getPrimaryImage(product) {
+    const images = this.getImages(product);
+    return images
+      .filter(image => Boolean(image.is_primary))
+      .sort((first, second) => Number(first.sort_order || 0) - Number(second.sort_order || 0))[0]
+      || images[0]
+      || null;
   },
 
   filtered() {
@@ -32,16 +68,128 @@ const AdminProducts = {
     const body = document.querySelector('#products-table tbody');
     const rows = this.filtered();
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="10"><div class="admin-state">لا توجد منتجات مطابقة</div></td></tr>';
+      body.innerHTML = '<tr><td colspan="11"><div class="admin-state">لا توجد منتجات مطابقة</div></td></tr>';
       return;
     }
     body.innerHTML = rows.map(product => {
       const offer = Boolean(product.is_offer) && Number(product.old_price) > Number(product.price);
-      const image = product.image ? `<img class="admin-thumb" src="${Admin.escape(product.image)}" alt="${Admin.escape(product.name)}">` : '-';
-      return `<tr><td>${image}</td><td>${Admin.escape(product.name)}</td><td>${Admin.escape(product.sku || '-')}</td><td>${Admin.formatMoney(product.price)}</td><td>${product.old_price ? Admin.formatMoney(product.old_price) : '-'}</td><td><input class="admin-input stock-input" data-id="${Admin.escape(product.id)}" value="${Number(product.stock) || 0}" type="number" min="0" step="1" aria-label="مخزون ${Admin.escape(product.name)}"></td><td>${Number(product.points) || 0}</td><td>${Admin.escape(product.category || '-')}</td><td><span class="admin-badge ${offer ? 'warning' : 'success'}">${offer ? 'عرض' : 'عادي'}</span></td><td><button class="admin-button secondary edit-product" data-id="${Admin.escape(product.id)}" type="button">تعديل</button></td></tr>`;
+      const primaryImage = this.getPrimaryImage(product);
+      const imageUrl = primaryImage?.image_url || product.image;
+      const image = imageUrl ? `<img class="admin-thumb" src="${Admin.escape(imageUrl)}" alt="${Admin.escape(product.name)}">` : '-';
+      const imageCount = this.getImages(product).length;
+      return `<tr><td>${image}</td><td>${Admin.escape(product.name)}</td><td>${Admin.escape(product.sku || '-')}</td><td>${Admin.formatMoney(product.price)}</td><td>${product.old_price ? Admin.formatMoney(product.old_price) : '-'}</td><td><input class="admin-input stock-input" data-id="${Admin.escape(product.id)}" value="${Number(product.stock) || 0}" type="number" min="0" step="1" aria-label="مخزون ${Admin.escape(product.name)}"></td><td>${Number(product.points) || 0}</td><td>${Admin.escape(product.category || '-')}</td><td><span class="admin-badge ${offer ? 'warning' : 'success'}">${offer ? 'عرض' : 'عادي'}</span></td><td>${imageCount}</td><td><button class="admin-button secondary edit-product" data-id="${Admin.escape(product.id)}" type="button">تعديل</button><button class="admin-button secondary manage-images" data-sku="${Admin.escape(product.sku || '')}" type="button">الصور</button></td></tr>`;
     }).join('');
     body.querySelectorAll('.stock-input').forEach(input => input.addEventListener('change', event => this.saveStock(event.target)));
     body.querySelectorAll('.edit-product').forEach(button => button.addEventListener('click', () => this.openEdit(button.dataset.id)));
+    body.querySelectorAll('.manage-images').forEach(button => button.addEventListener('click', () => this.openImages(button.dataset.sku)));
+  },
+
+  openImages(sku) {
+    if (!sku) {
+      Admin.toast('لا يمكن إدارة الصور بدون SKU', true);
+      return;
+    }
+
+    this.currentImageSku = sku;
+    document.getElementById('image-sku').textContent = sku;
+    this.renderImageManager();
+    document.getElementById('image-modal').hidden = false;
+  },
+
+  renderImageManager() {
+    const list = document.getElementById('product-images-list');
+    if (!list) return;
+
+    const images = this.imagesBySku[this.currentImageSku] || [];
+    list.innerHTML = images.length
+      ? images.map(image => `
+          <div class="product-image-admin-row">
+            <img class="admin-thumb" src="${Admin.escape(image.image_url)}" alt="صورة المنتج">
+            <input class="admin-input image-sort-input" data-image-id="${Admin.escape(image.id)}" type="number" min="0" value="${Number(image.sort_order) || 0}" aria-label="ترتيب الصورة">
+            <span class="admin-badge ${image.is_primary ? 'success' : ''}">${image.is_primary ? 'أساسية' : 'إضافية'}</span>
+            <button class="admin-button secondary set-primary-image" data-image-id="${Admin.escape(image.id)}" type="button">${image.is_primary ? 'الصورة الأساسية' : 'تعيين كأساسية'}</button>
+            <button class="admin-button danger delete-product-image" data-image-id="${Admin.escape(image.id)}" type="button">حذف</button>
+          </div>
+        `).join('')
+      : '<div class="admin-state">لا توجد صور إضافية لهذا المنتج. سيتم استخدام products.image.</div>';
+
+    list.querySelectorAll('.image-sort-input').forEach(input => {
+      input.addEventListener('change', event => this.updateImageSort(event.target));
+    });
+    list.querySelectorAll('.set-primary-image').forEach(button => {
+      button.addEventListener('click', () => this.setPrimaryImage(button.dataset.imageId));
+    });
+    list.querySelectorAll('.delete-product-image').forEach(button => {
+      button.addEventListener('click', () => this.deleteImage(button.dataset.imageId));
+    });
+  },
+
+  async addImage(event) {
+    event.preventDefault();
+    const urlInput = document.getElementById('new-image-url');
+    const imageUrl = urlInput.value.trim();
+    if (!this.currentImageSku || !imageUrl) return;
+
+    const images = this.imagesBySku[this.currentImageSku] || [];
+    const { error } = await Admin.sb.from('product_images').insert({
+      sku: this.currentImageSku,
+      image_url: imageUrl,
+      is_primary: images.length === 0,
+      sort_order: images.reduce((max, image) => Math.max(max, Number(image.sort_order) || 0), -1) + 1
+    });
+
+    if (error) {
+      Admin.toast(`فشل إضافة الصورة: ${error.message || 'تحقق من RLS'}`, true);
+      return;
+    }
+
+    urlInput.value = '';
+    await this.loadProductImages();
+    this.renderImageManager();
+    this.render();
+  },
+
+  async setPrimaryImage(imageId) {
+    const images = this.imagesBySku[this.currentImageSku] || [];
+    try {
+      for (const image of images) {
+        await Admin.update('product_images', image.id, {
+          is_primary: String(image.id) === String(imageId)
+        });
+      }
+    } catch (error) {
+      Admin.toast(`فشل تحديد الصورة الأساسية: ${error.message || 'تحقق من RLS'}`, true);
+      return;
+    }
+    await this.loadProductImages();
+    this.renderImageManager();
+    this.render();
+  },
+
+  async updateImageSort(input) {
+    const sortOrder = Number(input.value);
+    if (!Number.isInteger(sortOrder) || sortOrder < 0) return;
+    try {
+      await Admin.update('product_images', input.dataset.imageId, { sort_order: sortOrder });
+    } catch (error) {
+      Admin.toast(`فشل تحديث ترتيب الصورة: ${error.message || 'تحقق من RLS'}`, true);
+      return;
+    }
+    await this.loadProductImages();
+    this.renderImageManager();
+    this.render();
+  },
+
+  async deleteImage(imageId) {
+    if (!window.confirm('هل تريد حذف هذه الصورة؟')) return;
+    const { error } = await Admin.sb.from('product_images').delete().eq('id', imageId);
+    if (error) {
+      Admin.toast(`فشل حذف الصورة: ${error.message || 'تحقق من RLS'}`, true);
+      return;
+    }
+    await this.loadProductImages();
+    this.renderImageManager();
+    this.render();
   },
 
   async saveStock(input) {
@@ -90,4 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('reload-products').addEventListener('click', () => AdminProducts.load());
   document.getElementById('close-product-modal').addEventListener('click', () => { document.getElementById('product-modal').hidden = true; });
   document.getElementById('product-form').addEventListener('submit', event => AdminProducts.save(event));
+  document.getElementById('close-image-modal').addEventListener('click', () => { document.getElementById('image-modal').hidden = true; });
+  document.getElementById('add-image-form').addEventListener('submit', event => AdminProducts.addImage(event));
 });

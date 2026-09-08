@@ -8,6 +8,7 @@ const App = {
   products: [],
   categories: [],
   cart: [],
+  imagesBySku: {},
 
   async init() {
     console.log('🚀 Hamsa Pharmacy starting...');
@@ -31,6 +32,7 @@ const App = {
 
     await this.loadCategories();
     await this.loadProducts();
+    await this.loadProductImages();
 
     this.renderCategories();
 
@@ -195,6 +197,51 @@ const App = {
         'products-container',
         this.translate('productsError', 'حدث خطأ أثناء تحميل المنتجات')
       );
+    }
+  },
+
+  async loadProductImages() {
+    this.imagesBySku = {};
+
+    const sb = this.getSupabase();
+    if (!sb) return;
+
+    try {
+      const { data, error } = await sb
+        .from('product_images')
+        .select('sku,image_url,is_primary,sort_order')
+        .not('sku', 'is', null)
+        .order('sort_order', { ascending: true });
+
+      if (error) throw error;
+
+      (Array.isArray(data) ? data : []).forEach(image => {
+        const sku = String(image.sku || '').trim();
+        const imageUrl = String(image.image_url || '').trim();
+        if (!sku || !imageUrl) return;
+
+        if (!this.imagesBySku[sku]) {
+          this.imagesBySku[sku] = [];
+        }
+
+        this.imagesBySku[sku].push(image);
+      });
+
+      this.products = this.products.map(product => {
+        const images = this.imagesBySku[String(product.sku || '').trim()] || [];
+        const primaryImage = images
+          .filter(image => Boolean(image.is_primary))
+          .sort((first, second) => Number(first.sort_order || 0) - Number(second.sort_order || 0))[0]
+          || images[0];
+
+        return {
+          ...product,
+          images,
+          image: primaryImage?.image_url || product.image || ''
+        };
+      });
+    } catch (error) {
+      console.warn('Product images unavailable; using products.image fallback.', error);
     }
   },
 
