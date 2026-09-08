@@ -18,7 +18,14 @@ const App = {
 
     window.addEventListener('hamsaLanguageChanged', () => {
       this.renderCategories();
-      this.renderProducts();
+      const categoryId =
+        new URLSearchParams(window.location.search).get('category_id');
+      const products = categoryId
+        ? this.products.filter(product =>
+            String(product.category) === String(categoryId)
+          )
+        : this.products;
+      this.renderProducts(products);
       if (typeof Cart !== 'undefined') Cart.render();
     });
 
@@ -26,7 +33,28 @@ const App = {
     await this.loadProducts();
 
     this.renderCategories();
-    this.renderProducts();
+
+    const categoryId =
+      new URLSearchParams(window.location.search).get('category_id');
+
+    if (categoryId) {
+      const category = this.categories.find(item =>
+        String(item.id) === String(categoryId)
+      );
+
+      const categoryProducts = this.products.filter(product =>
+        String(product.category) === String(categoryId)
+      );
+
+      const title = document.getElementById('products-title');
+      if (title) {
+        title.textContent = category?.name || this.translate('products', 'المنتجات');
+      }
+
+      this.renderProducts(categoryProducts);
+    } else {
+      this.renderProducts();
+    }
 
     console.log('✅ Hamsa Pharmacy ready');
   },
@@ -199,8 +227,8 @@ const App = {
       this.categories.map(category => {
 
         return `
-          <button
-            type="button"
+          <a
+            href="category.html?category_id=${encodeURIComponent(category.id)}"
             class="category-card"
             data-category-id="${this.escape(
               category.id
@@ -219,7 +247,7 @@ const App = {
               )}
             </div>
 
-          </button>
+          </a>
         `;
 
       }).join('');
@@ -431,23 +459,6 @@ renderProducts(products = this.products) {
     document.addEventListener(
       'click',
       event => {
-
-        const categoryButton =
-          event.target.closest(
-            '[data-category-id]'
-          );
-
-        if (categoryButton) {
-
-          const categoryId =
-            categoryButton.dataset.categoryId;
-
-          this.filterByCategory(
-            categoryId
-          );
-
-          return;
-        }
 
         if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease]')) {
           return;

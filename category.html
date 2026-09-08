@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منتجات التصنيف - صيدليات الهمسة</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .category-page {
+      width: min(100% - 32px, 1200px);
+      margin: 0 auto;
+      padding: 38px 0 60px;
+    }
+
+    .category-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .category-page-header h1 {
+      color: var(--primary-dark);
+      font-size: clamp(24px, 4vw, 34px);
+    }
+
+    .category-page-header p {
+      margin-top: 5px;
+      color: var(--muted);
+    }
+
+    .category-back {
+      flex: 0 0 auto;
+      color: var(--primary-dark);
+      font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+      .category-page-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">صيدليات الهمسة</a>
+      <div class="header-actions">
+        <select id="language-select" class="header-button language-select" aria-label="اختيار اللغة">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+        </select>
+        <button type="button" id="cart-button" class="header-button">
+          🛒 <span data-i18n="cart">السلة</span>
+          <span id="cart-count">0</span>
+        </button>
+        <button type="button" id="account-button" class="header-button">
+          👤 <span data-i18n="account">حسابي</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="category-page">
+    <header class="category-page-header">
+      <div>
+        <h1 id="products-title" data-i18n="products">المنتجات</h1>
+        <p data-i18n="categoryProductsIntro">منتجات هذا التصنيف</p>
+      </div>
+      <a class="category-back" href="index.html" data-i18n="backToStore">العودة إلى المتجر</a>
+    </header>
+
+    <div id="products-container" class="products-grid">
+      <p class="loading"><span data-i18n="loadingProducts">جاري تحميل المنتجات...</span></p>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

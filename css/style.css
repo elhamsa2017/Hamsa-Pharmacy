@@ -213,6 +213,7 @@ a {
 }
 
 .category-card {
+  display: block;
   flex: 0 0 104px;
   min-height: 88px;
   background: var(--surface);
