@@ -11,7 +11,9 @@
     content="إتمام طلبك من صيدليات الهمسة"
   >
 
-  <!-- Leaflet CSS -->
+  <!-- =========================
+       LEAFLET CSS
+       ========================= -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -98,6 +100,7 @@
       font-size: 15px;
       font-family: inherit;
       outline: none;
+      background: #fff;
     }
 
     .form-group input:focus,
@@ -184,6 +187,7 @@
     .pharmacy-label {
       font-size: 13px;
       font-weight: bold;
+      line-height: 1.6;
     }
 
     /* =========================
@@ -375,16 +379,32 @@
 
   <main class="checkout-container">
 
-    <a href="index.html" class="back-button">
+    <!-- =========================
+         BACK
+         ========================= -->
+
+    <a
+      href="index.html"
+      class="back-button"
+    >
       ← العودة للمتجر
     </a>
 
+
+    <!-- =========================
+         HEADER
+         ========================= -->
+
     <section class="checkout-header">
-      <h1>إتمام الطلب 🛒</h1>
+
+      <h1>
+        إتمام الطلب 🛒
+      </h1>
 
       <p>
         أكمل بياناتك لتأكيد طلبك من صيدليات الهمسة
       </p>
+
     </section>
 
 
@@ -401,6 +421,7 @@
           <h2>
             بيانات العميل
           </h2>
+
 
           <form id="checkout-form">
 
@@ -470,6 +491,7 @@
                 📍 موقع التوصيل
               </label>
 
+
               <button
                 type="button"
                 id="get-location-button"
@@ -478,7 +500,9 @@
                 📍 تحديد موقعي الحالي
               </button>
 
+
               <div id="delivery-map"></div>
+
 
               <div
                 id="location-info"
@@ -489,6 +513,7 @@
                 يمكنك الضغط على الخريطة لتحديد موقع التوصيل يدويًا.
               </div>
 
+
               <div
                 id="distance-info"
                 class="distance-box"
@@ -496,6 +521,7 @@
               >
 
                 📏 المسافة من الصيدلية:
+
                 <strong id="delivery-distance">
                   0.00 كم
                 </strong>
@@ -514,6 +540,7 @@
               <label for="payment-method">
                 طريقة الدفع *
               </label>
+
 
               <select
                 id="payment-method"
@@ -555,7 +582,9 @@
             </div>
 
 
-            <!-- MESSAGE -->
+            <!-- =========================
+                 MESSAGE
+                 ========================= -->
 
             <div
               id="checkout-message"
@@ -563,7 +592,9 @@
             ></div>
 
 
-            <!-- SUBMIT -->
+            <!-- =========================
+                 SUBMIT
+                 ========================= -->
 
             <button
               type="submit"
@@ -588,9 +619,13 @@
             ملخص الطلب
           </h2>
 
+
           <div id="order-items"></div>
 
+
           <div class="summary">
+
+            <!-- SUBTOTAL -->
 
             <div class="summary-row">
 
@@ -605,6 +640,8 @@
             </div>
 
 
+            <!-- DELIVERY -->
+
             <div class="summary-row">
 
               <span>
@@ -617,6 +654,8 @@
 
             </div>
 
+
+            <!-- TOTAL -->
 
             <div class="summary-row total">
 
@@ -651,7 +690,7 @@
 
 
   <!-- =========================
-       LEAFLET
+       LEAFLET JS
        ========================= -->
 
   <script
@@ -660,7 +699,7 @@
 
 
   <!-- =========================
-       CHECKOUT SCRIPT
+       CHECKOUT
        ========================= -->
 
   <script>
@@ -684,7 +723,9 @@
       deliveryDistanceKm: 0,
 
       deliveryFee: 0,
+
       pricePerKm: 0,
+
 
       // =====================================================
       // PHARMACY LOCATION
@@ -712,19 +753,26 @@
         );
 
 
-       this.loadCart();
+        this.loadCart();
 
-       this.render();
 
-       this.bindEvents();
+        this.render();
 
-       this.initMap();
 
-await this.loadDeliverySettings();
+        this.bindEvents();
 
-if (this.customerLocation) {
-  this.updateDeliveryFee();
-}
+
+        this.initMap();
+
+
+        await this.loadDeliverySettings();
+
+
+        if (this.customerLocation) {
+
+          this.updateDeliveryFee();
+
+        }
 
 
         console.log(
@@ -746,6 +794,7 @@ if (this.customerLocation) {
             localStorage.getItem(
               'hamsa_cart'
             );
+
 
           const parsed =
             saved
@@ -775,6 +824,90 @@ if (this.customerLocation) {
 
 
       // =====================================================
+      // LOAD DELIVERY SETTINGS
+      // =====================================================
+
+      async loadDeliverySettings() {
+
+        try {
+
+          if (
+            typeof supabaseClient ===
+            'undefined'
+          ) {
+
+            throw new Error(
+              'Supabase client غير متاح'
+            );
+
+          }
+
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('settings')
+              .select('data')
+              .eq(
+                'id',
+                'delivery_settings'
+              )
+              .maybeSingle();
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          const price =
+            Number(
+              data?.data?.delivery?.price_per_km
+            );
+
+
+          this.pricePerKm =
+            Number.isFinite(price)
+              ? price
+              : 0;
+
+
+          console.log(
+            '🚚 Price per km:',
+            this.pricePerKm
+          );
+
+
+          if (
+            this.pricePerKm <= 0
+          ) {
+
+            console.warn(
+              '⚠️ Delivery price per km is zero or unavailable'
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            '❌ Delivery settings error:',
+            error
+          );
+
+
+          this.pricePerKm = 0;
+
+        }
+
+      },
+
+
+      // =====================================================
       // RENDER
       // =====================================================
 
@@ -793,7 +926,9 @@ if (this.customerLocation) {
 
 
         if (!container) {
+
           return;
+
         }
 
 
@@ -831,7 +966,10 @@ if (this.customerLocation) {
 
 
           if (submitButton) {
-            submitButton.disabled = true;
+
+            submitButton.disabled =
+              true;
+
           }
 
 
@@ -904,10 +1042,12 @@ if (this.customerLocation) {
                         )}
                       </h3>
 
+
                       <p>
                         الكمية:
                         ${quantity}
                       </p>
+
 
                       <p>
                         السعر:
@@ -938,6 +1078,15 @@ if (this.customerLocation) {
           this.getSubtotal();
 
 
+        /*
+         * قبل اختيار الموقع:
+         * رسوم التوصيل = صفر.
+         *
+         * بمجرد اختيار الموقع:
+         * updateDeliveryFee()
+         * تحسب الرسوم تلقائيًا.
+         */
+
         this.deliveryFee = 0;
 
 
@@ -948,7 +1097,10 @@ if (this.customerLocation) {
 
 
         if (submitButton) {
-          submitButton.disabled = false;
+
+          submitButton.disabled =
+            false;
+
         }
 
       },
@@ -1064,7 +1216,7 @@ if (this.customerLocation) {
 
 
       // =====================================================
-      // EVENTS
+      // BIND EVENTS
       // =====================================================
 
       bindEvents() {
@@ -1116,58 +1268,7 @@ if (this.customerLocation) {
       // =====================================================
       // INIT MAP
       // =====================================================
-async loadDeliverySettings() {
 
-  try {
-
-    if (
-      typeof supabaseClient === 'undefined'
-    ) {
-      throw new Error(
-        'Supabase client غير متاح'
-      );
-    }
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from('settings')
-      .select('data')
-      .eq('id', 'delivery_settings')
-      .maybeSingle();
-
-    if (error) {
-      throw error;
-    }
-
-    const price =
-      Number(
-        data?.data?.delivery?.price_per_km
-      );
-
-    this.pricePerKm =
-      Number.isFinite(price)
-        ? price
-        : 0;
-
-    console.log(
-      '🚚 Price per km:',
-      this.pricePerKm
-    );
-
-  } catch (error) {
-
-    console.error(
-      '❌ Delivery settings error:',
-      error
-    );
-
-    this.pricePerKm = 0;
-
-  }
-
-},
       initMap() {
 
         const mapElement =
@@ -1187,7 +1288,9 @@ async loadDeliverySettings() {
         }
 
 
-        if (typeof L === 'undefined') {
+        if (
+          typeof L === 'undefined'
+        ) {
 
           console.error(
             '❌ Leaflet not loaded'
@@ -1237,25 +1340,31 @@ async loadDeliverySettings() {
 
           this.pharmacyMarker =
             L.marker(
+
               [
                 this.pharmacyLocation.latitude,
                 this.pharmacyLocation.longitude
               ]
+
             )
             .addTo(
               this.map
             )
             .bindPopup(
+
               `
                 <div class="pharmacy-label">
                   🏥 صيدليات الهمسة
+                  <br>
+                  موقع الصيدلية
                 </div>
               `
+
             );
 
 
           // =================================================
-          // MANUAL LOCATION
+          // MAP CLICK
           // =================================================
 
           this.map.on(
@@ -1314,7 +1423,9 @@ async loadDeliverySettings() {
           );
 
 
-        if (!navigator.geolocation) {
+        if (
+          !navigator.geolocation
+        ) {
 
           if (info) {
 
@@ -1344,7 +1455,8 @@ async loadDeliverySettings() {
 
         if (button) {
 
-          button.disabled = true;
+          button.disabled =
+            true;
 
           button.textContent =
             '📍 جاري تحديد موقعك...';
@@ -1380,7 +1492,8 @@ async loadDeliverySettings() {
 
             if (button) {
 
-              button.disabled = false;
+              button.disabled =
+                false;
 
               button.textContent =
                 '📍 تحديث موقعي';
@@ -1427,7 +1540,7 @@ async loadDeliverySettings() {
               message = `
                 ⚠️ لم يتم تحديد الموقع تلقائيًا.
                 <br>
-                يمكنك الضغط على الخريطة لتحديد مكان التوصيل يدويًا.
+                يمكنك الضغط على الخريطة لتحديد موقع التوصيل يدويًا.
               `;
 
             }
@@ -1454,7 +1567,8 @@ async loadDeliverySettings() {
 
             if (button) {
 
-              button.disabled = false;
+              button.disabled =
+                false;
 
               button.textContent =
                 '📍 تحديد موقعي الحالي';
@@ -1564,10 +1678,12 @@ async loadDeliverySettings() {
 
         this.customerMarker =
           L.marker(
+
             [
               safeLatitude,
               safeLongitude
             ]
+
           )
           .addTo(
             this.map
@@ -1579,38 +1695,44 @@ async loadDeliverySettings() {
 
 
         // =================================================
-        // CALCULATE DISTANCE
+        // DISTANCE
         // =================================================
 
         this.deliveryDistanceKm =
-          this.calculateDistanceKm
-            (
-              this.pharmacyLocation.latitude,
+          this.calculateDistanceKm(
 
-              this.pharmacyLocation.longitude,
+            this.pharmacyLocation.latitude,
 
-              safeLatitude,
+            this.pharmacyLocation.longitude,
 
-              safeLongitude
+            safeLatitude,
 
-            );
+            safeLongitude
+
+          );
 
 
         // =================================================
-        // CENTER MAP
+        // MAP BOUNDS
         // =================================================
 
         const bounds =
           L.latLngBounds(
 
             [
+
               this.pharmacyLocation.latitude,
+
               this.pharmacyLocation.longitude
+
             ],
 
             [
+
               safeLatitude,
+
               safeLongitude
+
             ]
 
           );
@@ -1628,7 +1750,7 @@ async loadDeliverySettings() {
 
 
         // =================================================
-        // UPDATE LOCATION INFO
+        // LOCATION INFO
         // =================================================
 
         const info =
@@ -1653,7 +1775,7 @@ async loadDeliverySettings() {
 
 
         // =================================================
-        // UPDATE DISTANCE
+        // DISTANCE INFO
         // =================================================
 
         const distanceInfo =
@@ -1678,9 +1800,17 @@ async loadDeliverySettings() {
 
         if (distanceInfo) {
 
-          distanceInfo.hidden = false;
+          distanceInfo.hidden =
+            false;
 
         }
+
+
+        // =================================================
+        // DELIVERY FEE
+        // =================================================
+
+        this.updateDeliveryFee();
 
 
         console.log(
@@ -1694,7 +1824,68 @@ async loadDeliverySettings() {
           this.deliveryDistanceKm,
           'km'
         );
-          this.updateDeliveryFee();
+
+      },
+
+
+      // =====================================================
+      // CALCULATE DELIVERY FEE
+      // =====================================================
+
+      updateDeliveryFee() {
+
+        const distance =
+          Number(
+            this.deliveryDistanceKm
+          ) || 0;
+
+
+        const pricePerKm =
+          Number(
+            this.pricePerKm
+          ) || 0;
+
+
+        /*
+         * المسافة × سعر الكيلومتر
+         */
+
+        this.deliveryFee =
+          Math.round(
+            (
+              distance *
+              pricePerKm
+            ) *
+            100
+          ) / 100;
+
+
+        const subtotal =
+          this.getSubtotal();
+
+
+        this.updateSummary(
+          subtotal,
+          this.deliveryFee
+        );
+
+
+        console.log(
+          '🚚 Delivery calculation:',
+          {
+
+            distanceKm:
+              distance,
+
+            pricePerKm:
+              pricePerKm,
+
+            deliveryFee:
+              this.deliveryFee
+
+          }
+        );
+
       },
 
 
@@ -1737,15 +1928,25 @@ async loadDeliverySettings() {
           Math.sin(
             dLat / 2
           ) ** 2
+
           +
+
           Math.cos(
-            toRadians(lat1)
+            toRadians(
+              lat1
+            )
           )
+
           *
+
           Math.cos(
-            toRadians(lat2)
+            toRadians(
+              lat2
+            )
           )
+
           *
+
           Math.sin(
             dLon / 2
           ) ** 2;
@@ -1754,8 +1955,13 @@ async loadDeliverySettings() {
         const c =
           2 *
           Math.atan2(
+
             Math.sqrt(a),
-            Math.sqrt(1 - a)
+
+            Math.sqrt(
+              1 - a
+            )
+
           );
 
 
@@ -1773,10 +1979,12 @@ async loadDeliverySettings() {
 
       async submitOrder() {
 
-        if (!this.cart.length) {
+        if (
+          !this.cart.length
+        ) {
 
           this.showMessage(
-            'السلة فارغة',
+            'السلة فارغة.',
             true
           );
 
@@ -1846,28 +2054,28 @@ async loadDeliverySettings() {
         }
 
 
+        // =================================================
+        // CURRENT TOTALS
+        // =================================================
+
         const subtotal =
           this.getSubtotal();
 
 
-        /*
-         * الرسوم حاليًا = صفر.
-         * سيتم ربطها لاحقًا بسعر الكيلومتر
-         * الذي يحدده الأدمن.
-         */
-
         const deliveryFee =
-          0;
-
-
-        this.deliveryFee =
-          deliveryFee;
+          Number(
+            this.deliveryFee
+          ) || 0;
 
 
         const total =
           subtotal +
           deliveryFee;
 
+
+        // =================================================
+        // ITEMS
+        // =================================================
 
         const items =
           this.cart.map(
@@ -1903,6 +2111,10 @@ async loadDeliverySettings() {
             })
           );
 
+
+        // =================================================
+        // ORDER
+        // =================================================
 
         const order = {
 
@@ -1956,7 +2168,8 @@ async loadDeliverySettings() {
 
         if (button) {
 
-          button.disabled = true;
+          button.disabled =
+            true;
 
           button.textContent =
             'جاري إرسال الطلب...';
@@ -2004,7 +2217,9 @@ async loadDeliverySettings() {
           );
 
 
-          // Clear cart
+          // =================================================
+          // CLEAR CART
+          // =================================================
 
           localStorage.removeItem(
             'hamsa_cart'
@@ -2014,7 +2229,9 @@ async loadDeliverySettings() {
           this.cart = [];
 
 
-          // Success message
+          // =================================================
+          // SUCCESS
+          // =================================================
 
           this.showMessage(
 
@@ -2061,6 +2278,16 @@ async loadDeliverySettings() {
                   </strong>
                 </p>
 
+                <p>
+                  الإجمالي:
+                  <strong>
+                    ${Number(
+                      order.total
+                    ).toFixed(2)}
+                    ج.م
+                  </strong>
+                </p>
+
                 <a href="index.html">
                   العودة للمتجر
                 </a>
@@ -2077,7 +2304,8 @@ async loadDeliverySettings() {
             button.textContent =
               'تم تأكيد الطلب ✓';
 
-            button.disabled = true;
+            button.disabled =
+              true;
 
           }
 
@@ -2098,7 +2326,8 @@ async loadDeliverySettings() {
 
           if (button) {
 
-            button.disabled = false;
+            button.disabled =
+              false;
 
             button.textContent =
               'تأكيد الطلب';
@@ -2138,7 +2367,7 @@ async loadDeliverySettings() {
 
 
       // =====================================================
-      // MESSAGE
+      // SHOW MESSAGE
       // =====================================================
 
       showMessage(
@@ -2153,7 +2382,9 @@ async loadDeliverySettings() {
 
 
         if (!element) {
+
           return;
+
         }
 
 
