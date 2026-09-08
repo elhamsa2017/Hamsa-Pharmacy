@@ -3,82 +3,1658 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>لوحة تحكم صيدليات الهمسة</title>
+
   <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    .promo-panel {
+      margin-top: 20px;
+    }
+
+    .promo-form {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-top: 15px;
+    }
+
+    .promo-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .promo-field label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .promo-field input,
+    .promo-field select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d8dee4;
+      border-radius: 10px;
+      font: inherit;
+      background: #fff;
+      outline: none;
+    }
+
+    .promo-field input:focus,
+    .promo-field select:focus {
+      border-color: #155e75;
+    }
+
+    .promo-list {
+      margin-top: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .promo-item {
+      border: 1px solid #e4e8ec;
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      background: #fff;
+    }
+
+    .promo-item-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .promo-code {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    .promo-details {
+      margin-top: 5px;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .promo-status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .promo-status.active {
+      background: #e8f7ee;
+      color: #16703a;
+    }
+
+    .promo-status.inactive {
+      background: #f3f4f6;
+      color: #666;
+    }
+
+    .promo-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .promo-actions button {
+      border: 0;
+      border-radius: 9px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: bold;
+    }
+
+    .promo-toggle {
+      background: #e9f4f7;
+      color: #155e75;
+    }
+
+    .promo-delete {
+      background: #fdecec;
+      color: #a52222;
+    }
+
+    .promo-empty {
+      padding: 25px;
+      text-align: center;
+      color: #777;
+      border: 1px dashed #d5dbe0;
+      border-radius: 12px;
+    }
+
+    .promo-help {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #777;
+      line-height: 1.6;
+    }
+
+    .settings-panel {
+      margin-top: 20px;
+    }
+
+    .delivery-setting {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      max-width: 550px;
+      margin-top: 15px;
+    }
+
+    .delivery-setting input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d8dee4;
+      border-radius: 10px;
+      font: inherit;
+    }
+
+    @media (max-width: 900px) {
+      .promo-form {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .promo-form {
+        grid-template-columns: 1fr;
+      }
+
+      .delivery-setting {
+        grid-template-columns: 1fr;
+      }
+
+      .promo-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .promo-actions {
+        width: 100%;
+      }
+
+      .promo-actions button {
+        flex: 1;
+      }
+    }
+  </style>
 </head>
+
 <body class="admin-body">
+
   <div class="admin-shell">
+
+    <!-- =========================
+         SIDEBAR
+         ========================= -->
+
     <aside class="admin-sidebar">
-      <a class="admin-brand" href="admin.html">لوحة تحكم صيدليات الهمسة</a>
-      <nav class="admin-nav" aria-label="التنقل الإداري">
-        <span class="admin-nav-title">الرئيسية</span>
-        <a class="active" href="admin.html">لوحة المعلومات</a>
-        <span class="admin-nav-title">الطلبات</span>
-        <a href="admin-orders.html">طلبات السلة</a>
-        <a href="admin-insurance.html">طلبات التأمين</a>
-        <span class="admin-nav-title">المنتجات</span>
-        <a href="admin-products.html">كل المنتجات</a>
-        <span class="admin-nav-title">التأمين</span>
-        <a href="insurance.html">شركات التأمين</a>
-        <a href="admin-insurance-companies.html">إدارة شركات التأمين</a>
-        <span class="admin-nav-title">الموقع</span>
-        <a href="index.html">عرض الموقع</a>
+
+      <a
+        class="admin-brand"
+        href="admin.html"
+      >
+        لوحة تحكم صيدليات الهمسة
+      </a>
+
+      <nav
+        class="admin-nav"
+        aria-label="التنقل الإداري"
+      >
+
+        <span class="admin-nav-title">
+          الرئيسية
+        </span>
+
+        <a
+          class="active"
+          href="admin.html"
+        >
+          لوحة المعلومات
+        </a>
+
+
+        <span class="admin-nav-title">
+          الطلبات
+        </span>
+
+        <a href="admin-orders.html">
+          طلبات السلة
+        </a>
+
+        <a href="admin-insurance.html">
+          طلبات التأمين
+        </a>
+
+
+        <span class="admin-nav-title">
+          المنتجات
+        </span>
+
+        <a href="admin-products.html">
+          كل المنتجات
+        </a>
+
+
+        <span class="admin-nav-title">
+          التأمين
+        </span>
+
+        <a href="insurance.html">
+          شركات التأمين
+        </a>
+
+        <a href="admin-insurance-companies.html">
+          إدارة شركات التأمين
+        </a>
+
+
+        <span class="admin-nav-title">
+          التسويق
+        </span>
+
+        <a href="#promo-section">
+          أكواد الخصم
+        </a>
+
+
+        <span class="admin-nav-title">
+          الموقع
+        </span>
+
+        <a href="index.html">
+          عرض الموقع
+        </a>
+
       </nav>
+
     </aside>
 
+
+    <!-- =========================
+         MAIN
+         ========================= -->
+
     <main class="admin-main">
+
       <header class="admin-header">
+
         <div>
-          <h1>لوحة المعلومات</h1>
-          <p>ملخص مباشر من بيانات Supabase الحالية</p>
+
+          <h1>
+            لوحة المعلومات
+          </h1>
+
+          <p>
+            ملخص مباشر من بيانات Supabase الحالية
+          </p>
+
         </div>
-        <button class="admin-button secondary" type="button" id="refresh-dashboard">تحديث</button>
+
+        <button
+          class="admin-button secondary"
+          type="button"
+          id="refresh-dashboard"
+        >
+          تحديث
+        </button>
+
       </header>
 
+
       <section class="admin-content">
-        <div id="dashboard-state" class="admin-state">جاري تحميل الإحصائيات...</div>
-        <div id="dashboard-cards" class="admin-grid" hidden></div>
+
+        <!-- =========================
+             DASHBOARD STATE
+             ========================= -->
+
+        <div
+          id="dashboard-state"
+          class="admin-state"
+        >
+          جاري تحميل الإحصائيات...
+        </div>
+
+
+        <!-- =========================
+             DASHBOARD CARDS
+             ========================= -->
+
+        <div
+          id="dashboard-cards"
+          class="admin-grid"
+          hidden
+        ></div>
+
+
+        <!-- =========================
+             PROMO CODES
+             ========================= -->
+
+        <section
+          class="admin-panel promo-panel"
+          id="promo-section"
+        >
+
+          <div class="admin-panel-header">
+
+            <div>
+
+              <h2>
+                🎟️ أكواد الخصم
+              </h2>
+
+              <p class="promo-help">
+                الكود يمكن أن يكون نسبة مئوية أو مبلغًا ثابتًا.
+                المنتجات التي عليها عروض سيتم استثناؤها عند تطبيق الكود في Checkout.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- ADD PROMO FORM -->
+
+          <form
+            id="promo-form"
+            class="promo-form"
+          >
+
+            <div class="promo-field">
+
+              <label for="promo-code">
+                كود الخصم
+              </label>
+
+              <input
+                id="promo-code"
+                type="text"
+                required
+                maxlength="50"
+                placeholder="مثال: HAMSA10"
+                autocomplete="off"
+              >
+
+            </div>
+
+
+            <div class="promo-field">
+
+              <label for="promo-type">
+                نوع الخصم
+              </label>
+
+              <select id="promo-type">
+
+                <option value="percentage">
+                  نسبة مئوية
+                </option>
+
+                <option value="fixed">
+                  مبلغ ثابت
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="promo-field">
+
+              <label for="promo-value">
+                قيمة الخصم
+              </label>
+
+              <input
+                id="promo-value"
+                type="number"
+                min="0"
+                step="0.01"
+                required
+                placeholder="10"
+              >
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="admin-button"
+            >
+              إضافة الكود
+            </button>
+
+          </form>
+
+
+          <!-- PROMO LIST -->
+
+          <div
+            id="promo-list"
+            class="promo-list"
+          >
+
+            <div class="promo-empty">
+              جاري تحميل أكواد الخصم...
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- =========================
+             DELIVERY SETTINGS
+             ========================= -->
+
+        <section class="admin-panel settings-panel">
+
+          <div class="admin-panel-header">
+
+            <div>
+
+              <h2>
+                🚚 إعدادات التوصيل
+              </h2>
+
+              <p class="promo-help">
+                سعر الكيلومتر المستخدم في حساب رسوم التوصيل.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="delivery-setting">
+
+            <div class="promo-field">
+
+              <label for="price-per-km">
+                سعر الكيلومتر
+              </label>
+
+              <input
+                id="price-per-km"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="5"
+              >
+
+            </div>
+
+
+            <button
+              type="button"
+              class="admin-button"
+              id="save-delivery-setting"
+            >
+              حفظ الإعداد
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- =========================
+             CURRENT SCOPE
+             ========================= -->
 
         <section class="admin-panel">
+
           <div class="admin-panel-header">
-            <h2>نطاق اللوحة الحالي</h2>
+
+            <h2>
+              نطاق اللوحة الحالي
+            </h2>
+
           </div>
-          <p>تم تفعيل الأقسام التي تتوافق مع الأعمدة الموجودة. Promo Codes وإعدادات التوصيل والمصادقة الإدارية تحتاج بنية أو ربطًا غير موجود حاليًا.</p>
+
+          <p>
+            تم ربط أكواد الخصم وإعدادات التوصيل بجدول
+            <strong>settings</strong>
+            الحالي بدون إنشاء جداول جديدة.
+          </p>
+
         </section>
+
       </section>
+
     </main>
+
   </div>
 
+
+  <!-- =========================
+       SUPABASE
+       ========================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <script src="js/supabase-config.js"></script>
+
+  <script src="js/auth.js"></script>
+
   <script src="js/admin.js"></script>
+
+
+  <!-- =========================
+       DASHBOARD + PROMOS
+       ========================= -->
+
   <script>
+
     const Dashboard = {
+
+      // =====================================================
+      // LOAD DASHBOARD
+      // =====================================================
+
       async load() {
-        const state = document.getElementById('dashboard-state');
-        const cards = document.getElementById('dashboard-cards');
-        Admin.showState(state, 'جاري تحميل الإحصائيات...');
+
+        const state =
+          document.getElementById(
+            'dashboard-state'
+          );
+
+        const cards =
+          document.getElementById(
+            'dashboard-cards'
+          );
+
+
+        Admin.showState(
+          state,
+          'جاري تحميل الإحصائيات...'
+        );
+
+
         cards.hidden = true;
+
+
         try {
-          const values = await Promise.all([
-            Admin.count('products'),
-            Admin.count('products', [['stock', 'gt', 0]]),
-            Admin.count('products', [['stock', 'eq', 0]]),
-            Admin.count('orders'),
-            Admin.count('orders', [['status', 'new']]),
-            Admin.count('insurance_requests', [['status', 'pending']])
-          ]);
-          const labels = ['إجمالي المنتجات', 'المنتجات المتاحة', 'المنتجات غير المتاحة', 'طلبات السلة', 'الطلبات الجديدة', 'طلبات التأمين الجديدة'];
-          cards.innerHTML = values.map((value, index) => `<article class="admin-card"><span class="admin-card-label">${labels[index]}</span><strong class="admin-card-value">${value}</strong></article>`).join('');
+
+          const values =
+            await Promise.all([
+
+              Admin.count(
+                'products'
+              ),
+
+              Admin.count(
+                'products',
+                [
+                  [
+                    'stock',
+                    'gt',
+                    0
+                  ]
+                ]
+              ),
+
+              Admin.count(
+                'products',
+                [
+                  [
+                    'stock',
+                    'eq',
+                    0
+                  ]
+                ]
+              ),
+
+              Admin.count(
+                'orders'
+              ),
+
+              Admin.count(
+                'orders',
+                [
+                  [
+                    'status',
+                    'eq',
+                    'new'
+                  ]
+                ]
+              ),
+
+              Admin.count(
+                'insurance_requests',
+                [
+                  [
+                    'status',
+                    'eq',
+                    'pending'
+                  ]
+                ]
+              )
+
+            ]);
+
+
+          const labels = [
+
+            'إجمالي المنتجات',
+
+            'المنتجات المتاحة',
+
+            'المنتجات غير المتاحة',
+
+            'طلبات السلة',
+
+            'الطلبات الجديدة',
+
+            'طلبات التأمين الجديدة'
+
+          ];
+
+
+          cards.innerHTML =
+            values
+              .map(
+                (
+                  value,
+                  index
+                ) => `
+
+                  <article class="admin-card">
+
+                    <span class="admin-card-label">
+                      ${labels[index]}
+                    </span>
+
+                    <strong class="admin-card-value">
+                      ${value}
+                    </strong>
+
+                  </article>
+
+                `
+              )
+              .join('');
+
+
           state.hidden = true;
+
           cards.hidden = false;
+
+
         } catch (error) {
-          Admin.showState(state, `تعذر تحميل الإحصائيات: ${error.message || 'تحقق من RLS'}`, true);
+
+          Admin.showState(
+
+            state,
+
+            `تعذر تحميل الإحصائيات: ${
+              error.message ||
+              'تحقق من RLS'
+            }`,
+
+            true
+
+          );
+
         }
+
       }
+
     };
-    document.getElementById('refresh-dashboard').addEventListener('click', () => Dashboard.load());
-    Dashboard.load();
+
+
+    // =======================================================
+    // PROMO MANAGER
+    // =======================================================
+
+    const PromoManager = {
+
+      settingId:
+        'promo_settings',
+
+
+      promos: [],
+
+
+      // =====================================================
+      // LOAD
+      // =====================================================
+
+      async load() {
+
+        const list =
+          document.getElementById(
+            'promo-list'
+          );
+
+
+        if (!list) {
+          return;
+        }
+
+
+        try {
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('settings')
+              .select('data')
+              .eq(
+                'id',
+                this.settingId
+              )
+              .maybeSingle();
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          this.promos =
+            Array.isArray(
+              data?.data?.promo_codes
+            )
+              ? data.data.promo_codes
+              : [];
+
+
+          this.render();
+
+
+        } catch (error) {
+
+          console.error(
+            '❌ Promo load error:',
+            error
+          );
+
+
+          list.innerHTML = `
+
+            <div class="promo-empty">
+              تعذر تحميل أكواد الخصم:
+              ${this.escape(
+                error.message ||
+                'خطأ غير معروف'
+              )}
+            </div>
+
+          `;
+
+        }
+
+      },
+
+
+      // =====================================================
+      // SAVE
+      // =====================================================
+
+      async save() {
+
+        const payload = {
+
+          promo_codes:
+            this.promos
+
+        };
+
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient
+            .from('settings')
+            .upsert(
+              {
+                id:
+                  this.settingId,
+
+                data:
+                  payload,
+
+                updated_at:
+                  new Date().toISOString()
+
+              },
+              {
+                onConflict:
+                  'id'
+              }
+            )
+            .select('id, data')
+            .single();
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        return data;
+
+      },
+
+
+      // =====================================================
+      // ADD
+      // =====================================================
+
+      async add(
+
+        code,
+        type,
+        value
+
+      ) {
+
+        const normalizedCode =
+          String(
+            code || ''
+          )
+          .trim()
+          .toUpperCase();
+
+
+        const numericValue =
+          Number(
+            value
+          );
+
+
+        if (!normalizedCode) {
+
+          throw new Error(
+            'اكتبي كود الخصم'
+          );
+
+        }
+
+
+        if (
+          !Number.isFinite(
+            numericValue
+          ) ||
+          numericValue <= 0
+        ) {
+
+          throw new Error(
+            'قيمة الخصم يجب أن تكون أكبر من صفر'
+          );
+
+        }
+
+
+        if (
+          type === 'percentage' &&
+          numericValue > 100
+        ) {
+
+          throw new Error(
+            'النسبة المئوية لا يمكن أن تتجاوز 100%'
+          );
+
+        }
+
+
+        const exists =
+          this.promos.some(
+            promo =>
+              String(
+                promo.code || ''
+              )
+              .toUpperCase() ===
+              normalizedCode
+          );
+
+
+        if (exists) {
+
+          throw new Error(
+            'هذا الكود موجود بالفعل'
+          );
+
+        }
+
+
+        this.promos.push({
+
+          code:
+            normalizedCode,
+
+          type:
+            type,
+
+          value:
+            numericValue,
+
+          active:
+            true
+
+        });
+
+
+        await this.save();
+
+        this.render();
+
+      },
+
+
+      // =====================================================
+      // TOGGLE
+      // =====================================================
+
+      async toggle(index) {
+
+        if (
+          !this.promos[index]
+        ) {
+          return;
+        }
+
+
+        this.promos[index].active =
+          !Boolean(
+            this.promos[index].active
+          );
+
+
+        await this.save();
+
+        this.render();
+
+      },
+
+
+      // =====================================================
+      // DELETE
+      // =====================================================
+
+      async remove(index) {
+
+        if (
+          !this.promos[index]
+        ) {
+          return;
+        }
+
+
+        const code =
+          this.promos[index].code;
+
+
+        const confirmed =
+          window.confirm(
+            `هل تريد حذف الكود ${code}؟`
+          );
+
+
+        if (!confirmed) {
+          return;
+        }
+
+
+        this.promos.splice(
+          index,
+          1
+        );
+
+
+        await this.save();
+
+        this.render();
+
+      },
+
+
+      // =====================================================
+      // RENDER
+      // =====================================================
+
+      render() {
+
+        const list =
+          document.getElementById(
+            'promo-list'
+          );
+
+
+        if (!list) {
+          return;
+        }
+
+
+        if (
+          !this.promos.length
+        ) {
+
+          list.innerHTML = `
+
+            <div class="promo-empty">
+              لا توجد أكواد خصم حتى الآن.
+            </div>
+
+          `;
+
+          return;
+
+        }
+
+
+        list.innerHTML =
+          this.promos
+            .map(
+              (
+                promo,
+                index
+              ) => {
+
+                const isActive =
+                  Boolean(
+                    promo.active
+                  );
+
+
+                const typeLabel =
+                  promo.type ===
+                  'percentage'
+
+                    ? 'نسبة مئوية'
+
+                    : 'مبلغ ثابت';
+
+
+                const valueLabel =
+                  promo.type ===
+                  'percentage'
+
+                    ? `${Number(
+                        promo.value
+                      ).toFixed(2)}%`
+
+                    : `${Number(
+                        promo.value
+                      ).toFixed(2)} ج.م`;
+
+
+                return `
+
+                  <article class="promo-item">
+
+                    <div class="promo-item-main">
+
+                      <div class="promo-code">
+                        ${this.escape(
+                          promo.code
+                        )}
+                      </div>
+
+                      <div class="promo-details">
+                        النوع: ${typeLabel}
+                        <br>
+                        القيمة: ${valueLabel}
+                      </div>
+
+                      <span
+                        class="promo-status ${
+                          isActive
+                            ? 'active'
+                            : 'inactive'
+                        }"
+                      >
+                        ${
+                          isActive
+                            ? 'مفعّل'
+                            : 'متوقف'
+                        }
+                      </span>
+
+                    </div>
+
+
+                    <div class="promo-actions">
+
+                      <button
+                        type="button"
+                        class="promo-toggle"
+                        data-promo-toggle="${index}"
+                      >
+                        ${
+                          isActive
+                            ? 'إيقاف'
+                            : 'تفعيل'
+                        }
+                      </button>
+
+                      <button
+                        type="button"
+                        class="promo-delete"
+                        data-promo-delete="${index}"
+                      >
+                        حذف
+                      </button>
+
+                    </div>
+
+                  </article>
+
+                `;
+
+              }
+            )
+            .join('');
+
+      },
+
+
+      // =====================================================
+      // ESCAPE
+      // =====================================================
+
+      escape(value) {
+
+        return String(
+          value ?? ''
+        )
+          .replace(
+            /&/g,
+            '&amp;'
+          )
+          .replace(
+            /</g,
+            '&lt;'
+          )
+          .replace(
+            />/g,
+            '&gt;'
+          )
+          .replace(
+            /"/g,
+            '&quot;'
+          )
+          .replace(
+            /'/g,
+            '&#039;'
+          );
+
+      }
+
+    };
+
+
+    // =======================================================
+    // DELIVERY SETTINGS
+    // =======================================================
+
+    const DeliverySettings = {
+
+      settingId:
+        'delivery_settings',
+
+
+      async load() {
+
+        const input =
+          document.getElementById(
+            'price-per-km'
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        try {
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('settings')
+              .select('data')
+              .eq(
+                'id',
+                this.settingId
+              )
+              .maybeSingle();
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          const price =
+            Number(
+              data?.data?.delivery?.price_per_km
+            );
+
+
+          input.value =
+            Number.isFinite(
+              price
+            )
+              ? price
+              : 0;
+
+
+        } catch (error) {
+
+          console.error(
+            '❌ Delivery settings load error:',
+            error
+          );
+
+        }
+
+      },
+
+
+      async save() {
+
+        const input =
+          document.getElementById(
+            'price-per-km'
+          );
+
+
+        if (!input) {
+          return;
+        }
+
+
+        const price =
+          Number(
+            input.value
+          );
+
+
+        if (
+          !Number.isFinite(
+            price
+          ) ||
+          price < 0
+        ) {
+
+          Admin.toast(
+            'أدخلي سعرًا صحيحًا',
+            true
+          );
+
+          return;
+
+        }
+
+
+        try {
+
+          const {
+            data,
+            error
+          } =
+            await supabaseClient
+              .from('settings')
+              .select('data')
+              .eq(
+                'id',
+                this.settingId
+              )
+              .maybeSingle();
+
+
+          if (error) {
+            throw error;
+          }
+
+
+          const currentData =
+            data?.data &&
+            typeof data.data ===
+              'object'
+
+              ? data.data
+
+              : {};
+
+
+          const newData = {
+
+            ...currentData,
+
+            delivery: {
+
+              ...(currentData.delivery || {}),
+
+              price_per_km:
+                price
+
+            }
+
+          };
+
+
+          const result =
+            await supabaseClient
+              .from('settings')
+              .upsert(
+                {
+                  id:
+                    this.settingId,
+
+                  data:
+                    newData,
+
+                  updated_at:
+                    new Date().toISOString()
+
+                },
+                {
+                  onConflict:
+                    'id'
+                }
+              );
+
+
+          if (result.error) {
+            throw result.error;
+          }
+
+
+          Admin.toast(
+            'تم حفظ سعر التوصيل بنجاح'
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            '❌ Delivery settings save error:',
+            error
+          );
+
+
+          Admin.toast(
+            `تعذر حفظ الإعداد: ${
+              error.message ||
+              'خطأ غير معروف'
+            }`,
+            true
+          );
+
+        }
+
+      }
+
+    };
+
+
+    // =======================================================
+    // EVENTS
+    // =======================================================
+
+    document
+      .getElementById(
+        'refresh-dashboard'
+      )
+      ?.addEventListener(
+        'click',
+        () => Dashboard.load()
+      );
+
+
+    document
+      .getElementById(
+        'promo-form'
+      )
+      ?.addEventListener(
+        'submit',
+        async event => {
+
+          event.preventDefault();
+
+
+          const code =
+            document.getElementById(
+              'promo-code'
+            ).value;
+
+
+          const type =
+            document.getElementById(
+              'promo-type'
+            ).value;
+
+
+          const value =
+            document.getElementById(
+              'promo-value'
+            ).value;
+
+
+          const button =
+            event.submitter;
+
+
+          if (button) {
+            button.disabled = true;
+          }
+
+
+          try {
+
+            await PromoManager.add(
+              code,
+              type,
+              value
+            );
+
+
+            document
+              .getElementById(
+                'promo-form'
+              )
+              .reset();
+
+
+            Admin.toast(
+              'تم إضافة كود الخصم بنجاح'
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              '❌ Promo add error:',
+              error
+            );
+
+
+            Admin.toast(
+              error.message ||
+              'تعذر إضافة الكود',
+              true
+            );
+
+
+          } finally {
+
+            if (button) {
+              button.disabled = false;
+            }
+
+          }
+
+        }
+      );
+
+
+    document.addEventListener(
+      'click',
+      async event => {
+
+        const toggleButton =
+          event.target.closest(
+            '[data-promo-toggle]'
+          );
+
+
+        if (toggleButton) {
+
+          const index =
+            Number(
+              toggleButton.dataset.promoToggle
+            );
+
+
+          try {
+
+            toggleButton.disabled =
+              true;
+
+            await PromoManager.toggle(
+              index
+            );
+
+
+            Admin.toast(
+              'تم تحديث حالة الكود'
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              '❌ Promo toggle error:',
+              error
+            );
+
+
+            Admin.toast(
+              error.message ||
+              'تعذر تحديث الكود',
+              true
+            );
+
+          } finally {
+
+            toggleButton.disabled =
+              false;
+
+          }
+
+          return;
+
+        }
+
+
+        const deleteButton =
+          event.target.closest(
+            '[data-promo-delete]'
+          );
+
+
+        if (deleteButton) {
+
+          const index =
+            Number(
+              deleteButton.dataset.promoDelete
+            );
+
+
+          try {
+
+            deleteButton.disabled =
+              true;
+
+            await PromoManager.remove(
+              index
+            );
+
+
+            Admin.toast(
+              'تم حذف كود الخصم'
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              '❌ Promo delete error:',
+              error
+            );
+
+
+            Admin.toast(
+              error.message ||
+              'تعذر حذف الكود',
+              true
+            );
+
+
+          } finally {
+
+            deleteButton.disabled =
+              false;
+
+          }
+
+        }
+
+      }
+    );
+
+
+    document
+      .getElementById(
+        'save-delivery-setting'
+      )
+      ?.addEventListener(
+        'click',
+        () => DeliverySettings.save()
+      );
+
+
+    // =======================================================
+    // START
+    // =======================================================
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      async () => {
+
+        await Dashboard.load();
+
+        await PromoManager.load();
+
+        await DeliverySettings.load();
+
+      }
+    );
+
   </script>
+
 </body>
 </html>
