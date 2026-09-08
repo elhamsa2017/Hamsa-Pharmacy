@@ -441,6 +441,8 @@
                 class="location-info"
               >
                 لم يتم تحديد موقعك بعد.
+                <br>
+                يمكنك الضغط على الخريطة لتحديد موقع التوصيل يدويًا.
               </div>
 
             </div>
@@ -450,6 +452,7 @@
                  ========================= -->
 
             <div class="form-group">
+
               <label for="payment-method">
                 طريقة الدفع *
               </label>
@@ -458,6 +461,7 @@
                 id="payment-method"
                 required
               >
+
                 <option value="">
                   اختاري طريقة الدفع
                 </option>
@@ -469,7 +473,9 @@
                 <option value="pickup">
                   الاستلام من الصيدلية
                 </option>
+
               </select>
+
             </div>
 
             <!-- =========================
@@ -592,7 +598,7 @@
 
 
   <!-- =========================
-       CHECKOUT
+       CHECKOUT JAVASCRIPT
        ========================= -->
 
   <script>
@@ -670,16 +676,14 @@
       render() {
 
         const container =
-          document.getElementById(
-            'order-items'
-          );
+          document.getElementById('order-items');
 
         const submitButton =
-          document.getElementById(
-            'submit-order'
-          );
+          document.getElementById('submit-order');
 
-        if (!container) return;
+        if (!container) {
+          return;
+        }
 
 
         // Empty cart
@@ -709,10 +713,7 @@
 
           `;
 
-          this.updateSummary(
-            0,
-            0
-          );
+          this.updateSummary(0, 0);
 
           if (submitButton) {
             submitButton.disabled = true;
@@ -724,71 +725,73 @@
 
 
         container.innerHTML =
-          this.cart.map(
-            item => {
+          this.cart
+            .map(
+              item => {
 
-              const price =
-                Number(item.price) || 0;
+                const price =
+                  Number(item.price) || 0;
 
-              const quantity =
-                Number(item.quantity) || 0;
+                const quantity =
+                  Number(item.quantity) || 0;
 
-              const total =
-                price * quantity;
+                const total =
+                  price * quantity;
 
-              const image =
-                item.image || '';
+                const image =
+                  item.image || '';
 
 
-              return `
+                return `
 
-                <div class="order-item">
+                  <div class="order-item">
 
-                  <div class="order-item-image">
+                    <div class="order-item-image">
 
-                    ${
-                      image
+                      ${
+                        image
 
-                        ? `
-                          <img
-                            src="${this.escape(image)}"
-                            alt="${this.escape(item.name)}"
-                          >
-                        `
+                          ? `
+                            <img
+                              src="${this.escape(image)}"
+                              alt="${this.escape(item.name)}"
+                            >
+                          `
 
-                        : `
-                          <span>💊</span>
-                        `
-                    }
+                          : `
+                            <span>💊</span>
+                          `
+                      }
+
+                    </div>
+
+                    <div class="order-item-info">
+
+                      <h3>
+                        ${this.escape(item.name)}
+                      </h3>
+
+                      <p>
+                        الكمية: ${quantity}
+                      </p>
+
+                      <p>
+                        السعر: ${price.toFixed(2)} ج.م
+                      </p>
+
+                    </div>
+
+                    <div class="order-item-total">
+                      ${total.toFixed(2)} ج.م
+                    </div>
 
                   </div>
 
-                  <div class="order-item-info">
+                `;
 
-                    <h3>
-                      ${this.escape(item.name)}
-                    </h3>
-
-                    <p>
-                      الكمية: ${quantity}
-                    </p>
-
-                    <p>
-                      السعر: ${price.toFixed(2)} ج.م
-                    </p>
-
-                  </div>
-
-                  <div class="order-item-total">
-                    ${total.toFixed(2)} ج.م
-                  </div>
-
-                </div>
-
-              `;
-
-            }
-          ).join('');
+              }
+            )
+            .join('');
 
 
         const subtotal =
@@ -801,6 +804,7 @@
           deliveryFee
         );
 
+
         if (submitButton) {
           submitButton.disabled = false;
         }
@@ -809,7 +813,7 @@
 
 
       // =====================================================
-      // SUMMARY
+      // UPDATE SUMMARY
       // =====================================================
 
       updateSummary(
@@ -833,15 +837,21 @@
           );
 
 
+        const safeSubtotal =
+          Number(subtotal) || 0;
+
+        const safeDelivery =
+          Number(deliveryFee) || 0;
+
         const total =
-          Number(subtotal) +
-          Number(deliveryFee);
+          safeSubtotal +
+          safeDelivery;
 
 
         if (subtotalElement) {
 
           subtotalElement.textContent =
-            `${Number(subtotal).toFixed(2)} ج.م`;
+            `${safeSubtotal.toFixed(2)} ج.م`;
 
         }
 
@@ -849,7 +859,7 @@
         if (deliveryElement) {
 
           deliveryElement.textContent =
-            `${Number(deliveryFee).toFixed(2)} ج.م`;
+            `${safeDelivery.toFixed(2)} ج.م`;
 
         }
 
@@ -865,7 +875,7 @@
 
 
       // =====================================================
-      // SUBTOTAL
+      // GET SUBTOTAL
       // =====================================================
 
       getSubtotal() {
@@ -882,11 +892,13 @@
             const quantity =
               Number(item.quantity) || 0;
 
-            return sum +
+            return (
+              sum +
               (
                 price *
                 quantity
-              );
+              )
+            );
 
           },
           0
@@ -896,7 +908,7 @@
 
 
       // =====================================================
-      // EVENTS
+      // BIND EVENTS
       // =====================================================
 
       bindEvents() {
@@ -979,50 +991,65 @@
         }
 
 
-        // Alexandria initial view
-        this.map =
-          L.map(
-            'delivery-map'
-          ).setView(
-            [
-              31.2001,
-              29.9187
-            ],
-            12
+        try {
+
+          this.map =
+            L.map(
+              'delivery-map'
+            ).setView(
+              [
+                31.2001,
+                29.9187
+              ],
+              12
+            );
+
+
+          L.tileLayer(
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {
+              maxZoom: 19,
+
+              attribution:
+                '&copy; OpenStreetMap contributors'
+            }
+          ).addTo(
+            this.map
           );
 
 
-        L.tileLayer(
-          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          {
-            maxZoom: 19,
-            attribution:
-              '&copy; OpenStreetMap contributors'
-          }
-        ).addTo(
-          this.map
-        );
+          // Manual location selection
+          this.map.on(
+            'click',
+            event => {
 
-this.map.on(
-  'click',
-  (event) => {
+              const latitude =
+                event.latlng.lat;
 
-    const latitude =
-      event.latlng.lat;
+              const longitude =
+                event.latlng.lng;
 
-    const longitude =
-      event.latlng.lng;
+              this.setCustomerLocation(
+                latitude,
+                longitude
+              );
 
-    this.setCustomerLocation(
-      latitude,
-      longitude
-    );
+            }
+          );
 
-  }
-);
-        console.log(
-          '✅ Map initialized'
-        );
+
+          console.log(
+            '✅ Map initialized'
+          );
+
+        } catch (error) {
+
+          console.error(
+            '❌ Map initialization error:',
+            error
+          );
+
+        }
 
       },
 
@@ -1031,121 +1058,286 @@ this.map.on(
       // GET CUSTOMER LOCATION
       // =====================================================
 
-     getCustomerLocation() {
+      getCustomerLocation() {
 
-  const button =
-    document.getElementById('get-location-button');
+        const button =
+          document.getElementById(
+            'get-location-button'
+          );
 
-  const info =
-    document.getElementById('location-info');
+        const info =
+          document.getElementById(
+            'location-info'
+          );
 
-  if (!navigator.geolocation) {
 
-    if (info) {
-      info.textContent =
-        'المتصفح لا يدعم تحديد الموقع.';
-    }
+        if (!navigator.geolocation) {
 
-    return;
-  }
+          if (info) {
 
-  if (!this.map) {
+            info.textContent =
+              'المتصفح لا يدعم تحديد الموقع.';
 
-    if (info) {
-      info.textContent =
-        'الخريطة لم يتم تحميلها بعد.';
-    }
+          }
 
-    return;
-  }
+          return;
 
-  if (button) {
-    button.disabled = true;
-    button.textContent = '📍 جاري تحديد موقعك...';
-  }
+        }
 
-  if (info) {
-    info.textContent =
-      'جاري محاولة تحديد موقعك...';
-  }
 
-  navigator.geolocation.getCurrentPosition(
+        if (!this.map) {
 
-    (position) => {
+          if (info) {
 
-      const latitude =
-        position.coords.latitude;
+            info.textContent =
+              'الخريطة لم يتم تحميلها بعد.';
 
-      const longitude =
-        position.coords.longitude;
+          }
 
-      this.setCustomerLocation(
+          return;
+
+        }
+
+
+        if (button) {
+
+          button.disabled = true;
+
+          button.textContent =
+            '📍 جاري تحديد موقعك...';
+
+        }
+
+
+        if (info) {
+
+          info.textContent =
+            'جاري محاولة تحديد موقعك...';
+
+        }
+
+
+        navigator.geolocation.getCurrentPosition(
+
+          position => {
+
+            const latitude =
+              position.coords.latitude;
+
+            const longitude =
+              position.coords.longitude;
+
+
+            this.setCustomerLocation(
+              latitude,
+              longitude
+            );
+
+
+            if (button) {
+
+              button.disabled = false;
+
+              button.textContent =
+                '📍 تحديث موقعي';
+
+            }
+
+          },
+
+
+          error => {
+
+            console.error(
+              '❌ Geolocation error:',
+              error
+            );
+
+
+            let message =
+              'تعذر تحديد موقعك.';
+
+
+            if (error.code === 1) {
+
+              message =
+                'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى موقعك ثم حاولي مرة أخرى.';
+
+            } else if (error.code === 2) {
+
+              message =
+                'تعذر الحصول على موقعك. تأكدي من تشغيل خدمات الموقع.';
+
+            } else if (error.code === 3) {
+
+              message = `
+                ⚠️ لم يتم تحديد الموقع تلقائيًا.
+                <br>
+                يمكنك الضغط على الخريطة لتحديد مكان التوصيل يدويًا.
+              `;
+
+            }
+
+            if (info) {
+
+              if (error.code === 3) {
+
+                info.innerHTML =
+                  message;
+
+              } else {
+
+                info.textContent =
+                  message;
+
+              }
+
+            }
+
+
+            if (button) {
+
+              button.disabled = false;
+
+              button.textContent =
+                '📍 تحديد موقعي الحالي';
+
+            }
+
+          },
+
+
+          {
+            enableHighAccuracy: false,
+
+            timeout: 30000,
+
+            maximumAge: 300000
+          }
+
+        );
+
+      },
+
+
+      // =====================================================
+      // SET CUSTOMER LOCATION
+      // =====================================================
+
+      setCustomerLocation(
         latitude,
         longitude
-      );
+      ) {
 
-      if (button) {
-        button.disabled = false;
-        button.textContent = '📍 تحديث موقعي';
-      }
+        const safeLatitude =
+          Number(latitude);
 
-    },
+        const safeLongitude =
+          Number(longitude);
 
-    (error) => {
 
-      console.error(
-        '❌ Geolocation error:',
-        error
-      );
+        if (
+          !Number.isFinite(safeLatitude) ||
+          !Number.isFinite(safeLongitude)
+        ) {
 
-      if (error.code === 1) {
+          console.error(
+            '❌ Invalid customer coordinates:',
+            latitude,
+            longitude
+          );
 
-        if (info) {
-          info.textContent =
-            'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى الموقع ثم حاولي مرة أخرى.';
+          return;
+
         }
 
-      } else if (error.code === 2) {
 
-        if (info) {
-          info.textContent =
-            'تعذر تحديد موقعك. تأكدي من تشغيل GPS أو خدمات الموقع.';
+        if (!this.map) {
+
+          console.error(
+            '❌ Map is not initialized'
+          );
+
+          return;
+
         }
 
-      } else if (error.code === 3) {
+
+        this.customerLocation = {
+
+          latitude:
+            safeLatitude,
+
+          longitude:
+            safeLongitude
+
+        };
+
+
+        // Remove previous marker
+        if (this.customerMarker) {
+
+          this.map.removeLayer(
+            this.customerMarker
+          );
+
+        }
+
+
+        // Add new marker
+        this.customerMarker =
+          L.marker(
+            [
+              safeLatitude,
+              safeLongitude
+            ]
+          )
+          .addTo(
+            this.map
+          )
+          .bindPopup(
+            '📍 موقع التوصيل'
+          )
+          .openPopup();
+
+
+        // Move map
+        this.map.setView(
+          [
+            safeLatitude,
+            safeLongitude
+          ],
+          17
+        );
+
+
+        const info =
+          document.getElementById(
+            'location-info'
+          );
+
 
         if (info) {
+
           info.innerHTML = `
-            ⚠️ لم يتم تحديد الموقع تلقائيًا.
+            ✅ تم تحديد موقع التوصيل
             <br>
-            يمكنك الضغط على الخريطة لتحديد مكان التوصيل يدويًا.
+            خط العرض:
+            ${safeLatitude.toFixed(6)}
+            <br>
+            خط الطول:
+            ${safeLongitude.toFixed(6)}
           `;
+
         }
 
-      } else {
 
-        if (info) {
-          info.textContent =
-            'حدث خطأ أثناء تحديد الموقع.';
-        }
+        console.log(
+          '📍 Customer location:',
+          this.customerLocation
+        );
 
-      }
-
-      if (button) {
-        button.disabled = false;
-        button.textContent = '📍 تحديد موقعي الحالي';
-      }
-
-    },
-
-    {
-      enableHighAccuracy: false,
-      timeout: 30000,
-      maximumAge: 300000
-    }
-
-  );
-},
+      },
 
 
       // =====================================================
@@ -1165,109 +1357,47 @@ this.map.on(
 
         }
 
-setCustomerLocation(
-  latitude,
-  longitude
-) 
 
-  this.customerLocation = {
-    latitude,
-    longitude
-  };
+        const nameElement =
+          document.getElementById(
+            'customer-name'
+          );
 
-  if (this.customerMarker) {
+        const phoneElement =
+          document.getElementById(
+            'customer-phone'
+          );
 
-    this.map.removeLayer(
-      this.customerMarker
-    );
+        const addressElement =
+          document.getElementById(
+            'customer-address'
+          );
 
-  }
+        const paymentElement =
+          document.getElementById(
+            'payment-method'
+          );
 
-  this.customerMarker =
-    L.marker([
-      latitude,
-      longitude
-    ])
-    .addTo(this.map)
-    .bindPopup(
-      '📍 موقع التوصيل'
-    )
-    .openPopup();
+        const notesElement =
+          document.getElementById(
+            'order-notes'
+          );
 
-  this.map.setView(
-    [
-      latitude,
-      longitude
-    ],
-    17
-  );
-
-  const info =
-    document.getElementById(
-      'location-info'
-    );
-
-  if (info) {
-
-    info.innerHTML = `
-      ✅ تم تحديد موقع التوصيل
-      <br>
-      خط العرض:
-      ${latitude.toFixed(6)}
-      <br>
-      خط الطول:
-      ${longitude.toFixed(6)}
-    `;
-
-  }
-
-  console.log(
-    '📍 Customer location:',
-    this.customerLocation
-  );
 
         const name =
-          document
-            .getElementById(
-              'customer-name'
-            )
-            ?.value
-            .trim();
-
+          nameElement?.value.trim() || '';
 
         const phone =
-          document
-            .getElementById(
-              'customer-phone'
-            )
-            ?.value
-            .trim();
-
+          phoneElement?.value.trim() || '';
 
         const address =
-          document
-            .getElementById(
-              'customer-address'
-            )
-            ?.value
-            .trim();
-
+          addressElement?.value.trim() || '';
 
         const paymentMethod =
-          document
-            .getElementById(
-              'payment-method'
-            )
-            ?.value;
-
+          paymentElement?.value || '';
 
         const notes =
-          document
-            .getElementById(
-              'order-notes'
-            )
-            ?.value
-            .trim();
+          notesElement?.value.trim() || '';
 
 
         if (
@@ -1292,11 +1422,13 @@ setCustomerLocation(
 
 
         /*
-         * حاليا التوصيل = صفر
-         * سنربطه لاحقا بالمسافة وسعر الكيلومتر.
+         * حاليًا التوصيل = صفر.
+         * سنربطه لاحقًا بالمسافة
+         * وسعر الكيلومتر.
          */
 
-        const deliveryFee = 0;
+        const deliveryFee =
+          0;
 
 
         const total =
@@ -1324,9 +1456,7 @@ setCustomerLocation(
                 Number(item.quantity) || 0,
 
               is_offer:
-                Boolean(
-                  item.is_offer
-                ),
+                Boolean(item.is_offer),
 
               image:
                 item.image || null
@@ -1502,8 +1632,6 @@ setCustomerLocation(
             button.disabled = true;
 
           }
-
-
         } catch (error) {
 
           console.error(
@@ -1552,7 +1680,7 @@ setCustomerLocation(
 
 
       // =====================================================
-      // MESSAGE
+      // SHOW MESSAGE
       // =====================================================
 
       showMessage(
@@ -1566,7 +1694,9 @@ setCustomerLocation(
           );
 
 
-        if (!element) return;
+        if (!element) {
+          return;
+        }
 
 
         element.textContent =
