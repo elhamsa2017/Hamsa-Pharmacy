@@ -21,10 +21,11 @@ const App = {
       this.renderCategories();
       const categoryId =
         new URLSearchParams(window.location.search).get('category_id');
+      const category = this.categories.find(item =>
+        String(item.id) === String(categoryId)
+      );
       const products = categoryId
-        ? this.products.filter(product =>
-            String(product.category) === String(categoryId)
-          )
+        ? this.getProductsForCategory(categoryId, category)
         : this.products;
       this.renderProducts(products);
       if (typeof Cart !== 'undefined') Cart.render();
@@ -44,9 +45,7 @@ const App = {
         String(item.id) === String(categoryId)
       );
 
-      const categoryProducts = this.products.filter(product =>
-        String(product.category) === String(categoryId)
-      );
+      const categoryProducts = this.getProductsForCategory(categoryId, category);
 
       const title = document.getElementById('products-title');
       if (title) {
@@ -630,19 +629,14 @@ renderProducts(products = this.products) {
 
   filterByCategory(categoryId) {
 
-    const products =
-      this.products.filter(
-        product =>
-          String(product.category) ===
-          String(categoryId)
-      );
-
     const category =
       this.categories.find(
         item =>
           String(item.id) ===
           String(categoryId)
       );
+
+        const products = this.getProductsForCategory(categoryId, category);
 
     const title =
       document.getElementById(
@@ -663,6 +657,18 @@ renderProducts(products = this.products) {
       ?.scrollIntoView({
         behavior: 'smooth'
       });
+  },
+
+  getProductsForCategory(categoryId, category = null) {
+    const requestedId = String(categoryId ?? '').trim().toLowerCase();
+    const requestedName = String(category?.name ?? '').trim().toLowerCase();
+
+    return this.products.filter(product => {
+      const productCategory = String(product.category ?? '').trim().toLowerCase();
+      return productCategory === requestedId
+        || (requestedName && productCategory === requestedName)
+        || (requestedName && productCategory.replace(/\s+/g, ' ') === requestedName.replace(/\s+/g, ' '));
+    });
   },
 
 
