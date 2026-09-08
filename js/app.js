@@ -341,22 +341,6 @@ renderProducts(products = this.products) {
               : ''
           }
 
-          <button
-            type="button"
-            class="favorite-btn"
-            aria-label="إضافة المنتج للمفضلة"
-          >
-            ♡
-          </button>
-
-          <button
-            type="button"
-            class="compare-btn"
-            aria-label="مقارنة المنتج"
-          >
-            ⚖
-          </button>
-
           ${
             image
               ? `
@@ -382,12 +366,6 @@ renderProducts(products = this.products) {
           <h3 class="product-name">
             ${this.escape(product.name || 'منتج')}
           </h3>
-
-          <div class="product-rating" aria-label="تقييم 5 من 5">
-            <span class="rating-stars">★★★★★</span>
-            <span class="rating-count">${this.escape(product.reviews_count || 0)}</span>
-          </div>
-
 
           <!-- السعر -->
           <div class="product-price-row">
