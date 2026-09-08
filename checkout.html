@@ -74,6 +74,10 @@
       padding-bottom: 12px;
     }
 
+    /* =========================
+       FORM
+       ========================= */
+
     .form-group {
       margin-bottom: 15px;
     }
@@ -156,12 +160,30 @@
 
     .location-info {
       margin-top: 10px;
-      padding: 10px;
+      padding: 12px;
       background: #f5f7f8;
       border-radius: 10px;
       font-size: 14px;
       color: #444;
-      line-height: 1.7;
+      line-height: 1.8;
+    }
+
+    .distance-box {
+      margin-top: 10px;
+      padding: 12px;
+      background: #eef8f7;
+      border: 1px solid #d4eeeb;
+      border-radius: 10px;
+      line-height: 1.8;
+    }
+
+    .distance-box strong {
+      color: #0f766e;
+    }
+
+    .pharmacy-label {
+      font-size: 13px;
+      font-weight: bold;
     }
 
     /* =========================
@@ -320,6 +342,7 @@
        ========================= */
 
     @media (max-width: 750px) {
+
       .checkout-grid {
         grid-template-columns: 1fr;
       }
@@ -358,8 +381,12 @@
 
     <section class="checkout-header">
       <h1>إتمام الطلب 🛒</h1>
-      <p>أكمل بياناتك لتأكيد طلبك من صيدليات الهمسة</p>
+
+      <p>
+        أكمل بياناتك لتأكيد طلبك من صيدليات الهمسة
+      </p>
     </section>
+
 
     <div id="checkout-content">
 
@@ -371,11 +398,16 @@
 
         <section class="checkout-card">
 
-          <h2>بيانات العميل</h2>
+          <h2>
+            بيانات العميل
+          </h2>
 
           <form id="checkout-form">
 
+            <!-- NAME -->
+
             <div class="form-group">
+
               <label for="customer-name">
                 الاسم *
               </label>
@@ -387,9 +419,14 @@
                 autocomplete="name"
                 placeholder="اكتب الاسم"
               >
+
             </div>
 
+
+            <!-- PHONE -->
+
             <div class="form-group">
+
               <label for="customer-phone">
                 رقم الهاتف *
               </label>
@@ -401,9 +438,14 @@
                 autocomplete="tel"
                 placeholder="01xxxxxxxxx"
               >
+
             </div>
 
+
+            <!-- ADDRESS -->
+
             <div class="form-group">
+
               <label for="customer-address">
                 العنوان *
               </label>
@@ -414,7 +456,9 @@
                 autocomplete="street-address"
                 placeholder="اكتب عنوان التوصيل بالتفصيل"
               ></textarea>
+
             </div>
+
 
             <!-- =========================
                  LOCATION
@@ -445,7 +489,21 @@
                 يمكنك الضغط على الخريطة لتحديد موقع التوصيل يدويًا.
               </div>
 
+              <div
+                id="distance-info"
+                class="distance-box"
+                hidden
+              >
+
+                📏 المسافة من الصيدلية:
+                <strong id="delivery-distance">
+                  0.00 كم
+                </strong>
+
+              </div>
+
             </div>
+
 
             <!-- =========================
                  PAYMENT
@@ -478,6 +536,7 @@
 
             </div>
 
+
             <!-- =========================
                  NOTES
                  ========================= -->
@@ -495,18 +554,16 @@
 
             </div>
 
-            <!-- =========================
-                 MESSAGE
-                 ========================= -->
+
+            <!-- MESSAGE -->
 
             <div
               id="checkout-message"
               class="message"
             ></div>
 
-            <!-- =========================
-                 SUBMIT
-                 ========================= -->
+
+            <!-- SUBMIT -->
 
             <button
               type="submit"
@@ -520,13 +577,16 @@
 
         </section>
 
+
         <!-- =========================
              ORDER SUMMARY
              ========================= -->
 
         <section class="checkout-card">
 
-          <h2>ملخص الطلب</h2>
+          <h2>
+            ملخص الطلب
+          </h2>
 
           <div id="order-items"></div>
 
@@ -544,6 +604,7 @@
 
             </div>
 
+
             <div class="summary-row">
 
               <span>
@@ -555,6 +616,7 @@
               </strong>
 
             </div>
+
 
             <div class="summary-row total">
 
@@ -589,7 +651,7 @@
 
 
   <!-- =========================
-       LEAFLET JS
+       LEAFLET
        ========================= -->
 
   <script
@@ -598,19 +660,45 @@
 
 
   <!-- =========================
-       CHECKOUT JAVASCRIPT
+       CHECKOUT SCRIPT
        ========================= -->
 
   <script>
+
     const Checkout = {
+
+      // =====================================================
+      // STATE
+      // =====================================================
 
       cart: [],
 
       map: null,
 
+      pharmacyMarker: null,
+
       customerMarker: null,
 
       customerLocation: null,
+
+      deliveryDistanceKm: 0,
+
+      deliveryFee: 0,
+
+
+      // =====================================================
+      // PHARMACY LOCATION
+      // =====================================================
+
+      pharmacyLocation: {
+
+        latitude:
+          31.25117090705062,
+
+        longitude:
+          30.0052725711635
+
+      },
 
 
       // =====================================================
@@ -619,7 +707,10 @@
 
       init() {
 
-        console.log('🧾 Checkout starting...');
+        console.log(
+          '🧾 Checkout starting...'
+        );
+
 
         this.loadCart();
 
@@ -629,7 +720,10 @@
 
         this.initMap();
 
-        console.log('✅ Checkout ready');
+
+        console.log(
+          '✅ Checkout ready'
+        );
 
       },
 
@@ -643,17 +737,21 @@
         try {
 
           const saved =
-            localStorage.getItem('hamsa_cart');
+            localStorage.getItem(
+              'hamsa_cart'
+            );
 
           const parsed =
             saved
               ? JSON.parse(saved)
               : [];
 
+
           this.cart =
             Array.isArray(parsed)
               ? parsed
               : [];
+
 
         } catch (error) {
 
@@ -661,6 +759,7 @@
             '❌ Cart loading error:',
             error
           );
+
 
           this.cart = [];
 
@@ -676,17 +775,22 @@
       render() {
 
         const container =
-          document.getElementById('order-items');
+          document.getElementById(
+            'order-items'
+          );
+
 
         const submitButton =
-          document.getElementById('submit-order');
+          document.getElementById(
+            'submit-order'
+          );
+
 
         if (!container) {
           return;
         }
 
 
-        // Empty cart
         if (!this.cart.length) {
 
           container.innerHTML = `
@@ -713,11 +817,17 @@
 
           `;
 
-          this.updateSummary(0, 0);
+
+          this.updateSummary(
+            0,
+            0
+          );
+
 
           if (submitButton) {
             submitButton.disabled = true;
           }
+
 
           return;
 
@@ -730,13 +840,21 @@
               item => {
 
                 const price =
-                  Number(item.price) || 0;
+                  Number(
+                    item.price
+                  ) || 0;
+
 
                 const quantity =
-                  Number(item.quantity) || 0;
+                  Number(
+                    item.quantity
+                  ) || 0;
+
 
                 const total =
-                  price * quantity;
+                  price *
+                  quantity;
+
 
                 const image =
                   item.image || '';
@@ -752,37 +870,53 @@
                         image
 
                           ? `
+
                             <img
                               src="${this.escape(image)}"
                               alt="${this.escape(item.name)}"
                             >
+
                           `
 
                           : `
-                            <span>💊</span>
+
+                            <span>
+                              💊
+                            </span>
+
                           `
                       }
 
                     </div>
 
+
                     <div class="order-item-info">
 
                       <h3>
-                        ${this.escape(item.name)}
+                        ${this.escape(
+                          item.name
+                        )}
                       </h3>
 
                       <p>
-                        الكمية: ${quantity}
+                        الكمية:
+                        ${quantity}
                       </p>
 
                       <p>
-                        السعر: ${price.toFixed(2)} ج.م
+                        السعر:
+                        ${price.toFixed(2)}
+                        ج.م
                       </p>
 
                     </div>
 
+
                     <div class="order-item-total">
-                      ${total.toFixed(2)} ج.م
+
+                      ${total.toFixed(2)}
+                      ج.م
+
                     </div>
 
                   </div>
@@ -797,11 +931,13 @@
         const subtotal =
           this.getSubtotal();
 
-        const deliveryFee = 0;
+
+        this.deliveryFee = 0;
+
 
         this.updateSummary(
           subtotal,
-          deliveryFee
+          this.deliveryFee
         );
 
 
@@ -826,10 +962,12 @@
             'order-subtotal'
           );
 
+
         const deliveryElement =
           document.getElementById(
             'order-delivery'
           );
+
 
         const totalElement =
           document.getElementById(
@@ -838,10 +976,16 @@
 
 
         const safeSubtotal =
-          Number(subtotal) || 0;
+          Number(
+            subtotal
+          ) || 0;
+
 
         const safeDelivery =
-          Number(deliveryFee) || 0;
+          Number(
+            deliveryFee
+          ) || 0;
+
 
         const total =
           safeSubtotal +
@@ -887,10 +1031,16 @@
           ) => {
 
             const price =
-              Number(item.price) || 0;
+              Number(
+                item.price
+              ) || 0;
+
 
             const quantity =
-              Number(item.quantity) || 0;
+              Number(
+                item.quantity
+              ) || 0;
+
 
             return (
               sum +
@@ -908,7 +1058,7 @@
 
 
       // =====================================================
-      // BIND EVENTS
+      // EVENTS
       // =====================================================
 
       bindEvents() {
@@ -997,28 +1147,60 @@
             L.map(
               'delivery-map'
             ).setView(
+
               [
-                31.2001,
-                29.9187
+                this.pharmacyLocation.latitude,
+                this.pharmacyLocation.longitude
               ],
-              12
+
+              14
+
             );
 
 
           L.tileLayer(
             'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             {
-              maxZoom: 19,
+
+              maxZoom:
+                19,
 
               attribution:
                 '&copy; OpenStreetMap contributors'
+
             }
           ).addTo(
             this.map
           );
 
 
-          // Manual location selection
+          // =================================================
+          // PHARMACY MARKER
+          // =================================================
+
+          this.pharmacyMarker =
+            L.marker(
+              [
+                this.pharmacyLocation.latitude,
+                this.pharmacyLocation.longitude
+              ]
+            )
+            .addTo(
+              this.map
+            )
+            .bindPopup(
+              `
+                <div class="pharmacy-label">
+                  🏥 صيدليات الهمسة
+                </div>
+              `
+            );
+
+
+          // =================================================
+          // MANUAL LOCATION
+          // =================================================
+
           this.map.on(
             'click',
             event => {
@@ -1026,8 +1208,10 @@
               const latitude =
                 event.latlng.lat;
 
+
               const longitude =
                 event.latlng.lng;
+
 
               this.setCustomerLocation(
                 latitude,
@@ -1042,6 +1226,7 @@
             '✅ Map initialized'
           );
 
+
         } catch (error) {
 
           console.error(
@@ -1055,7 +1240,7 @@
 
 
       // =====================================================
-      // GET CUSTOMER LOCATION
+      // GET CUSTOMER GPS
       // =====================================================
 
       getCustomerLocation() {
@@ -1064,6 +1249,7 @@
           document.getElementById(
             'get-location-button'
           );
+
 
         const info =
           document.getElementById(
@@ -1124,6 +1310,7 @@
             const latitude =
               position.coords.latitude;
 
+
             const longitude =
               position.coords.longitude;
 
@@ -1158,17 +1345,27 @@
               'تعذر تحديد موقعك.';
 
 
-            if (error.code === 1) {
+            if (
+              error.code === 1
+            ) {
 
               message =
                 'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى موقعك ثم حاولي مرة أخرى.';
 
-            } else if (error.code === 2) {
+            }
+
+            else if (
+              error.code === 2
+            ) {
 
               message =
                 'تعذر الحصول على موقعك. تأكدي من تشغيل خدمات الموقع.';
 
-            } else if (error.code === 3) {
+            }
+
+            else if (
+              error.code === 3
+            ) {
 
               message = `
                 ⚠️ لم يتم تحديد الموقع تلقائيًا.
@@ -1181,7 +1378,9 @@
 
             if (info) {
 
-              if (error.code === 3) {
+              if (
+                error.code === 3
+              ) {
 
                 info.innerHTML =
                   message;
@@ -1209,11 +1408,14 @@
 
 
           {
-            enableHighAccuracy: false,
+            enableHighAccuracy:
+              false,
 
-            timeout: 30000,
+            timeout:
+              30000,
 
-            maximumAge: 300000
+            maximumAge:
+              300000
           }
 
         );
@@ -1231,15 +1433,24 @@
       ) {
 
         const safeLatitude =
-          Number(latitude);
+          Number(
+            latitude
+          );
+
 
         const safeLongitude =
-          Number(longitude);
+          Number(
+            longitude
+          );
 
 
         if (
-          !Number.isFinite(safeLatitude) ||
-          !Number.isFinite(safeLongitude)
+          !Number.isFinite(
+            safeLatitude
+          ) ||
+          !Number.isFinite(
+            safeLongitude
+          )
         ) {
 
           console.error(
@@ -1275,8 +1486,13 @@
         };
 
 
-        // Remove previous marker
-        if (this.customerMarker) {
+        // =================================================
+        // REMOVE OLD CUSTOMER MARKER
+        // =================================================
+
+        if (
+          this.customerMarker
+        ) {
 
           this.map.removeLayer(
             this.customerMarker
@@ -1285,7 +1501,10 @@
         }
 
 
-        // Add new marker
+        // =================================================
+        // CUSTOMER MARKER
+        // =================================================
+
         this.customerMarker =
           L.marker(
             [
@@ -1302,15 +1521,58 @@
           .openPopup();
 
 
-        // Move map
-        this.map.setView(
-          [
+        // =================================================
+        // CALCULATE DISTANCE
+        // =================================================
+
+        this.deliveryDistanceKm =
+          this.calculateDistanceKm(
+
+            this.pharmacyLocation.latitude,
+
+            this.pharmacyLocation.longitude,
+
             safeLatitude,
+
             safeLongitude
-          ],
-          17
+
+          );
+
+
+        // =================================================
+        // CENTER MAP
+        // =================================================
+
+        const bounds =
+          L.latLngBounds(
+
+            [
+              this.pharmacyLocation.latitude,
+              this.pharmacyLocation.longitude
+            ],
+
+            [
+              safeLatitude,
+              safeLongitude
+            ]
+
+          );
+
+
+        this.map.fitBounds(
+          bounds,
+          {
+            padding: [
+              40,
+              40
+            ]
+          }
         );
 
+
+        // =================================================
+        // UPDATE LOCATION INFO
+        // =================================================
 
         const info =
           document.getElementById(
@@ -1333,9 +1595,116 @@
         }
 
 
+        // =================================================
+        // UPDATE DISTANCE
+        // =================================================
+
+        const distanceInfo =
+          document.getElementById(
+            'distance-info'
+          );
+
+
+        const distanceElement =
+          document.getElementById(
+            'delivery-distance'
+          );
+
+
+        if (distanceElement) {
+
+          distanceElement.textContent =
+            `${this.deliveryDistanceKm.toFixed(2)} كم`;
+
+        }
+
+
+        if (distanceInfo) {
+
+          distanceInfo.hidden = false;
+
+        }
+
+
         console.log(
           '📍 Customer location:',
           this.customerLocation
+        );
+
+
+        console.log(
+          '📏 Delivery distance:',
+          this.deliveryDistanceKm,
+          'km'
+        );
+
+      },
+
+
+      // =====================================================
+      // HAVERSINE DISTANCE
+      // =====================================================
+
+      calculateDistanceKm(
+        lat1,
+        lon1,
+        lat2,
+        lon2
+      ) {
+
+        const earthRadiusKm =
+          6371;
+
+
+        const toRadians =
+          degrees =>
+            degrees *
+            (
+              Math.PI / 180
+            );
+
+
+        const dLat =
+          toRadians(
+            lat2 - lat1
+          );
+
+
+        const dLon =
+          toRadians(
+            lon2 - lon1
+          );
+
+
+        const a =
+          Math.sin(
+            dLat / 2
+          ) ** 2
+          +
+          Math.cos(
+            toRadians(lat1)
+          )
+          *
+          Math.cos(
+            toRadians(lat2)
+          )
+          *
+          Math.sin(
+            dLon / 2
+          ) ** 2;
+
+
+        const c =
+          2 *
+          Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1 - a)
+          );
+
+
+        return (
+          earthRadiusKm *
+          c
         );
 
       },
@@ -1359,46 +1728,48 @@
         }
 
 
-        const nameElement =
-          document.getElementById(
-            'customer-name'
-          );
-
-        const phoneElement =
-          document.getElementById(
-            'customer-phone'
-          );
-
-        const addressElement =
-          document.getElementById(
-            'customer-address'
-          );
-
-        const paymentElement =
-          document.getElementById(
-            'payment-method'
-          );
-
-        const notesElement =
-          document.getElementById(
-            'order-notes'
-          );
-
-
         const name =
-          nameElement?.value.trim() || '';
+          document
+            .getElementById(
+              'customer-name'
+            )
+            ?.value
+            .trim() || '';
+
 
         const phone =
-          phoneElement?.value.trim() || '';
+          document
+            .getElementById(
+              'customer-phone'
+            )
+            ?.value
+            .trim() || '';
+
 
         const address =
-          addressElement?.value.trim() || '';
+          document
+            .getElementById(
+              'customer-address'
+            )
+            ?.value
+            .trim() || '';
+
 
         const paymentMethod =
-          paymentElement?.value || '';
+          document
+            .getElementById(
+              'payment-method'
+            )
+            ?.value || '';
+
 
         const notes =
-          notesElement?.value.trim() || '';
+          document
+            .getElementById(
+              'order-notes'
+            )
+            ?.value
+            .trim() || '';
 
 
         if (
@@ -1423,13 +1794,17 @@
 
 
         /*
-         * حاليًا التوصيل = صفر.
-         * سنربطه لاحقًا بالمسافة
-         * وسعر الكيلومتر.
+         * الرسوم حاليًا = صفر.
+         * سيتم ربطها لاحقًا بسعر الكيلومتر
+         * الذي يحدده الأدمن.
          */
 
         const deliveryFee =
           0;
+
+
+        this.deliveryFee =
+          deliveryFee;
 
 
         const total =
@@ -1451,13 +1826,19 @@
                 item.name || '',
 
               price:
-                Number(item.price) || 0,
+                Number(
+                  item.price
+                ) || 0,
 
               quantity:
-                Number(item.quantity) || 0,
+                Number(
+                  item.quantity
+                ) || 0,
 
               is_offer:
-                Boolean(item.is_offer),
+                Boolean(
+                  item.is_offer
+                ),
 
               image:
                 item.image || null
@@ -1529,7 +1910,8 @@
         try {
 
           if (
-            typeof supabaseClient === 'undefined'
+            typeof supabaseClient ===
+            'undefined'
           ) {
 
             throw new Error(
@@ -1566,18 +1948,24 @@
 
 
           // Clear cart
+
           localStorage.removeItem(
             'hamsa_cart'
           );
+
 
           this.cart = [];
 
 
           // Success message
+
           this.showMessage(
+
             `تم إرسال طلبك بنجاح 🎉
 رقم الطلب: ${order.id}`,
+
             false
+
           );
 
 
@@ -1610,7 +1998,9 @@
                 <p>
                   رقم الطلب:
                   <strong>
-                    ${this.escape(order.id)}
+                    ${this.escape(
+                      order.id
+                    )}
                   </strong>
                 </p>
 
@@ -1633,6 +2023,7 @@
             button.disabled = true;
 
           }
+
 
         } catch (error) {
 
@@ -1669,20 +2060,28 @@
       generateOrderId() {
 
         return (
+
           'ORD-' +
+
           Date.now() +
+
           '-' +
+
           Math.random()
             .toString(36)
-            .substring(2, 8)
+            .substring(
+              2,
+              8
+            )
             .toUpperCase()
+
         );
 
       },
 
 
       // =====================================================
-      // SHOW MESSAGE
+      // MESSAGE
       // =====================================================
 
       showMessage(
@@ -1762,6 +2161,7 @@
 
       }
     );
+
   </script>
 
 </body>
