@@ -11,9 +11,7 @@
     content="إتمام طلبك من صيدليات الهمسة"
   >
 
-  <!-- =========================
-       LEAFLET CSS
-       ========================= -->
+  <!-- Leaflet -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -115,103 +113,6 @@
     }
 
     /* =========================
-       PROMO CODE
-       ========================= */
-
-    .promo-section {
-      margin-top: 18px;
-      padding: 14px;
-      border: 1px solid #e4e8ec;
-      border-radius: 12px;
-      background: #fafcfd;
-    }
-
-    .promo-title {
-      margin: 0 0 10px;
-      color: #155e75;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .promo-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-    }
-
-    .promo-row input {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d8dee4;
-      border-radius: 10px;
-      font: inherit;
-      outline: none;
-      text-transform: uppercase;
-    }
-
-    .promo-row input:focus {
-      border-color: #155e75;
-    }
-
-    .promo-row button {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 16px;
-      background: #0f766e;
-      color: #fff;
-      font: inherit;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .promo-row button:hover {
-      opacity: .92;
-    }
-
-    .promo-row button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
-
-    .promo-message {
-      margin-top: 9px;
-      font-size: 13px;
-      line-height: 1.7;
-      display: none;
-    }
-
-    .promo-message.success {
-      display: block;
-      color: #16703a;
-    }
-
-    .promo-message.error {
-      display: block;
-      color: #a52222;
-    }
-
-    .promo-applied {
-      margin-top: 9px;
-      padding: 9px 10px;
-      background: #e8f7ee;
-      color: #16703a;
-      border-radius: 9px;
-      font-size: 13px;
-      display: none;
-      line-height: 1.7;
-    }
-
-    .promo-remove {
-      margin-right: 8px;
-      border: 0;
-      background: transparent;
-      color: #a52222;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    /* =========================
        LOCATION
        ========================= */
 
@@ -237,7 +138,6 @@
       font-weight: bold;
       cursor: pointer;
       margin-bottom: 12px;
-      transition: .2s ease;
     }
 
     .location-button:hover {
@@ -285,6 +185,96 @@
       font-size: 13px;
       font-weight: bold;
       line-height: 1.6;
+    }
+
+    /* =========================
+       PROMO
+       ========================= */
+
+    .promo-section {
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid #e4e8ec;
+      border-radius: 12px;
+      background: #fafcfd;
+    }
+
+    .promo-title {
+      margin-bottom: 10px;
+      color: #155e75;
+      font-weight: bold;
+    }
+
+    .promo-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .promo-row input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #d8dee4;
+      border-radius: 10px;
+      font: inherit;
+      outline: none;
+      text-transform: uppercase;
+    }
+
+    .promo-row input:focus {
+      border-color: #155e75;
+    }
+
+    .promo-row button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      background: #0f766e;
+      color: #fff;
+      font: inherit;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .promo-row button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .promo-message {
+      display: none;
+      margin-top: 9px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .promo-message.success {
+      display: block;
+      color: #16703a;
+    }
+
+    .promo-message.error {
+      display: block;
+      color: #a52222;
+    }
+
+    .promo-applied {
+      display: none;
+      margin-top: 9px;
+      padding: 9px 10px;
+      background: #e8f7ee;
+      color: #16703a;
+      border-radius: 9px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .promo-remove {
+      border: 0;
+      background: transparent;
+      color: #a52222;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* =========================
@@ -370,10 +360,6 @@
       color: #16703a;
     }
 
-    .summary-row.muted {
-      color: #666;
-    }
-
     .summary-row.total {
       border-top: 2px solid #eee;
       margin-top: 8px;
@@ -383,7 +369,7 @@
     }
 
     /* =========================
-       BUTTON
+       BUTTONS
        ========================= */
 
     .submit-button {
@@ -393,15 +379,10 @@
       padding: 15px;
       margin-top: 20px;
       background: #155e75;
-      color: white;
+      color: #fff;
       font-size: 17px;
       font-weight: bold;
       cursor: pointer;
-      transition: .2s ease;
-    }
-
-    .submit-button:hover {
-      opacity: .92;
     }
 
     .submit-button:disabled {
@@ -418,7 +399,7 @@
     }
 
     /* =========================
-       EMPTY
+       EMPTY / MESSAGE
        ========================= */
 
     .empty-cart {
@@ -430,10 +411,6 @@
       font-size: 50px;
       margin-bottom: 15px;
     }
-
-    /* =========================
-       MESSAGE
-       ========================= */
 
     .message {
       display: none;
@@ -456,10 +433,6 @@
       background: #fdecec;
       color: #a52222;
     }
-
-    /* =========================
-       MOBILE
-       ========================= */
 
     @media (max-width: 750px) {
 
@@ -503,373 +476,301 @@
 
   <main class="checkout-container">
 
-    <a
-      href="index.html"
-      class="back-button"
-    >
+    <a href="index.html" class="back-button">
       ← العودة للمتجر
     </a>
 
-
     <section class="checkout-header">
-
-      <h1>
-        إتمام الطلب 🛒
-      </h1>
-
-      <p>
-        أكمل بياناتك لتأكيد طلبك من صيدليات الهمسة
-      </p>
-
+      <h1>إتمام الطلب 🛒</h1>
+      <p>أكمل بياناتك لتأكيد طلبك من صيدليات الهمسة</p>
     </section>
 
+    <div class="checkout-grid">
 
-    <div id="checkout-content">
+      <!-- =========================
+           CUSTOMER
+           ========================= -->
 
-      <div class="checkout-grid">
+      <section class="checkout-card">
 
-        <!-- =========================
-             CUSTOMER DATA
-             ========================= -->
+        <h2>بيانات العميل</h2>
 
-        <section class="checkout-card">
+        <form id="checkout-form">
 
-          <h2>
-            بيانات العميل
-          </h2>
+          <div class="form-group">
+            <label for="customer-name">الاسم *</label>
 
+            <input
+              type="text"
+              id="customer-name"
+              required
+              autocomplete="name"
+              placeholder="اكتب الاسم"
+            >
+          </div>
 
-          <form id="checkout-form">
 
-            <!-- NAME -->
+          <div class="form-group">
+            <label for="customer-phone">رقم الهاتف *</label>
 
-            <div class="form-group">
+            <input
+              type="tel"
+              id="customer-phone"
+              required
+              autocomplete="tel"
+              placeholder="01xxxxxxxxx"
+            >
+          </div>
 
-              <label for="customer-name">
-                الاسم *
-              </label>
 
-              <input
-                type="text"
-                id="customer-name"
-                required
-                autocomplete="name"
-                placeholder="اكتب الاسم"
-              >
+          <div class="form-group">
+            <label for="customer-address">العنوان *</label>
 
-            </div>
+            <textarea
+              id="customer-address"
+              required
+              autocomplete="street-address"
+              placeholder="اكتب عنوان التوصيل بالتفصيل"
+            ></textarea>
+          </div>
 
 
-            <!-- PHONE -->
+          <!-- =========================
+               LOCATION
+               ========================= -->
 
-            <div class="form-group">
+          <div class="location-section">
 
-              <label for="customer-phone">
-                رقم الهاتف *
-              </label>
-
-              <input
-                type="tel"
-                id="customer-phone"
-                required
-                autocomplete="tel"
-                placeholder="01xxxxxxxxx"
-              >
-
-            </div>
-
-
-            <!-- ADDRESS -->
-
-            <div class="form-group">
-
-              <label for="customer-address">
-                العنوان *
-              </label>
-
-              <textarea
-                id="customer-address"
-                required
-                autocomplete="street-address"
-                placeholder="اكتب عنوان التوصيل بالتفصيل"
-              ></textarea>
-
-            </div>
-
-
-            <!-- =========================
-                 LOCATION
-                 ========================= -->
-
-            <div class="location-section">
-
-              <label class="location-label">
-                📍 موقع التوصيل
-              </label>
-
-
-              <button
-                type="button"
-                id="get-location-button"
-                class="location-button"
-              >
-                📍 تحديد موقعي الحالي
-              </button>
-
-
-              <div id="delivery-map"></div>
-
-
-              <div
-                id="location-info"
-                class="location-info"
-              >
-                لم يتم تحديد موقعك بعد.
-                <br>
-                يمكنك الضغط على الخريطة لتحديد موقع التوصيل يدويًا.
-              </div>
-
-
-              <div
-                id="distance-info"
-                class="distance-box"
-                hidden
-              >
-
-                📏 المسافة من الصيدلية:
-
-                <strong id="delivery-distance">
-                  0.00 كم
-                </strong>
-
-              </div>
-
-            </div>
-
-
-            <!-- =========================
-                 PROMO CODE
-                 ========================= -->
-
-            <div class="promo-section">
-
-              <div class="promo-title">
-                🎟️ كود الخصم
-              </div>
-
-              <div
-                id="promo-unavailable-message"
-                class="promo-message"
-              >
-                لا يوجد منتج عادي مؤهل للخصم.
-                المنتجات التي عليها عروض لا تقبل كود الخصم.
-              </div>
-
-
-              <div class="promo-row">
-
-                <input
-                  type="text"
-                  id="promo-code-input"
-                  placeholder="اكتب كود الخصم"
-                  maxlength="50"
-                  autocomplete="off"
-                >
-
-                <button
-                  type="button"
-                  id="apply-promo-button"
-                >
-                  تطبيق الكود
-                </button>
-
-              </div>
-
-
-              <div
-                id="promo-message"
-                class="promo-message"
-              ></div>
-
-
-              <div
-                id="promo-applied"
-                class="promo-applied"
-              >
-
-                <span id="promo-applied-text"></span>
-
-                <button
-                  type="button"
-                  id="remove-promo-button"
-                  class="promo-remove"
-                >
-                  إزالة
-                </button>
-
-              </div>
-
-            </div>
-
-
-            <!-- =========================
-                 PAYMENT
-                 ========================= -->
-
-            <div class="form-group">
-
-              <label for="payment-method">
-                طريقة الدفع *
-              </label>
-
-
-              <select
-                id="payment-method"
-                required
-              >
-
-                <option value="">
-                  اختاري طريقة الدفع
-                </option>
-
-                <option value="cash">
-                  الدفع عند الاستلام
-                </option>
-
-                <option value="pickup">
-                  الاستلام من الصيدلية
-                </option>
-
-              </select>
-
-            </div>
-
-
-            <!-- =========================
-                 NOTES
-                 ========================= -->
-
-            <div class="form-group">
-
-              <label for="order-notes">
-                ملاحظات إضافية
-              </label>
-
-              <textarea
-                id="order-notes"
-                placeholder="أي ملاحظات خاصة بالطلب..."
-              ></textarea>
-
-            </div>
-
-
-            <!-- MESSAGE -->
-
-            <div
-              id="checkout-message"
-              class="message"
-            ></div>
-
-
-            <!-- SUBMIT -->
+            <label class="location-label">
+              📍 موقع التوصيل
+            </label>
 
             <button
-              type="submit"
-              id="submit-order"
-              class="submit-button"
+              type="button"
+              id="get-location-button"
+              class="location-button"
             >
-              تأكيد الطلب
+              📍 تحديد موقعي الحالي
             </button>
 
-          </form>
-
-        </section>
-
-
-        <!-- =========================
-             ORDER SUMMARY
-             ========================= -->
-
-        <section class="checkout-card">
-
-          <h2>
-            ملخص الطلب
-          </h2>
-
-
-          <div id="order-items"></div>
-
-
-          <div class="summary">
-
-            <!-- ORIGINAL SUBTOTAL -->
-
-            <div class="summary-row">
-
-              <span>
-                إجمالي المنتجات
-              </span>
-
-              <strong id="order-subtotal">
-                0.00 ج.م
-              </strong>
-
-            </div>
-
-
-            <!-- PROMO DISCOUNT -->
+            <div id="delivery-map"></div>
 
             <div
-              class="summary-row discount"
-              id="promo-discount-row"
+              id="location-info"
+              class="location-info"
+            >
+              لم يتم تحديد موقعك بعد.
+              <br>
+              يمكنك الضغط على الخريطة لتحديد الموقع يدويًا.
+            </div>
+
+            <div
+              id="distance-info"
+              class="distance-box"
               hidden
             >
-
-              <span>
-                خصم الكود
-              </span>
-
-              <strong id="order-promo-discount">
-                0.00 ج.م
-              </strong>
-
-            </div>
-
-
-            <!-- DELIVERY -->
-
-            <div class="summary-row">
-
-              <span>
-                التوصيل
-              </span>
-
-              <strong id="order-delivery">
-                0.00 ج.م
-              </strong>
-
-            </div>
-
-
-            <!-- TOTAL -->
-
-            <div class="summary-row total">
-
-              <span>
-                الإجمالي النهائي
-              </span>
-
-              <strong id="order-total">
-                0.00 ج.م
-              </strong>
-
+              📏 المسافة من الصيدلية:
+              <strong id="delivery-distance">0.00 كم</strong>
             </div>
 
           </div>
 
-        </section>
 
-      </div>
+          <!-- =========================
+               PROMO
+               ========================= -->
+
+          <div class="promo-section">
+
+            <div class="promo-title">
+              🎟️ كود الخصم
+            </div>
+
+            <div
+              id="promo-unavailable-message"
+              class="promo-message"
+            >
+              لا يوجد منتج عادي مؤهل للخصم.
+              المنتجات التي عليها عروض لا تقبل كود الخصم.
+            </div>
+
+            <div class="promo-row">
+
+              <input
+                type="text"
+                id="promo-code-input"
+                maxlength="50"
+                placeholder="اكتب كود الخصم"
+                autocomplete="off"
+              >
+
+              <button
+                type="button"
+                id="apply-promo-button"
+              >
+                تطبيق الكود
+              </button>
+
+            </div>
+
+            <div
+              id="promo-message"
+              class="promo-message"
+            ></div>
+
+            <div
+              id="promo-applied"
+              class="promo-applied"
+            >
+              <span id="promo-applied-text"></span>
+
+              <button
+                type="button"
+                id="remove-promo-button"
+                class="promo-remove"
+              >
+                إزالة
+              </button>
+            </div>
+
+          </div>
+
+
+          <!-- PAYMENT -->
+
+          <div class="form-group">
+
+            <label for="payment-method">
+              طريقة الدفع *
+            </label>
+
+            <select
+              id="payment-method"
+              required
+            >
+
+              <option value="">
+                اختاري طريقة الدفع
+              </option>
+
+              <option value="cash">
+                الدفع عند الاستلام
+              </option>
+
+              <option value="pickup">
+                الاستلام من الصيدلية
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- NOTES -->
+
+          <div class="form-group">
+
+            <label for="order-notes">
+              ملاحظات إضافية
+            </label>
+
+            <textarea
+              id="order-notes"
+              placeholder="أي ملاحظات خاصة بالطلب..."
+            ></textarea>
+
+          </div>
+
+
+          <div
+            id="checkout-message"
+            class="message"
+          ></div>
+
+
+          <button
+            type="submit"
+            id="submit-order"
+            class="submit-button"
+          >
+            تأكيد الطلب
+          </button>
+
+        </form>
+
+      </section>
+
+
+      <!-- =========================
+           ORDER SUMMARY
+           ========================= -->
+
+      <section class="checkout-card">
+
+        <h2>ملخص الطلب</h2>
+
+        <div id="order-items"></div>
+
+        <div class="summary">
+
+          <div class="summary-row">
+
+            <span>
+              إجمالي المنتجات
+            </span>
+
+            <strong id="order-subtotal">
+              0.00 ج.م
+            </strong>
+
+          </div>
+
+
+          <div
+            class="summary-row discount"
+            id="promo-discount-row"
+            hidden
+          >
+
+            <span>
+              خصم الكود
+            </span>
+
+            <strong id="order-promo-discount">
+              0.00 ج.م
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              التوصيل
+            </span>
+
+            <strong id="order-delivery">
+              0.00 ج.م
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row total">
+
+            <span>
+              الإجمالي النهائي
+            </span>
+
+            <strong id="order-total">
+              0.00 ج.م
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
 
     </div>
 
@@ -894,24 +795,15 @@
   ></script>
 
 
-  <!-- =========================
-       CHECKOUT
-       ========================= -->
-
   <script>
 
     const Checkout = {
 
       // =====================================================
-      // CART
+      // STATE
       // =====================================================
 
       cart: [],
-
-
-      // =====================================================
-      // MAP
-      // =====================================================
 
       map: null,
 
@@ -921,21 +813,11 @@
 
       customerLocation: null,
 
-
-      // =====================================================
-      // DELIVERY
-      // =====================================================
-
       deliveryDistanceKm: 0,
 
       deliveryFee: 0,
 
       pricePerKm: 0,
-
-
-      // =====================================================
-      // PROMO
-      // =====================================================
 
       promoCodes: [],
 
@@ -943,9 +825,11 @@
 
       promoDiscount: 0,
 
+      isSubmitting: false,
+
 
       // =====================================================
-      // PHARMACY LOCATION
+      // PHARMACY
       // =====================================================
 
       pharmacyLocation: {
@@ -969,7 +853,6 @@
           '🧾 Checkout starting...'
         );
 
-
         this.loadCart();
 
         this.render();
@@ -986,10 +869,127 @@
 
         this.recalculateTotals();
 
-
         console.log(
           '✅ Checkout ready'
         );
+
+      },
+
+
+      // =====================================================
+      // BIND EVENTS
+      // =====================================================
+
+      bindEvents() {
+
+        const form =
+          document.getElementById(
+            'checkout-form'
+          );
+
+        if (form) {
+
+          form.addEventListener(
+            'submit',
+            event => {
+
+              event.preventDefault();
+
+              if (this.isSubmitting) {
+                return;
+              }
+
+              this.submitOrder();
+
+            }
+          );
+
+        }
+
+
+        const locationButton =
+          document.getElementById(
+            'get-location-button'
+          );
+
+        if (locationButton) {
+
+          locationButton.addEventListener(
+            'click',
+            () => {
+
+              this.getCustomerLocation();
+
+            }
+          );
+
+        }
+
+
+        const promoButton =
+          document.getElementById(
+            'apply-promo-button'
+          );
+
+        if (promoButton) {
+
+          promoButton.addEventListener(
+            'click',
+            () => {
+
+              this.applyPromo();
+
+            }
+          );
+
+        }
+
+
+        const promoInput =
+          document.getElementById(
+            'promo-code-input'
+          );
+
+        if (promoInput) {
+
+          promoInput.addEventListener(
+            'keydown',
+            event => {
+
+              if (
+                event.key ===
+                'Enter'
+              ) {
+
+                event.preventDefault();
+
+                this.applyPromo();
+
+              }
+
+            }
+          );
+
+        }
+
+
+        const removePromoButton =
+          document.getElementById(
+            'remove-promo-button'
+          );
+
+        if (removePromoButton) {
+
+          removePromoButton.addEventListener(
+            'click',
+            () => {
+
+              this.removePromo();
+
+            }
+          );
+
+        }
 
       },
 
@@ -1007,18 +1007,15 @@
               'hamsa_cart'
             );
 
-
           const parsed =
             saved
               ? JSON.parse(saved)
               : [];
 
-
           this.cart =
             Array.isArray(parsed)
               ? parsed
               : [];
-
 
         } catch (error) {
 
@@ -1026,7 +1023,6 @@
             '❌ Cart loading error:',
             error
           );
-
 
           this.cart = [];
 
@@ -1054,7 +1050,6 @@
 
           }
 
-
           const {
             data,
             error
@@ -1068,29 +1063,24 @@
               )
               .maybeSingle();
 
-
           if (error) {
             throw error;
           }
-
 
           const price =
             Number(
               data?.data?.delivery?.price_per_km
             );
 
-
           this.pricePerKm =
             Number.isFinite(price)
               ? price
               : 0;
 
-
           console.log(
             '🚚 Price per km:',
             this.pricePerKm
           );
-
 
         } catch (error) {
 
@@ -1099,9 +1089,7 @@
             error
           );
 
-
-          this.pricePerKm =
-            0;
+          this.pricePerKm = 0;
 
         }
 
@@ -1116,18 +1104,6 @@
 
         try {
 
-          if (
-            typeof supabaseClient ===
-            'undefined'
-          ) {
-
-            throw new Error(
-              'Supabase client غير متاح'
-            );
-
-          }
-
-
           const {
             data,
             error
@@ -1141,27 +1117,22 @@
               )
               .maybeSingle();
 
-
           if (error) {
             throw error;
           }
 
-
           const promos =
             data?.data?.promo_codes;
-
 
           this.promoCodes =
             Array.isArray(promos)
               ? promos
               : [];
 
-
           console.log(
             '🎟️ Promo codes loaded:',
             this.promoCodes
           );
-
 
         } catch (error) {
 
@@ -1170,9 +1141,7 @@
             error
           );
 
-
-          this.promoCodes =
-            [];
+          this.promoCodes = [];
 
         }
 
@@ -1190,12 +1159,10 @@
             'order-items'
           );
 
-
         const submitButton =
           document.getElementById(
             'submit-order'
           );
-
 
         if (!container) {
           return;
@@ -1228,20 +1195,14 @@
 
           `;
 
-
           this.updateSummary(
             0,
             0
           );
 
-
           if (submitButton) {
-
-            submitButton.disabled =
-              true;
-
+            submitButton.disabled = true;
           }
-
 
           return;
 
@@ -1258,27 +1219,22 @@
                     item.price
                   ) || 0;
 
-
                 const quantity =
                   Number(
                     item.quantity
                   ) || 0;
 
-
                 const total =
                   price *
                   quantity;
 
-
                 const image =
                   item.image || '';
-
 
                 const isOffer =
                   Boolean(
                     item.is_offer
                   );
-
 
                 return `
 
@@ -1290,29 +1246,18 @@
                         image
 
                           ? `
-
                             <img
-                              src="${this.escape(
-                                image
-                              )}"
-                              alt="${this.escape(
-                                item.name
-                              )}"
+                              src="${this.escape(image)}"
+                              alt="${this.escape(item.name)}"
                             >
-
                           `
 
                           : `
-
-                            <span>
-                              💊
-                            </span>
-
+                            <span>💊</span>
                           `
                       }
 
                     </div>
-
 
                     <div class="order-item-info">
 
@@ -1322,28 +1267,20 @@
                         )}
                       </h3>
 
-
                       ${
                         isOffer
-
                           ? `
-
                             <span class="offer-badge">
                               عرض
                             </span>
-
                           `
-
                           : ''
-
                       }
-
 
                       <p>
                         الكمية:
                         ${quantity}
                       </p>
-
 
                       <p>
                         السعر:
@@ -1353,12 +1290,9 @@
 
                     </div>
 
-
                     <div class="order-item-total">
-
                       ${total.toFixed(2)}
                       ج.م
-
                     </div>
 
                   </div>
@@ -1371,17 +1305,14 @@
 
 
         if (submitButton) {
-
-          submitButton.disabled =
-            false;
-
+          submitButton.disabled = false;
         }
 
       },
 
 
       // =====================================================
-      // SUMMARY
+      // UPDATE SUMMARY
       // =====================================================
 
       updateSummary(
@@ -1394,24 +1325,20 @@
             'order-subtotal'
           );
 
-
-        const promoDiscountRow =
+        const discountRow =
           document.getElementById(
             'promo-discount-row'
           );
 
-
-        const promoDiscountElement =
+        const discountElement =
           document.getElementById(
             'order-promo-discount'
           );
-
 
         const deliveryElement =
           document.getElementById(
             'order-delivery'
           );
-
 
         const totalElement =
           document.getElementById(
@@ -1424,12 +1351,10 @@
             subtotal
           ) || 0;
 
-
         const safeDelivery =
           Number(
             deliveryFee
           ) || 0;
-
 
         const safeDiscount =
           Math.min(
@@ -1460,17 +1385,17 @@
         }
 
 
-        if (promoDiscountElement) {
+        if (discountElement) {
 
-          promoDiscountElement.textContent =
+          discountElement.textContent =
             `-${safeDiscount.toFixed(2)} ج.م`;
 
         }
 
 
-        if (promoDiscountRow) {
+        if (discountRow) {
 
-          promoDiscountRow.hidden =
+          discountRow.hidden =
             safeDiscount <= 0;
 
         }
@@ -1495,7 +1420,7 @@
 
 
       // =====================================================
-      // GET SUBTOTAL
+      // SUBTOTAL
       // =====================================================
 
       getSubtotal() {
@@ -1511,12 +1436,10 @@
                 item.price
               ) || 0;
 
-
             const quantity =
               Number(
                 item.quantity
               ) || 0;
-
 
             return (
               sum +
@@ -1534,7 +1457,7 @@
 
 
       // =====================================================
-      // GET PROMO ELIGIBLE TOTAL
+      // PROMO ELIGIBLE
       // =====================================================
 
       getPromoEligibleSubtotal() {
@@ -1545,30 +1468,25 @@
             item
           ) => {
 
-            const isOffer =
+            if (
               Boolean(
                 item.is_offer
-              );
-
-
-            if (isOffer) {
+              )
+            ) {
 
               return sum;
 
             }
-
 
             const price =
               Number(
                 item.price
               ) || 0;
 
-
             const quantity =
               Number(
                 item.quantity
               ) || 0;
-
 
             return (
               sum +
@@ -1596,12 +1514,10 @@
             'promo-code-input'
           );
 
-
         const button =
           document.getElementById(
             'apply-promo-button'
           );
-
 
         const message =
           document.getElementById(
@@ -1618,18 +1534,14 @@
 
 
         if (input) {
-
           input.disabled =
             unavailable;
-
         }
 
 
         if (button) {
-
           button.disabled =
             unavailable;
-
         }
 
 
@@ -1666,25 +1578,6 @@
             'promo-code-input'
           );
 
-
-        const message =
-          document.getElementById(
-            'promo-message'
-          );
-
-
-        const appliedBox =
-          document.getElementById(
-            'promo-applied'
-          );
-
-
-        const appliedText =
-          document.getElementById(
-            'promo-applied-text'
-          );
-
-
         if (!input) {
           return;
         }
@@ -1696,12 +1589,6 @@
           )
           .trim()
           .toUpperCase();
-
-
-        this.showPromoMessage(
-          '',
-          false
-        );
 
 
         if (!code) {
@@ -1736,16 +1623,22 @@
 
         const promo =
           this.promoCodes.find(
-            item =>
-              String(
-                item.code || ''
-              )
+            item => {
+
+              return (
+                String(
+                  item.code || ''
+                )
                 .trim()
                 .toUpperCase() ===
-              code &&
-              Boolean(
-                item.active
-              )
+                code
+                &&
+                Boolean(
+                  item.active
+                )
+              );
+
+            }
           );
 
 
@@ -1761,7 +1654,7 @@
         }
 
 
-        const promoType =
+        const type =
           String(
             promo.type || ''
           )
@@ -1769,17 +1662,15 @@
           .toLowerCase();
 
 
-        const promoValue =
+        const value =
           Number(
             promo.value
           );
 
 
         if (
-          !Number.isFinite(
-            promoValue
-          ) ||
-          promoValue <= 0
+          !Number.isFinite(value) ||
+          value <= 0
         ) {
 
           this.showPromoMessage(
@@ -1792,30 +1683,43 @@
         }
 
 
+        if (
+          type === 'percentage' &&
+          value > 100
+        ) {
+
+          this.showPromoMessage(
+            'نسبة الخصم غير صالحة.',
+            true
+          );
+
+          return;
+
+        }
+
+
         let discount = 0;
 
 
         if (
-          promoType ===
-          'percentage'
+          type === 'percentage'
         ) {
 
           discount =
             eligibleSubtotal *
             (
-              promoValue /
+              value /
               100
             );
 
         }
 
         else if (
-          promoType ===
-          'fixed'
+          type === 'fixed'
         ) {
 
           discount =
-            promoValue;
+            value;
 
         }
 
@@ -1858,10 +1762,10 @@
             .toUpperCase(),
 
           type:
-            promoType,
+            type,
 
           value:
-            promoValue,
+            value,
 
           discount:
             discount
@@ -1876,21 +1780,28 @@
         this.recalculateTotals();
 
 
+        const appliedBox =
+          document.getElementById(
+            'promo-applied'
+          );
+
+        const appliedText =
+          document.getElementById(
+            'promo-applied-text'
+          );
+
+
         if (
           appliedBox &&
           appliedText
         ) {
 
-          const description =
-            promoType ===
-            'percentage'
+          appliedText.textContent =
+            type === 'percentage'
 
-              ? `${this.appliedPromo.code} — خصم ${promoValue}% = ${discount.toFixed(2)} ج.م`
+              ? `${this.appliedPromo.code} — خصم ${value}% = ${discount.toFixed(2)} ج.م`
 
               : `${this.appliedPromo.code} — خصم ${discount.toFixed(2)} ج.م`;
-
-          appliedText.textContent =
-            description;
 
           appliedBox.style.display =
             'block';
@@ -1902,10 +1813,6 @@
           'تم تطبيق كود الخصم بنجاح.',
           false
         );
-
-
-        input.value =
-          this.appliedPromo.code;
 
 
         console.log(
@@ -1925,7 +1832,6 @@
         this.appliedPromo =
           null;
 
-
         this.promoDiscount =
           0;
 
@@ -1935,7 +1841,6 @@
             'promo-code-input'
           );
 
-
         const appliedBox =
           document.getElementById(
             'promo-applied'
@@ -1943,18 +1848,12 @@
 
 
         if (input) {
-
-          input.value =
-            '';
-
+          input.value = '';
         }
 
 
         if (appliedBox) {
-
-          appliedBox.style.display =
-            'none';
-
+          appliedBox.style.display = 'none';
         }
 
 
@@ -1991,8 +1890,7 @@
 
         if (!message) {
 
-          element.textContent =
-            '';
+          element.textContent = '';
 
           element.className =
             'promo-message';
@@ -2017,7 +1915,7 @@
 
 
       // =====================================================
-      // RECALCULATE TOTALS
+      // RECALCULATE
       // =====================================================
 
       recalculateTotals() {
@@ -2034,15 +1932,11 @@
             this.getPromoEligibleSubtotal();
 
 
-          const promoType =
-            this.appliedPromo.type;
-
-
           let discount = 0;
 
 
           if (
-            promoType ===
+            this.appliedPromo.type ===
             'percentage'
           ) {
 
@@ -2085,13 +1979,6 @@
 
         }
 
-        else {
-
-          this.promoDiscount =
-            0;
-
-        }
-
 
         this.updateSummary(
           subtotal,
@@ -2113,7 +2000,7 @@
           ) || 0;
 
 
-        const pricePerKm =
+        const price =
           Number(
             this.pricePerKm
           ) || 0;
@@ -2121,10 +2008,8 @@
 
         this.deliveryFee =
           Math.round(
-            (
-              distance *
-              pricePerKm
-            ) *
+            distance *
+            price *
             100
           ) / 100;
 
@@ -2140,7 +2025,7 @@
               distance,
 
             pricePerKm:
-              pricePerKm,
+              price,
 
             deliveryFee:
               this.deliveryFee
@@ -2152,7 +2037,7 @@
 
 
       // =====================================================
-      // MAP
+      // INIT MAP
       // =====================================================
 
       initMap() {
@@ -2175,7 +2060,8 @@
 
 
         if (
-          typeof L === 'undefined'
+          typeof L ===
+          'undefined'
         ) {
 
           console.error(
@@ -2192,7 +2078,8 @@
           this.map =
             L.map(
               'delivery-map'
-            ).setView(
+            )
+            .setView(
 
               [
                 this.pharmacyLocation.latitude,
@@ -2215,6 +2102,7 @@
                 '&copy; OpenStreetMap contributors'
 
             }
+
           ).addTo(
             this.map
           );
@@ -2245,23 +2133,16 @@
             );
 
 
-          // Manual location
-
           this.map.on(
             'click',
             event => {
 
-              const latitude =
-                event.latlng.lat;
-
-
-              const longitude =
-                event.latlng.lng;
-
-
               this.setCustomerLocation(
-                latitude,
-                longitude
+
+                event.latlng.lat,
+
+                event.latlng.lng
+
               );
 
             }
@@ -2286,7 +2167,7 @@
 
 
       // =====================================================
-      // GPS
+      // GET GPS
       // =====================================================
 
       getCustomerLocation() {
@@ -2356,17 +2237,12 @@
 
           position => {
 
-            const latitude =
-              position.coords.latitude;
-
-
-            const longitude =
-              position.coords.longitude;
-
-
             this.setCustomerLocation(
-              latitude,
-              longitude
+
+              position.coords.latitude,
+
+              position.coords.longitude
+
             );
 
 
@@ -2400,7 +2276,7 @@
             ) {
 
               message =
-                'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى موقعك ثم حاولي مرة أخرى.';
+                'تم رفض إذن الموقع. اسمحي للمتصفح بالوصول إلى الموقع ثم حاولي مرة أخرى.';
 
             }
 
@@ -2485,25 +2361,20 @@
         longitude
       ) {
 
-        const safeLatitude =
+        const lat =
           Number(
             latitude
           );
 
-
-        const safeLongitude =
+        const lng =
           Number(
             longitude
           );
 
 
         if (
-          !Number.isFinite(
-            safeLatitude
-          ) ||
-          !Number.isFinite(
-            safeLongitude
-          )
+          !Number.isFinite(lat) ||
+          !Number.isFinite(lng)
         ) {
 
           console.error(
@@ -2519,10 +2390,6 @@
 
         if (!this.map) {
 
-          console.error(
-            '❌ Map is not initialized'
-          );
-
           return;
 
         }
@@ -2531,10 +2398,10 @@
         this.customerLocation = {
 
           latitude:
-            safeLatitude,
+            lat,
 
           longitude:
-            safeLongitude
+            lng
 
         };
 
@@ -2552,12 +2419,10 @@
 
         this.customerMarker =
           L.marker(
-
             [
-              safeLatitude,
-              safeLongitude
+              lat,
+              lng
             ]
-
           )
           .addTo(
             this.map
@@ -2575,9 +2440,9 @@
 
             this.pharmacyLocation.longitude,
 
-            safeLatitude,
+            lat,
 
-            safeLongitude
+            lng
 
           );
 
@@ -2595,9 +2460,9 @@
 
             [
 
-              safeLatitude,
+              lat,
 
-              safeLongitude
+              lng
 
             ]
 
@@ -2627,10 +2492,10 @@
             ✅ تم تحديد موقع التوصيل
             <br>
             خط العرض:
-            ${safeLatitude.toFixed(6)}
+            ${lat.toFixed(6)}
             <br>
             خط الطول:
-            ${safeLongitude.toFixed(6)}
+            ${lng.toFixed(6)}
           `;
 
         }
@@ -2672,18 +2537,11 @@
           this.customerLocation
         );
 
-
-        console.log(
-          '📏 Delivery distance:',
-          this.deliveryDistanceKm,
-          'km'
-        );
-
       },
 
 
       // =====================================================
-      // HAVERSINE
+      // CALCULATE DISTANCE
       // =====================================================
 
       calculateDistanceKm(
@@ -2698,10 +2556,11 @@
 
 
         const toRadians =
-          degrees =>
-            degrees *
+          value =>
+            value *
             (
-              Math.PI / 180
+              Math.PI /
+              180
             );
 
 
@@ -2754,8 +2613,7 @@
             Math.sqrt(a),
 
             Math.sqrt(
-              1 -
-              a
+              1 - a
             )
 
           );
@@ -2774,6 +2632,15 @@
       // =====================================================
 
       async submitOrder() {
+
+        if (
+          this.isSubmitting
+        ) {
+
+          return;
+
+        }
+
 
         if (
           !this.cart.length
@@ -2878,10 +2745,13 @@
 
         const total =
           Math.max(
+
             0,
+
             subtotal -
             discount +
             deliveryFee
+
           );
 
 
@@ -2920,10 +2790,6 @@
           );
 
 
-        // =================================================
-        // NOTES WITH PROMO DETAILS
-        // =================================================
-
         let finalNotes =
           notes;
 
@@ -2943,7 +2809,9 @@
 
           finalNotes =
             finalNotes
+
               ? `${finalNotes}\n${promoNote}`
+
               : promoNote;
 
         }
@@ -2999,6 +2867,10 @@
           );
 
 
+        this.isSubmitting =
+          true;
+
+
         if (button) {
 
           button.disabled =
@@ -3028,8 +2900,12 @@
             error
           } =
             await supabaseClient
+
               .from('orders')
-              .insert(order);
+
+              .insert(
+                order
+              );
 
 
           if (error) {
@@ -3159,13 +3035,17 @@
 
           }
 
+
+          this.isSubmitting =
+            false;
+
         }
 
       },
 
 
       // =====================================================
-      // GENERATE ORDER ID
+      // ORDER ID
       // =====================================================
 
       generateOrderId() {
@@ -3192,7 +3072,7 @@
 
 
       // =====================================================
-      // SHOW MESSAGE
+      // MESSAGE
       // =====================================================
 
       showMessage(
@@ -3234,26 +3114,26 @@
         return String(
           value ?? ''
         )
-        .replace(
-          /&/g,
-          '&amp;'
-        )
-        .replace(
-          /</g,
-          '&lt;'
-        )
-        .replace(
-          />/g,
-          '&gt;'
-        )
-        .replace(
-          /"/g,
-          '&quot;'
-        )
-        .replace(
-          /'/g,
-          '&#039;'
-        );
+          .replace(
+            /&/g,
+            '&amp;'
+          )
+          .replace(
+            /</g,
+            '&lt;'
+          )
+          .replace(
+            />/g,
+            '&gt;'
+          )
+          .replace(
+            /"/g,
+            '&quot;'
+          )
+          .replace(
+            /'/g,
+            '&#039;'
+          );
 
       }
 
@@ -3261,149 +3141,25 @@
 
 
     // =======================================================
-    // EVENTS
+    // START
     // =======================================================
 
     document.addEventListener(
       'DOMContentLoaded',
       () => {
 
-        // ===================================================
-        // INIT
-        // ===================================================
+        Checkout
+          .init()
+          .catch(
+            error => {
 
-        Checkout.init();
-
-
-        // ===================================================
-        // FORM
-        // ===================================================
-
-        const form =
-          document.getElementById(
-            'checkout-form'
-          );
-
-
-        if (form) {
-
-          form.addEventListener(
-            'submit',
-            event => {
-
-              event.preventDefault();
-
-              Checkout.submitOrder();
+              console.error(
+                '❌ Checkout initialization error:',
+                error
+              );
 
             }
           );
-
-        }
-
-
-        // ===================================================
-        // LOCATION
-        // ===================================================
-
-        const locationButton =
-          document.getElementById(
-            'get-location-button'
-          );
-
-
-        if (locationButton) {
-
-          locationButton.addEventListener(
-            'click',
-            () => {
-
-              Checkout.getCustomerLocation();
-
-            }
-          );
-
-        }
-
-
-        // ===================================================
-        // APPLY PROMO
-        // ===================================================
-
-        const promoButton =
-          document.getElementById(
-            'apply-promo-button'
-          );
-
-
-        const promoInput =
-          document.getElementById(
-            'promo-code-input'
-          );
-
-
-        if (promoButton) {
-
-          promoButton.addEventListener(
-            'click',
-            () => {
-
-              Checkout.applyPromo();
-
-            }
-          );
-
-        }
-
-
-        // ===================================================
-        // ENTER PROMO
-        // ===================================================
-
-        if (promoInput) {
-
-          promoInput.addEventListener(
-            'keydown',
-            event => {
-
-              if (
-                event.key ===
-                'Enter'
-              ) {
-
-                event.preventDefault();
-
-                Checkout.applyPromo();
-
-              }
-
-            }
-          );
-
-        }
-
-
-        // ===================================================
-        // REMOVE PROMO
-        // ===================================================
-
-        const removePromoButton =
-          document.getElementById(
-            'remove-promo-button'
-          );
-
-
-        if (removePromoButton) {
-
-          removePromoButton.addEventListener(
-            'click',
-            () => {
-
-              Checkout.removePromo();
-
-            }
-          );
-
-        }
 
       }
     );
