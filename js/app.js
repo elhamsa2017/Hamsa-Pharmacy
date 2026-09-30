@@ -248,7 +248,6 @@ const App = {
         const images = this.imagesBySku[String(product.sku || '').trim()] || [];
         const primaryImage = images
           .filter(image => Boolean(image.is_primary))
-          .sort((first, second) => Number(first.sort_order || 0) - Number(second.sort_order || 0))[0]
           || images[0];
 
         return {
