@@ -247,7 +247,7 @@ const App = {
       this.products = this.products.map(product => {
         const images = this.imagesBySku[String(product.sku || '').trim()] || [];
         const primaryImage = images
-          .filter(image => Boolean(image.is_primary))
+          .filter(image => Boolean(image.is_primary))[0]
           || images[0];
 
         return {
