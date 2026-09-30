@@ -227,9 +227,8 @@ const App = {
     try {
       const { data, error } = await sb
         .from('product_images')
-        .select('sku,image_url,is_primary,sort_order')
+        .select('sku,image_url,is_primary')
         .not('sku', 'is', null)
-        .order('sort_order', { ascending: true });
 
       if (error) throw error;
 
