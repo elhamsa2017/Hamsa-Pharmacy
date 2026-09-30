@@ -361,20 +361,15 @@ const App = {
       return `<span class="product-unavailable-label">${this.translate('unavailable', 'غير متوفر')}</span>`;
     }
 
-    if (quantity > 0) {
-      return `
-        <div class="product-quantity-control" aria-label="${this.translate('adjustQuantity', 'تعديل كمية المنتج')}">
-          <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="${this.translate('decrease', 'تقليل الكمية')}">−</button>
-          <span class="product-quantity-value">${quantity}</span>
-          <button type="button" class="quantity-button" data-cart-increase="${productId}" aria-label="${this.translate('increase', 'زيادة الكمية')}">+</button>
-        </div>
-      `;
-    }
-
     return `
-      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="${this.translate('addToCart', 'إضافة للسلة')} ${this.escape(product.name || 'المنتج')}">
+      <div class="product-quantity-control" aria-label="${this.translate('adjustQuantity', 'تعديل كمية المنتج')}">
+        <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="${this.translate('decrease', 'تقليل الكمية')}" ${quantity <= 0 ? 'disabled' : ''}>−</button>
+        <span class="product-quantity-value" aria-live="polite">${quantity}</span>
+        <button type="button" class="quantity-button" ${quantity > 0 ? `data-cart-increase="${productId}"` : `data-add-to-cart="${productId}"`} aria-label="${this.translate('increase', 'زيادة الكمية')}" ${quantity >= stock ? 'disabled' : ''}>+</button>
+      </div>
+      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="${this.translate('addToCart', 'إضافة للسلة')} ${this.escape(product.name || 'المنتج')}" ${quantity >= stock ? 'disabled' : ''}>
         <span aria-hidden="true">🛒</span>
-        <span>أضف للسلة</span>
+        <span>${this.translate('addToCart', 'إضافة للسلة')}</span>
       </button>
     `;
   },
@@ -423,6 +418,9 @@ renderProducts(products = this.products) {
 
     const image =
       product.image || '';
+
+    const description =
+      String(product.description || '').trim();
 
     const isOffer =
       Boolean(product.is_offer) &&
@@ -483,6 +481,12 @@ renderProducts(products = this.products) {
             ${this.escape(product.name || 'منتج')}
           </h3>
 
+          ${
+            description
+              ? `<p class="product-description">${this.escape(description)}</p>`
+              : ''
+          }
+
           <!-- السعر -->
           <div class="product-price-row">
 
@@ -513,7 +517,7 @@ renderProducts(products = this.products) {
           >
             ${
               stock > 0
-                ? `متوفر (${stock})`
+                ? this.translate('availableQuantity', 'الكمية المتوفرة: {stock}', { stock })
                 : 'غير متوفر'
             }
           </div>
@@ -820,8 +824,12 @@ renderProducts(products = this.products) {
     }
   },
 
-  translate(key, fallback) {
-    return typeof I18n !== 'undefined' ? I18n.t(key) : fallback;
+  translate(key, fallback, values = {}) {
+    let text = typeof I18n !== 'undefined' ? I18n.t(key) : fallback;
+    Object.entries(values).forEach(([name, value]) => {
+      text = text.replace(`{${name}}`, value);
+    });
+    return text;
   },
 
 
