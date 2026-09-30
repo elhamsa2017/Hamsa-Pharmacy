@@ -9,6 +9,7 @@ const App = {
   categories: [],
   cart: [],
   imagesBySku: {},
+  productSelections: {},
 
   async init() {
     console.log('🚀 Hamsa Pharmacy starting...');
@@ -352,9 +353,28 @@ const App = {
     return Number(item?.quantity) || 0;
   },
 
+  getRemainingProductStock(product) {
+    return Math.max(
+      0,
+      (Number(product.stock) || 0) - this.getProductCartQuantity(product.id)
+    );
+  },
+
+  getProductSelectedQuantity(product) {
+    const productId = String(product.id);
+    const remainingStock = this.getRemainingProductStock(product);
+    const selectedQuantity = Object.prototype.hasOwnProperty.call(this.productSelections, productId)
+      ? Number(this.productSelections[productId]) || 0
+      : Math.min(1, remainingStock);
+
+    this.productSelections[productId] = Math.min(remainingStock, selectedQuantity);
+    return this.productSelections[productId];
+  },
+
   renderProductActions(product) {
     const stock = Number(product.stock) || 0;
-    const quantity = this.getProductCartQuantity(product.id);
+    const remainingStock = this.getRemainingProductStock(product);
+    const quantity = this.getProductSelectedQuantity(product);
     const productId = this.escape(product.id);
 
     if (stock <= 0) {
@@ -363,11 +383,11 @@ const App = {
 
     return `
       <div class="product-quantity-control" aria-label="${this.translate('adjustQuantity', 'تعديل كمية المنتج')}">
-        <button type="button" class="quantity-button" data-cart-decrease="${productId}" aria-label="${this.translate('decrease', 'تقليل الكمية')}" ${quantity <= 0 ? 'disabled' : ''}>−</button>
+        <button type="button" class="quantity-button" data-product-quantity-decrease="${productId}" aria-label="${this.translate('decrease', 'تقليل الكمية')}" ${quantity <= 1 ? 'disabled' : ''}>−</button>
         <span class="product-quantity-value" aria-live="polite">${quantity}</span>
-        <button type="button" class="quantity-button" ${quantity > 0 ? `data-cart-increase="${productId}"` : `data-add-to-cart="${productId}"`} aria-label="${this.translate('increase', 'زيادة الكمية')}" ${quantity >= stock ? 'disabled' : ''}>+</button>
+        <button type="button" class="quantity-button" data-product-quantity-increase="${productId}" aria-label="${this.translate('increase', 'زيادة الكمية')}" ${quantity >= remainingStock ? 'disabled' : ''}>+</button>
       </div>
-      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" aria-label="${this.translate('addToCart', 'إضافة للسلة')} ${this.escape(product.name || 'المنتج')}" ${quantity >= stock ? 'disabled' : ''}>
+      <button type="button" class="add-cart-btn" data-add-to-cart="${productId}" data-quantity="${quantity}" aria-label="${this.translate('addToCart', 'إضافة للسلة')} ${this.escape(product.name || 'المنتج')}" ${quantity <= 0 || quantity > remainingStock ? 'disabled' : ''}>
         <span aria-hidden="true">🛒</span>
         <span>${this.translate('addToCart', 'إضافة للسلة')}</span>
       </button>
@@ -542,11 +562,42 @@ renderProducts(products = this.products) {
 
   bindEvents() {
 
+    document.addEventListener('click', event => {
+      const quantityButton = event.target.closest(
+        '[data-product-quantity-increase], [data-product-quantity-decrease]'
+      );
+
+      if (!quantityButton) return;
+
+      const productCard = quantityButton.closest('.product-card');
+      const product = this.products.find(item =>
+        String(item.id) === String(productCard?.dataset.productId)
+      );
+
+      if (!product) return;
+
+      const productId = String(product.id);
+      const remainingStock = this.getRemainingProductStock(product);
+      const currentQuantity = this.getProductSelectedQuantity(product);
+      const nextQuantity = quantityButton.hasAttribute('data-product-quantity-increase')
+        ? Math.min(remainingStock, currentQuantity + 1)
+        : Math.max(1, currentQuantity - 1);
+
+      this.productSelections[productId] = nextQuantity;
+      productCard.querySelector('.product-quantity-value').textContent = nextQuantity;
+      productCard.querySelector('[data-product-quantity-decrease]').disabled = nextQuantity <= 1;
+      productCard.querySelector('[data-product-quantity-increase]').disabled = nextQuantity >= remainingStock;
+
+      const addButton = productCard.querySelector('.add-cart-btn');
+      addButton.dataset.quantity = nextQuantity;
+      addButton.disabled = nextQuantity <= 0 || nextQuantity > remainingStock;
+    });
+
     document.addEventListener(
       'click',
       event => {
 
-        if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease]')) {
+        if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease], [data-product-quantity-increase], [data-product-quantity-decrease]')) {
           return;
         }
 

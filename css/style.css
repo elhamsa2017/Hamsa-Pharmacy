@@ -450,12 +450,7 @@ a {
 }
 
 .product-stock {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0 0 14px;
-  font-size: 12px;
-  font-weight: 700;
+  display: none;
 }
 
 .product-stock::before {

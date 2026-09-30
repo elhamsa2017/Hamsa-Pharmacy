@@ -90,7 +90,7 @@ const Cart = {
   // ADD PRODUCT
   // =======================================================
 
-  add(productId) {
+  add(productId, requestedQuantity = 1) {
 
     if (
       typeof App === 'undefined' ||
@@ -120,6 +120,11 @@ const Cart = {
 
     const stock =
       Number(product.stock) || 0;
+
+    const quantityToAdd = Math.max(
+      1,
+      Math.floor(Number(requestedQuantity) || 1)
+    );
 
     if (stock <= 0) {
 
@@ -151,7 +156,7 @@ const Cart = {
           cart[existingIndex].quantity
         ) || 0;
 
-      if (currentQuantity >= stock) {
+      if (currentQuantity + quantityToAdd > stock) {
 
         alert(this.translate('maxProduct', `لا يمكن إضافة أكثر من ${stock} قطعة من هذا المنتج`, { stock }));
 
@@ -159,7 +164,7 @@ const Cart = {
       }
 
       cart[existingIndex].quantity =
-        currentQuantity + 1;
+        currentQuantity + quantityToAdd;
 
     }
 
@@ -198,7 +203,7 @@ const Cart = {
         image:
           product.image || '',
 
-        quantity: 1
+        quantity: quantityToAdd
 
       });
 
@@ -212,10 +217,12 @@ const Cart = {
     this.render();
 
     if (typeof App !== 'undefined') {
+      App.productSelections[String(product.id)] = Math.min(
+        1,
+        Math.max(0, stock - (Number(cart[existingIndex]?.quantity) || quantityToAdd))
+      );
       App.refreshProductCards?.();
     }
-
-    this.open();
 
     console.log(
       '🛒 Product added:',
@@ -562,7 +569,7 @@ const Cart = {
           button.dataset.addToCart;
 
 
-        this.add(productId);
+        this.add(productId, button.dataset.quantity);
       }
     );
 
