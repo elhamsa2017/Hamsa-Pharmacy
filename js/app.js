@@ -224,17 +224,25 @@ const App = {
     const sb = this.getSupabase();
     if (!sb) return;
 
-    try {
+   try {
+    const pageSize = 1000;
+    let from = 0;
+
+    while (true) {
       const { data, error } = await sb
         .from('product_images')
         .select('sku,image_url,is_primary')
         .not('sku', 'is', null)
+        .range(from, from + pageSize - 1);
 
       if (error) throw error;
 
-      (Array.isArray(data) ? data : []).forEach(image => {
+      const images = Array.isArray(data) ? data : [];
+
+      images.forEach(image => {
         const sku = String(image.sku || '').trim();
         const imageUrl = String(image.image_url || '').trim();
+
         if (!sku || !imageUrl) return;
 
         if (!this.imagesBySku[sku]) {
@@ -243,6 +251,17 @@ const App = {
 
         this.imagesBySku[sku].push(image);
       });
+
+      console.log(
+        `🖼️ Images batch loaded: ${images.length} | From: ${from}`
+      );
+
+      if (images.length < pageSize) {
+        break;
+      }
+
+      from += pageSize;
+    }
 
       this.products = this.products.map(product => {
         const images = this.imagesBySku[String(product.sku || '').trim()] || [];
