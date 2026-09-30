@@ -394,6 +394,62 @@ const App = {
     `;
   },
 
+  openProductPreview(product, trigger) {
+    let preview = document.getElementById('product-image-preview');
+
+    if (!preview) {
+      preview = document.createElement('div');
+      preview.id = 'product-image-preview';
+      preview.className = 'product-image-preview';
+      preview.hidden = true;
+      preview.innerHTML = `
+        <button type="button" class="product-image-preview-backdrop" data-product-preview-close aria-label="إغلاق معاينة الصورة"></button>
+        <section class="product-image-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="product-image-preview-price">
+          <button type="button" class="product-image-preview-close" data-product-preview-close aria-label="إغلاق معاينة الصورة">×</button>
+          <img class="product-image-preview-photo" alt="">
+          <div class="product-image-preview-placeholder" hidden aria-hidden="true">💊</div>
+          <p class="product-image-preview-price" id="product-image-preview-price"></p>
+        </section>
+      `;
+      document.body.appendChild(preview);
+    }
+
+    const image = preview.querySelector('.product-image-preview-photo');
+    const placeholder = preview.querySelector('.product-image-preview-placeholder');
+    const hasImage = Boolean(product.image);
+
+    image.hidden = !hasImage;
+    placeholder.hidden = hasImage;
+
+    if (hasImage) {
+      image.src = product.image;
+    } else {
+      image.removeAttribute('src');
+    }
+
+    preview.querySelector('.product-image-preview-price').textContent =
+      `${(Number(product.price) || 0).toFixed(2)} ${this.translate('currency', 'ج.م')}`;
+
+    this.productPreviewTrigger = trigger;
+    preview.hidden = false;
+    document.body.classList.add('product-image-preview-open');
+    preview.querySelector('.product-image-preview-close').focus();
+  },
+
+  closeProductPreview() {
+    const preview = document.getElementById('product-image-preview');
+    if (!preview || preview.hidden) return;
+
+    preview.hidden = true;
+    document.body.classList.remove('product-image-preview-open');
+
+    if (this.productPreviewTrigger?.isConnected) {
+      this.productPreviewTrigger.focus();
+    }
+
+    this.productPreviewTrigger = null;
+  },
+
   refreshProductCards() {
     document.querySelectorAll('.product-card').forEach(card => {
       const product = this.products.find(item =>
@@ -459,7 +515,12 @@ renderProducts(products = this.products) {
         data-product-id="${this.escape(product.id)}"
       >
 
-        <div class="product-image-box">
+        <button
+          type="button"
+          class="product-image-box"
+          data-product-preview="${this.escape(product.id)}"
+          aria-label="${this.translate('viewProductImage', 'عرض صورة المنتج بحجم كبير')}: ${this.escape(product.name || 'منتج')}"
+        >
 
           <span class="product-sku product-sku-top">
             id: ${this.escape(product.sku || product.id || '-')}
@@ -492,7 +553,7 @@ renderProducts(products = this.products) {
               `
           }
 
-        </div>
+        </button>
 
 
         <div class="product-card-body">
@@ -563,6 +624,32 @@ renderProducts(products = this.products) {
   bindEvents() {
 
     document.addEventListener('click', event => {
+      const closeButton = event.target.closest('[data-product-preview-close]');
+
+      if (closeButton) {
+        this.closeProductPreview();
+        return;
+      }
+
+      const previewButton = event.target.closest('[data-product-preview]');
+      if (!previewButton) return;
+
+      const product = this.products.find(item =>
+        String(item.id) === String(previewButton.dataset.productPreview)
+      );
+
+      if (product) {
+        this.openProductPreview(product, previewButton);
+      }
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        this.closeProductPreview();
+      }
+    });
+
+    document.addEventListener('click', event => {
       const quantityButton = event.target.closest(
         '[data-product-quantity-increase], [data-product-quantity-decrease]'
       );
@@ -597,7 +684,7 @@ renderProducts(products = this.products) {
       'click',
       event => {
 
-        if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease], [data-product-quantity-increase], [data-product-quantity-decrease]')) {
+        if (event.target.closest('[data-add-to-cart], [data-cart-increase], [data-cart-decrease], [data-product-quantity-increase], [data-product-quantity-decrease], [data-product-preview]')) {
           return;
         }
 
