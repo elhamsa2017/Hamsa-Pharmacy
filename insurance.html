@@ -359,7 +359,6 @@
 
 
 /* Insurance company logos */
-
 .company-icon {
   width: 72px;
   height: 72px;
@@ -388,48 +387,6 @@
 .company-card:hover .company-icon {
   background: #ffffff;
 }
-
-    .company-icon {
-
-      width: 72px;
-      height: 72px;
-
-      border-radius: 20px;
-
-      background:
-        linear-gradient(
-          135deg,
-          var(--orange-soft),
-          #fff
-        );
-
-      border:
-        1px solid var(--border);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-size: 34px;
-
-      margin-bottom: 16px;
-
-      transition: 0.25s;
-    }
-
-
-    .company-card:hover
-    .company-icon {
-
-      transform:
-        scale(1.08);
-
-      background:
-        var(--orange);
-    }
-
 
     .company-name {
 
@@ -922,7 +879,7 @@
             .from('insurance')
 
             .select(
-              'id, name, active , image url'
+              'id, name, active , "image url"'
             )
 
             .eq(
@@ -973,10 +930,10 @@
                   
 <div class="company-icon">
   ${
-    company.image url
+    company["image url"]
       ? `<img
            class="company-logo"
-           src="${this.escape(company.image url)}"
+           src="${this.escape(company["image url"])}"
            alt="${this.escape(company.name)}"
            onerror="this.remove(); this.parentElement.textContent='🏥';"
          >`
