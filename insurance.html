@@ -922,7 +922,7 @@
             .from('insurance')
 
             .select(
-              'id, name, active , image_url'
+              'id, name, active , image url'
             )
 
             .eq(
@@ -973,10 +973,10 @@
                   
 <div class="company-icon">
   ${
-    company.image_url
+    company.image url
       ? `<img
            class="company-logo"
-           src="${this.escape(company.image_url)}"
+           src="${this.escape(company.image url)}"
            alt="${this.escape(company.name)}"
            onerror="this.remove(); this.parentElement.textContent='🏥';"
          >`
