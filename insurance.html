@@ -960,9 +960,20 @@
                   href="insurance-request.html?insurance_id=${encodeURIComponent(company.id)}"
                 >
 
-                  <div class="company-icon">
-                    🏥
-                  </div>
+                  
+<div class="company-icon">
+  ${
+    company.logo_url
+      ? `<img
+           class="company-logo"
+           src="${this.escape(company.logo_url)}"
+           alt="${this.escape(company.name)}"
+           onerror="this.remove(); this.parentElement.textContent='🏥';"
+         >`
+      : '🏥'
+  }
+</div>
+
 
                   <div class="company-name">
                     ${this.escape(company.name)}
