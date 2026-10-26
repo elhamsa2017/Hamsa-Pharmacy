@@ -335,10 +335,18 @@ AdminProducts.importExcel = async function (file) {
 
     if (sessionError) throw sessionError;
 
-    const token = sessionData.session?.access_token;
-    if (!token) {
-      throw new Error('انتهت جلسة الدخول. سجّلي الدخول مرة أخرى.');
-    }
+    const { data: sessionResult, error: sessionError } =
+  await supabase.auth.getSession();
+
+if (sessionError) {
+  throw new Error("تعذر قراءة جلسة الدخول. سجّل الدخول مرة أخرى.");
+}
+
+const token = sessionResult.session?.access_token;
+
+if (!token) {
+  throw new Error("انتهت جلسة الدخول. سجّل الدخول مرة أخرى.");
+}
 
     showStatus('جاري إرسال البيانات إلى Supabase...');
 
