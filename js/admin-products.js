@@ -230,7 +230,165 @@ const AdminProducts = {
     try { await Admin.update('products', id, values); Admin.toast('تم حفظ المنتج'); document.getElementById('product-modal').hidden = true; await this.load(); } catch (error) { Admin.toast(`فشل حفظ المنتج: ${error.message || 'تحقق من RLS'}`, true); }
   }
 };
+AdminProducts.importExcel = async function (file) {
+  const status = document.getElementById('import-excel-status');
+  const button = document.getElementById('import-excel-button');
 
+  const showStatus = (message, isError = false) => {
+    status.hidden = false;
+    status.textContent = message;
+    status.style.color = isError ? '#b91c1c' : 'inherit';
+  };
+
+  if (!file) return;
+
+  if (!window.XLSX) {
+    showStatus('تعذر تحميل مكتبة Excel. أعيدي تحميل الصفحة.', true);
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    showStatus('جاري قراءة ملف Excel...');
+
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    if (!sheet) throw new Error('الملف لا يحتوي على ورقة بيانات.');
+
+    const rows = XLSX.utils.sheet_to_json(sheet, {
+      defval: '',
+      raw: false
+    });
+
+    if (!rows.length) throw new Error('ملف Excel فارغ.');
+
+    const normalize = value =>
+      String(value ?? '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+
+    const headers = Object.keys(rows[0]);
+    const findHeader = names =>
+      headers.find(header => names.includes(normalize(header)));
+
+    const skuHeader = findHeader(['sku']);
+    const priceHeader = findHeader(['salesprice', 'price']);
+    const stockHeader = findHeader(['packs', 'stock', 'quantity']);
+    const splitHeader = findHeader(['splitparts']);
+
+    if (!skuHeader || !priceHeader || !stockHeader || !splitHeader) {
+      throw new Error(
+        'تأكدي من وجود الأعمدة: SKU وSales Price وPacks وsplit_parts.'
+      );
+    }
+
+    const seen = new Set();
+
+    const products = rows.map((row, index) => {
+      const sku = String(row[skuHeader] ?? '').trim();
+      const priceText = String(row[priceHeader] ?? '').trim();
+      const stockText = String(row[stockHeader] ?? '').trim();
+      const splitText = String(row[splitHeader] ?? '').trim();
+
+      if (!sku || !priceText || !stockText || !splitText) {
+        throw new Error(`بيانات ناقصة في الصف ${index + 2}.`);
+      }
+
+      if (seen.has(sku)) {
+        throw new Error(`كود SKU مكرر في الصف ${index + 2}: ${sku}`);
+      }
+      seen.add(sku);
+
+      const price = Number(priceText);
+      const stock = Number(stockText);
+      const split_parts = Number(splitText);
+
+      if (!Number.isFinite(price) || price < 0) {
+        throw new Error(`السعر غير صحيح في الصف ${index + 2}.`);
+      }
+
+      if (!Number.isInteger(stock) || stock < 0) {
+        throw new Error(`المخزون غير صحيح في الصف ${index + 2}.`);
+      }
+
+      if (!Number.isInteger(split_parts) || split_parts < 1) {
+        throw new Error(`split_parts غير صحيح في الصف ${index + 2}.`);
+      }
+
+      return { sku, price, stock, split_parts };
+    });
+
+    if (products.length > 500) {
+      throw new Error('الحد الأقصى 500 منتج في الملف الواحد.');
+    }
+
+    if (!window.confirm(
+      `سيتم تحديث السعر والمخزون وsplit_parts لـ ${products.length} منتج. هل تريدين المتابعة؟`
+    )) {
+      showStatus('تم إلغاء الاستيراد.');
+      return;
+    }
+
+    const { data: sessionData, error: sessionError } =
+      await Admin.sb.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const token = sessionData.session?.access_token;
+    if (!token) {
+      throw new Error('انتهت جلسة الدخول. سجّلي الدخول مرة أخرى.');
+    }
+
+    showStatus('جاري إرسال البيانات إلى Supabase...');
+
+    const { data: result, error } = await Admin.sb.functions.invoke(
+      'import-products',
+      {
+        body: { products },
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    if (error) {
+      let details = error.message || 'تعذر الاتصال بالدالة.';
+      try {
+        const response = error.context;
+        if (response && typeof response.json === 'function') {
+          const body = await response.json();
+          if (body.error) details = body.error;
+        }
+      } catch (_) {}
+      throw new Error(details);
+    }
+
+    if (result?.missingSkus?.length) {
+      throw new Error(
+        `لم يتم التحديث. أكواد SKU غير الموجودة: ${result.missingSkus.join(', ')}`
+      );
+    }
+
+    if (result?.failedSkus?.length) {
+      showStatus(
+        `تم تحديث ${result.updated} منتج، وفشل تحديث: ${result.failedSkus.join(', ')}`,
+        true
+      );
+      return;
+    }
+
+    if (result?.updated !== products.length) {
+      throw new Error(result?.message || 'لم يتم تأكيد تحديث كل المنتجات.');
+    }
+
+    showStatus(`تم تحديث ${result.updated} منتج بنجاح.`);
+    await this.load();
+
+  } catch (error) {
+    showStatus(`فشل الاستيراد: ${error.message || 'خطأ غير معروف'}`, true);
+  } finally {
+    button.disabled = false;
+  }
+};
 document.addEventListener('DOMContentLoaded', () => {
   AdminProducts.load();
   document.getElementById('product-search').addEventListener('input', () => AdminProducts.render());
@@ -240,4 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('product-form').addEventListener('submit', event => AdminProducts.save(event));
   document.getElementById('close-image-modal').addEventListener('click', () => { document.getElementById('image-modal').hidden = true; });
   document.getElementById('add-image-form').addEventListener('submit', event => AdminProducts.addImage(event));
+  document.getElementById('import-excel-button').addEventListener('click', () => {
+  document.getElementById('import-excel-file').click(); });
+  document.getElementById('import-excel-file').addEventListener('change', async event => {
+  await AdminProducts.importExcel(event.target.files[0]);
+  event.target.value = '';
+  });
 });
