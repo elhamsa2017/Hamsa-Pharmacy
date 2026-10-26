@@ -319,8 +319,8 @@ AdminProducts.importExcel = async function (file) {
       return { sku, price, stock, split_parts };
     });
 
-    if (products.length > 500) {
-      throw new Error('الحد الأقصى 500 منتج في الملف الواحد.');
+    if (products.length > 4000) {
+      throw new Error('الحد الأقصى 4000 منتج في الملف الواحد.');
     }
 
     if (!window.confirm(
