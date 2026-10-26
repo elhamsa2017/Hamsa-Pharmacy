@@ -312,7 +312,7 @@ AdminProducts.importExcel = async function (file) {
         throw new Error(`المخزون غير صحيح في الصف ${index + 2}.`);
       }
 
-      if (!Number.isInteger(split_parts) || split_parts < 1) {
+      if (!Number.isInteger(split_parts) || split_parts < 0) {
         throw new Error(`split_parts غير صحيح في الصف ${index + 2}.`);
       }
 
