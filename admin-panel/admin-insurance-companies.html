@@ -1,44 +1,6 @@
-const AdminCompanies = {
-  companies: [],
-  async load() {
-    const state = document.getElementById('companies-state');
-    const table = document.getElementById('companies-table');
-    try {
-      const result = await Admin.query('insurance', 'id,name,active,created_at', { order: 'name' });
-      this.companies = result.data || [];
-      this.render();
-      state.hidden = true;
-      table.hidden = false;
-    } catch (error) {
-      Admin.showState(state, `تعذر تحميل الشركات: ${error.message || 'تحقق من RLS'}`, true);
-      table.hidden = true;
-    }
-  },
-  render() {
-    const body = document.querySelector('#companies-table tbody');
-    if (!this.companies.length) { body.innerHTML = '<tr><td colspan="5"><div class="admin-state">لا توجد شركات تأمين حاليًا</div></td></tr>'; return; }
-    body.innerHTML = this.companies.map(company => `<tr><td>${Admin.escape(company.id)}</td><td>${Admin.escape(company.name)}</td><td><span class="admin-badge ${company.active ? 'success' : 'danger'}">${company.active ? 'مفعلة' : 'متوقفة'}</span></td><td>${Admin.formatDate(company.created_at)}</td><td><button class="admin-button secondary edit-company" data-id="${Admin.escape(company.id)}" type="button">تعديل</button></td></tr>`).join('');
-    body.querySelectorAll('.edit-company').forEach(button => button.addEventListener('click', () => this.open(button.dataset.id)));
-  },
-  open(id = '') {
-    const company = this.companies.find(item => String(item.id) === String(id));
-    document.getElementById('company-id').value = company?.id || '';
-    document.getElementById('company-name').value = company?.name || '';
-    document.getElementById('company-active').checked = company ? Boolean(company.active) : true;
-    document.getElementById('company-modal-title').textContent = company ? 'تعديل شركة' : 'إضافة شركة';
-    document.getElementById('company-modal').hidden = false;
-  },
-  async save(event) {
-    event.preventDefault();
-    const id = document.getElementById('company-id').value;
-    const values = { name: document.getElementById('company-name').value.trim(), active: document.getElementById('company-active').checked };
-    if (!values.name) { Admin.toast('اكتب اسم الشركة', true); return; }
-    try {
-      if (id) { await Admin.update('insurance', id, values); } else { const result = await Admin.sb.from('insurance').insert(values); if (result.error) throw result.error; }
-      Admin.toast('تم حفظ شركة التأمين');
-      document.getElementById('company-modal').hidden = true;
-      await this.load();
-    } catch (error) { Admin.toast(`فشل حفظ الشركة: ${error.message || 'تحقق من RLS'}`, true); }
-  }
-};
-document.addEventListener('DOMContentLoaded', () => { AdminCompanies.load(); document.getElementById('add-company').addEventListener('click', () => AdminCompanies.open()); document.getElementById('close-company-modal').addEventListener('click', () => { document.getElementById('company-modal').hidden = true; }); document.getElementById('company-form').addEventListener('submit', event => AdminCompanies.save(event)); });
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>شركات التأمين | لوحة الهمسة</title><link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body"><div class="admin-shell"><aside class="admin-sidebar"><a class="admin-brand" href="admin.html">لوحة تحكم صيدليات الهمسة</a><nav class="admin-nav"><a href="admin.html">لوحة المعلومات</a><a href="admin-orders.html">طلبات السلة</a><a href="admin-insurance.html">طلبات التأمين</a><a href="admin-products.html">كل المنتجات</a><a class="active" href="admin-insurance-companies.html">شركات التأمين</a><a href="index.html">عرض الموقع</a></nav></aside><main class="admin-main"><header class="admin-header"><div><h1>شركات التأمين</h1><p>إدارة سجلات public.insurance الحالية</p></div><button class="admin-button" id="add-company" type="button">إضافة شركة</button></header><section class="admin-content"><div class="admin-panel"><div id="companies-state" class="admin-state">جاري تحميل الشركات...</div><div class="admin-table-wrap"><table class="admin-table" id="companies-table" hidden><thead><tr><th>الرقم</th><th>الاسم</th><th>الحالة</th><th>تاريخ الإنشاء</th><th>إجراء</th></tr></thead><tbody></tbody></table></div></div></section></main></div><div class="admin-modal" id="company-modal" hidden><div class="admin-modal-card"><div class="admin-panel-header"><h2 id="company-modal-title">إضافة شركة</h2><button class="admin-button secondary" id="close-company-modal" type="button">إغلاق</button></div><form id="company-form"><input id="company-id" type="hidden"><div class="admin-form-group"><label for="company-name">اسم الشركة</label><input id="company-name" required></div><div class="admin-form-group"><label><input id="company-active" type="checkbox" checked> الشركة مفعلة</label></div><div class="admin-actions"><button class="admin-button" type="submit">حفظ</button></div></form></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-config.js"></script><script src="js/admin.js"></script><script src="js/admin-insurance-companies.js"></script></body></html>
